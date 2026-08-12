@@ -1,0 +1,670 @@
+import { useState } from "react";
+
+import DeviceEditorModal from "../components/DeviceEditorModal";
+import PatchPanelEditorModal from "../components/PatchPanelEditorModal";
+import WizardStep from "../components/WizardStep";
+
+import { DEVICE_MODELS } from "../constants";
+
+import ProjectStep from "../components/ProjectStep";
+import RackStep from "../components/RackStep";
+import DevicesStep from "../components/DevicesStep";
+import PatchPanelStep from "../components/PatchPanelStep";
+import SummaryStep from "../components/SummaryStep";
+
+import {
+  Device,
+  PatchPanel,
+  PatchPanelPort,
+  ProjectDraft,
+  Rack,
+} from "../types";
+
+type NewProjectProps = {
+  project: ProjectDraft;
+  setProject: React.Dispatch<React.SetStateAction<ProjectDraft>>;
+  onCancel: () => void;
+  onCreateProject: (project: ProjectDraft) => void;
+};
+
+type ValidationError = {
+  message: string;
+};
+
+function NewProject({
+  project,
+  setProject,
+  onCancel,
+  onCreateProject,
+}: NewProjectProps) {
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const [editingDeviceId, setEditingDeviceId] =
+    useState<string | null>(null);
+
+  const [editingPatchPanelId, setEditingPatchPanelId] =
+    useState<string | null>(null);
+
+  const editingDevice = project.devices.find(
+    (device) => device.id === editingDeviceId
+  );
+
+  const editingPatchPanel = project.patchPanels.find(
+    (patchPanel) => patchPanel.id === editingPatchPanelId
+  );
+
+  /* =========================================================
+     PROJECT UPDATE
+     ========================================================= */
+
+  const updateField = (
+    field: keyof Pick<
+      ProjectDraft,
+      "name" | "location" | "description"
+    >,
+    value: string
+  ) => {
+    setProject((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
+
+  /* =========================================================
+     RACK UPDATE
+     ========================================================= */
+
+  const updateRackField = <K extends keyof Rack>(
+    field: K,
+    value: Rack[K]
+  ) => {
+    setProject((current) => ({
+      ...current,
+      rack: {
+        ...current.rack,
+        [field]: value,
+      },
+    }));
+  };
+
+  /* =========================================================
+     DEVICE MANAGEMENT
+     ========================================================= */
+
+  const addDevice = () => {
+    const newDevice: Device = {
+      id: crypto.randomUUID(),
+      name: `SW-${String(
+        project.devices.length + 1
+      ).padStart(2, "0")}`,
+      type: "switch",
+      manufacturer: "",
+      model: "",
+      ports: 24,
+      heightU: 1,
+      positionU: null,
+    };
+
+    setProject((current) => ({
+      ...current,
+      devices: [
+        ...current.devices,
+        newDevice,
+      ],
+    }));
+
+    setEditingDeviceId(newDevice.id);
+  };
+
+  const removeDevice = (id: string) => {
+    setProject((current) => ({
+      ...current,
+      devices: current.devices.filter(
+        (device) => device.id !== id
+      ),
+    }));
+
+    if (editingDeviceId === id) {
+      setEditingDeviceId(null);
+    }
+  };
+
+  const updateDevice = (
+    id: string,
+    changes: Partial<Device>
+  ) => {
+    setProject((current) => ({
+      ...current,
+      devices: current.devices.map((device) =>
+        device.id === id
+          ? {
+              ...device,
+              ...changes,
+            }
+          : device
+      ),
+    }));
+  };
+
+  /* =========================================================
+     PATCH PANEL MANAGEMENT
+     ========================================================= */
+
+  const createPatchPanelPorts = (
+    count: number
+  ): PatchPanelPort[] => {
+    return Array.from(
+      { length: count },
+      (_, index) => ({
+        id: crypto.randomUUID(),
+        number: index + 1,
+        label: String(index + 1).padStart(2, "0"),
+        status: "free",
+      })
+    );
+  };
+
+  const addPatchPanel = () => {
+    const portCount = 24;
+
+    const newPatchPanel: PatchPanel = {
+      id: crypto.randomUUID(),
+      name: `PP-${String(
+        project.patchPanels.length + 1
+      ).padStart(2, "0")}`,
+      manufacturer: "",
+      model: "",
+      type: "Cat.6",
+      ports: portCount,
+      heightU: 1,
+      positionU: null,
+      portList: createPatchPanelPorts(portCount),
+    };
+
+    setProject((current) => ({
+      ...current,
+      patchPanels: [
+        ...current.patchPanels,
+        newPatchPanel,
+      ],
+    }));
+
+    setEditingPatchPanelId(newPatchPanel.id);
+  };
+
+  const removePatchPanel = (id: string) => {
+    setProject((current) => ({
+      ...current,
+      patchPanels: current.patchPanels.filter(
+        (patchPanel) => patchPanel.id !== id
+      ),
+    }));
+
+    if (editingPatchPanelId === id) {
+      setEditingPatchPanelId(null);
+    }
+  };
+
+  /* =========================================================
+     PROJECT VALIDATION
+     ========================================================= */
+
+  const validateProject = (): ValidationError[] => {
+    const errors: ValidationError[] = [];
+
+    /* ---------- PROJECT ---------- */
+
+    if (!project.name.trim()) {
+      errors.push({
+        message: "Podaj nazwę projektu.",
+      });
+    }
+
+    if (!project.location.trim()) {
+      errors.push({
+        message: "Podaj lokalizację projektu.",
+      });
+    }
+
+    /* ---------- RACK ---------- */
+
+    if (!project.rack.name.trim()) {
+      errors.push({
+        message: "Podaj nazwę szafy rack.",
+      });
+    }
+
+    const rackHeight = project.rack.heightU;
+
+    /* ---------- OCCUPIED UNITS ---------- */
+
+    const occupiedUnits: {
+      from: number;
+      to: number;
+      name: string;
+    }[] = [];
+
+    /* ---------- DEVICES ---------- */
+
+    project.devices.forEach((device) => {
+      if (device.positionU === null) {
+        errors.push({
+          message: `Urządzenie "${device.name}" nie ma ustalonej pozycji w szafie.`,
+        });
+
+        return;
+      }
+
+      const from = device.positionU;
+      const to = from + device.heightU - 1;
+
+      if (from < 1 || to > rackHeight) {
+        errors.push({
+          message: `Urządzenie "${device.name}" wychodzi poza wysokość szafy.`,
+        });
+
+        return;
+      }
+
+      occupiedUnits.push({
+        from,
+        to,
+        name: device.name,
+      });
+    });
+
+    /* ---------- PATCH PANELS ---------- */
+
+    project.patchPanels.forEach((patchPanel) => {
+      if (patchPanel.positionU === null) {
+        errors.push({
+          message: `Patchpanel "${patchPanel.name}" nie ma ustalonej pozycji w szafie.`,
+        });
+
+        return;
+      }
+
+      const from = patchPanel.positionU;
+      const to = from + patchPanel.heightU - 1;
+
+      if (from < 1 || to > rackHeight) {
+        errors.push({
+          message: `Patchpanel "${patchPanel.name}" wychodzi poza wysokość szafy.`,
+        });
+
+        return;
+      }
+
+      occupiedUnits.push({
+        from,
+        to,
+        name: patchPanel.name,
+      });
+    });
+
+    /* ---------- POSITION CONFLICTS ---------- */
+
+    for (let i = 0; i < occupiedUnits.length; i++) {
+      for (let j = i + 1; j < occupiedUnits.length; j++) {
+        const first = occupiedUnits[i];
+        const second = occupiedUnits[j];
+
+        const overlaps =
+          first.from <= second.to &&
+          second.from <= first.to;
+
+        if (overlaps) {
+          errors.push({
+            message: `Konflikt pozycji: "${first.name}" i "${second.name}".`,
+          });
+        }
+      }
+    }
+
+    return errors;
+  };
+
+  /* =========================================================
+     VALIDATION RESULT
+     ========================================================= */
+
+  const validationErrors = validateProject();
+
+  /* =========================================================
+     NAVIGATION
+     ========================================================= */
+
+  const goNext = () => {
+    if (currentStep < 5) {
+      setCurrentStep((step) => step + 1);
+      setEditingDeviceId(null);
+      setEditingPatchPanelId(null);
+    }
+  };
+
+  const goBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((step) => step - 1);
+      setEditingDeviceId(null);
+      setEditingPatchPanelId(null);
+    }
+  };
+
+  /* =========================================================
+     STEP CONTENT
+     ========================================================= */
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      /* -----------------------------------------------------
+         STEP 1 — PROJECT DATA
+         ----------------------------------------------------- */
+
+      case 1:
+        return (
+          <ProjectStep
+            project={project}
+            updateField={updateField}
+          />
+        );
+
+      /* -----------------------------------------------------
+         STEP 2 — RACK
+         ----------------------------------------------------- */
+
+      case 2:
+        return (
+          <RackStep
+            rack={project.rack}
+            devices={project.devices}
+            patchPanels={project.patchPanels}
+            updateRackField={updateRackField}
+          />
+        );
+
+      /* -----------------------------------------------------
+         STEP 3 — DEVICES
+         ----------------------------------------------------- */
+
+      case 3:
+        return (
+          <DevicesStep
+            devices={project.devices}
+            editingDeviceId={editingDeviceId}
+            onAddDevice={addDevice}
+            onEditDevice={setEditingDeviceId}
+            onRemoveDevice={removeDevice}
+          />
+        );
+
+      /* -----------------------------------------------------
+         STEP 4 — PATCH PANELS
+         ----------------------------------------------------- */
+
+      case 4:
+        return (
+          <PatchPanelStep
+            patchPanels={project.patchPanels}
+            onAddPatchPanel={addPatchPanel}
+            onEditPatchPanel={setEditingPatchPanelId}
+            onRemovePatchPanel={removePatchPanel}
+          />
+        );
+
+      /* -----------------------------------------------------
+         STEP 5 — SUMMARY
+         ----------------------------------------------------- */
+
+      case 5:
+        return (
+          <SummaryStep
+            project={project}
+            validationErrors={validationErrors}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  /* =========================================================
+     CREATE PROJECT
+     ========================================================= */
+
+  const handleCreateProject = () => {
+    if (validationErrors.length > 0) {
+      return;
+    }
+
+    onCreateProject(project);
+  };
+
+  /* =========================================================
+     RENDER
+     ========================================================= */
+
+  return (
+    <div className="wizard-app">
+
+      {/* =====================================================
+          TOPBAR
+          ===================================================== */}
+
+      <header className="wizard-topbar">
+        <div className="wizard-brand">
+
+          <div className="brand-mark">
+            N
+          </div>
+
+          <div>
+            <div className="brand-name">
+              NetRack
+            </div>
+
+            <div className="brand-version">
+              Nowy projekt
+            </div>
+          </div>
+
+        </div>
+
+        <button
+          className="close-button"
+          onClick={onCancel}
+          aria-label="Zamknij"
+        >
+          ×
+        </button>
+      </header>
+
+      {/* =====================================================
+          CONTENT
+          ===================================================== */}
+
+      <main className="wizard-content">
+
+        {/* ===================================================
+            HEADER
+            =================================================== */}
+
+        <div className="wizard-header">
+
+          <div>
+
+            <div className="eyebrow">
+              PROJECT SETUP
+            </div>
+
+            <h1>
+              Utwórz nowy projekt
+            </h1>
+
+            <p>
+              Skonfigurujemy podstawowe informacje
+              o dokumentowanej infrastrukturze.
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* ===================================================
+            STEPS
+            =================================================== */}
+
+        <div className="wizard-steps">
+
+          <WizardStep
+            number="01"
+            label="Dane projektu"
+            active={currentStep === 1}
+            completed={currentStep > 1}
+          />
+
+          <WizardStep
+            number="02"
+            label="Szafa"
+            active={currentStep === 2}
+            completed={currentStep > 2}
+          />
+
+          <WizardStep
+            number="03"
+            label="Urządzenia"
+            active={currentStep === 3}
+            completed={currentStep > 3}
+          />
+
+          <WizardStep
+            number="04"
+            label="Patchpanele"
+            active={currentStep === 4}
+            completed={currentStep > 4}
+          />
+
+          <WizardStep
+            number="05"
+            label="Podsumowanie"
+            active={currentStep === 5}
+            completed={false}
+          />
+
+        </div>
+
+        {/* ===================================================
+            CARD
+            =================================================== */}
+
+        <section className="wizard-card">
+          {renderStepContent()}
+        </section>
+
+        {/* ===================================================
+            FOOTER
+            =================================================== */}
+
+        <div className="wizard-footer">
+
+          {currentStep === 1 ? (
+            <button
+              className="secondary-button"
+              onClick={onCancel}
+            >
+              Anuluj
+            </button>
+          ) : (
+            <button
+              className="secondary-button"
+              onClick={goBack}
+            >
+              ← Wstecz
+            </button>
+          )}
+
+          {currentStep < 5 ? (
+            <button
+              className="primary-button"
+              onClick={goNext}
+              disabled={
+                currentStep === 1 &&
+                (
+                  !project.name.trim() ||
+                  !project.location.trim()
+                )
+              }
+            >
+              Dalej →
+            </button>
+          ) : (
+            <button
+              className="primary-button"
+              onClick={handleCreateProject}
+              disabled={validationErrors.length > 0}
+            >
+              Utwórz projekt
+            </button>
+          )}
+
+        </div>
+
+      </main>
+
+      {/* =====================================================
+          DEVICE EDITOR
+          ===================================================== */}
+
+      {editingDevice && (
+        <DeviceEditorModal
+          device={editingDevice}
+          rackHeight={project.rack.heightU}
+          deviceModels={DEVICE_MODELS}
+          onSave={(changes) => {
+            updateDevice(
+              editingDevice.id,
+              changes
+            );
+
+            setEditingDeviceId(null);
+          }}
+          onCancel={() => {
+            setEditingDeviceId(null);
+          }}
+        />
+      )}
+
+      {/* =====================================================
+          PATCH PANEL EDITOR
+          ===================================================== */}
+
+      {editingPatchPanel && (
+        <PatchPanelEditorModal
+          patchPanel={editingPatchPanel}
+          rackHeight={project.rack.heightU}
+          onSave={(updatedPatchPanel) => {
+            setProject((current) => ({
+              ...current,
+              patchPanels:
+                current.patchPanels.map(
+                  (patchPanel) =>
+                    patchPanel.id ===
+                    updatedPatchPanel.id
+                      ? updatedPatchPanel
+                      : patchPanel
+                ),
+            }));
+
+            setEditingPatchPanelId(null);
+          }}
+          onCancel={() => {
+            setEditingPatchPanelId(null);
+          }}
+        />
+      )}
+
+    </div>
+  );
+}
+
+export default NewProject;

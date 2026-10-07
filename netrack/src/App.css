@@ -6269,3 +6269,151 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 @media (max-width:900px) {
   .rack-visual-scroll { max-height:360px; }
 }
+
+/* Physical rack visualization */
+.rack-documentation .rack-visual-scroll {
+  padding: 14px 16px 16px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.018), transparent 12%, transparent 88%, rgba(255,255,255,.018)),
+    #080b0f;
+}
+.rack-documentation .rack-chassis {
+  position: relative;
+  display: grid;
+  grid-template-columns: 12px minmax(0,1fr) 12px;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid #303841;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, #171c22 0, #0d1116 5%, #0a0e13 50%, #0d1116 95%, #171c22 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.025),
+    0 10px 25px rgba(0,0,0,.22);
+}
+.rack-documentation .rack-rail {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  width: 8px;
+  border: 1px solid #353e47;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #252c34 0,
+      #252c34 1px,
+      #11161c 1px,
+      #11161c 7px
+    );
+  box-shadow: inset 1px 0 rgba(255,255,255,.025);
+}
+.rack-documentation .rack-rail-left { left: 7px; }
+.rack-documentation .rack-rail-right { right: 7px; }
+.rack-documentation .rack-u-scale {
+  grid-column: 2;
+  overflow: hidden;
+  border: 1px solid #252d35;
+  border-radius: 2px;
+  background: #070a0e;
+}
+.rack-documentation .rack-u-scale .rack-mini-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr);
+  min-height: 24px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #151b21;
+  background: transparent;
+}
+.rack-documentation .rack-u-scale .rack-mini-row:last-child {
+  border-bottom: 0;
+}
+.rack-documentation .rack-u-scale .rack-mini-row > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3e4853;
+  background: #0a0e13;
+  border-right: 1px solid #1b222a;
+  font: 6px/1 "JetBrains Mono",monospace;
+}
+.rack-documentation .rack-u-scale .rack-mini-row > div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  background: #080c11;
+}
+.rack-documentation .rack-u-scale .rack-mini-row:not(.occupied) > div {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 10px,
+      rgba(255,255,255,.018) 10px,
+      rgba(255,255,255,.018) 11px
+    ),
+    #080c11;
+}
+.rack-documentation .rack-u-scale .rack-mini-row.occupied {
+  min-height: 25px;
+  border-bottom-color: #0a0d11;
+}
+.rack-documentation .rack-u-scale .rack-mini-row.occupied > div {
+  margin: 2px 3px;
+  border: 1px solid #343d47;
+  border-left: 2px solid #b94f16;
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, rgba(243,107,33,.13), rgba(243,107,33,.035) 35%, #11171d 100%);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025),
+    0 2px 5px rgba(0,0,0,.25);
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.rack-documentation .rack-u-scale button.rack-mini-row.occupied:hover > div {
+  border-color: #59646f;
+  border-left-color: #f36b21;
+  background:
+    linear-gradient(90deg, rgba(243,107,33,.19), rgba(243,107,33,.055) 35%, #151c23 100%);
+}
+.rack-documentation .rack-u-scale button.rack-mini-row.selected > div {
+  border-color: rgba(243,107,33,.7);
+  border-left-color: #f36b21;
+  background:
+    linear-gradient(90deg, rgba(243,107,33,.22), rgba(243,107,33,.07) 38%, #161d24 100%);
+  box-shadow: 0 0 0 1px rgba(243,107,33,.1), inset 0 1px rgba(255,255,255,.03);
+}
+.rack-documentation .rack-u-scale .rack-mini-row strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #cbd1d6;
+  font: 650 7.5px/1 "JetBrains Mono",monospace;
+  letter-spacing: .04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rack-documentation .rack-u-scale .rack-mini-row.occupied > span,
+.rack-documentation .rack-u-scale .rack-mini-row.selected > span {
+  color: #d86a2a;
+}
+.rack-documentation .rack-u-scale .rack-mini-row > div > span {
+  display: block;
+  max-width: 100%;
+  margin-top: 3px;
+  overflow: hidden;
+  color: #68737e;
+  font: 5.5px/1 "JetBrains Mono",monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rack-documentation .rack-u-scale .rack-mini-row.selected strong {
+  color: #f36b21;
+}
+@media (max-width: 900px) {
+  .rack-documentation .rack-visual-scroll { padding: 12px; }
+}

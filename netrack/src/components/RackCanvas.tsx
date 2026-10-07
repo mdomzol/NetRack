@@ -234,10 +234,6 @@ export default function RackCanvas({
         </div>
       </div>
 
-      <div className="rack-canvas-hint">
-        <span><Icon name="rack" /></span>
-        Przeciągnij element na wybraną jednostkę U. Podwójne kliknięcie otwiera edycję.
-      </div>
     </div>
   );
 }

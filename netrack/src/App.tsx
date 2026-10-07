@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 import Dashboard from "./components/Dashboard";
+import Sidebar from "./components/Sidebar";
+import DocumentationView, {
+  DocumentationViewType,
+} from "./components/DocumentationView";
 import NewProject from "./pages/NewProject";
 
 import { createEmptyProject } from "./constants";
 import { ProjectDraft } from "./types";
 
-type View = "dashboard" | "new-project";
+type View = "dashboard" | DocumentationViewType | "new-project";
 const STORAGE_KEY = "netrack:project";
 
 function loadProject(): ProjectDraft {
@@ -56,7 +60,50 @@ function App() {
     );
   }
 
-  return <Dashboard project={project} onNewProject={openNewProject} />;
+  const navigate = (nextView: View) => setView(nextView);
+
+  return (
+    <div className="app">
+      <Sidebar
+        hasProject={Boolean(project.name.trim())}
+        activeView={view}
+        onNavigate={navigate}
+      />
+
+      {view === "dashboard" ? (
+        <Dashboard
+          project={project}
+          onNewProject={openNewProject}
+          onNavigate={navigate}
+        />
+      ) : (
+        <main className="main">
+          <header className="topbar">
+            <div>
+              <div className="breadcrumb">NETRACK / DOKUMENTACJA</div>
+              <h1>
+                {view === "rack"
+                  ? "Szafa"
+                  : view === "devices"
+                    ? "Urządzenia"
+                    : view === "patch-panels"
+                      ? "Patchpanele"
+                      : "Połączenia"}
+              </h1>
+            </div>
+            <div className="project-info">
+              <span className="project-status online" />
+              {project.name || "Brak projektu"}
+            </div>
+          </header>
+
+          <section className="content documentation-content">
+            <DocumentationView project={project} view={view} />
+          </section>
+        </main>
+      )}
+    </div>
+  );
 }
 
 export default App;

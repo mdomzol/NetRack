@@ -221,50 +221,60 @@ MAIN
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  min-height: 76px;
-
+  gap: 28px;
+  min-height: 68px;
   padding: 0 34px;
-
   border-bottom: 1px solid #202733;
+  background: #0b0f14;
 }
 
-.breadcrumb {
-  margin-bottom: 5px;
+.topbar-project {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
 
+.topbar-label {
   color: #596272;
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font: 700 8px/1 "JetBrains Mono", monospace;
+  letter-spacing: .16em;
 }
 
-.topbar h1 {
-  margin: 0;
-
+.topbar-project strong {
   color: #f3f4f6;
-
-  font-size: 21px;
-  font-weight: 650;
+  font: 650 18px/1 "Space Grotesk", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.project-info {
+.topbar-location {
+  color: #6e7885;
+  font: 500 10px/1 "JetBrains Mono", monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-meta {
   display: flex;
   align-items: center;
-
-  gap: 8px;
-
-  color: #737d8c;
-
-  font-size: 12px;
+  gap: 18px;
+  flex-shrink: 0;
 }
 
-.project-status {
-  width: 7px;
-  height: 7px;
+.topbar-meta span {
+  color: #596572;
+  font: 700 7px/1 "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
 
-  border: 1px solid #596272;
-  border-radius: 50%;
+.topbar-meta b {
+  color: #cfd5da;
+  font-size: 11px;
+  letter-spacing: .02em;
 }
 
 /* =========================================================

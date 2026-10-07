@@ -193,7 +193,7 @@ export default function RackCanvas({
                   <button
                     key={item.id}
                     type="button"
-                    className={"rack-canvas-item " + item.type}
+                    className={"rack-canvas-item " + item.type + " rack-item-" + Math.min(item.heightU, 4) + "u"}
                     style={{
                       gridRow:
                         (rack.heightU - (item.positionU ?? 1) + 1) +

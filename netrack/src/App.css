@@ -5128,11 +5128,10 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 .rack-mini-row {
   display:grid;
   grid-template-columns:28px minmax(0,1fr);
+  align-items:stretch;
   min-height:18px;
   border-bottom:1px solid #202832;
 }
-
-.rack-mini-row:last-child { border-bottom:0; }
 
 .rack-mini-row > span {
   display:flex;
@@ -5144,16 +5143,26 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .rack-mini-row > div {
+  display:flex;
+  align-items:center;
+  justify-content:center;
   min-width:0;
-  padding:3px 7px;
+  min-height:18px;
+  padding:2px 7px;
+  text-align:center;
 }
 
 .rack-mini-row strong {
+  display:block;
+  overflow:hidden;
+  max-width:100%;
   color:#bfc6cc;
   font-size:7px;
+  line-height:1.1;
   font-weight:550;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-
 .rack-mini-row.occupied {
   background:rgba(243,107,33,.07);
 }

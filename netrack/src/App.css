@@ -443,7 +443,7 @@ DASHBOARD GRAPHIC
 
   color: #737d8c;
 
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -6070,7 +6070,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   width: min(980px, 100%);
   min-height: 420px;
   margin: 0 auto;
-  padding: 8px;
+  padding: 6px;
   border: 1px solid #303945;
   border-radius: 7px;
   background: #0b1016;
@@ -6098,6 +6098,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   display: grid;
   min-width: 0;
   overflow: visible;
+  box-sizing: border-box;
   border-left: 1px solid #343d48;
   border-right: 1px solid #343d48;
 }
@@ -6113,9 +6114,12 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   display: flex;
   flex-direction: column;
   min-width: 0;
-  margin: 2px 4px;
-  padding: 5px 7px 6px;
-  overflow: visible;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  margin: 0 3px;
+  padding: 3px 6px;
+  overflow: hidden;
   border: 1px solid #303946;
   border-radius: 4px;
   background: linear-gradient(90deg, #151b23, #10151c);
@@ -6132,9 +6136,10 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
-  margin-bottom: 5px;
+  min-height: 0;
+  margin-bottom: 3px;
 }
 
 .connection-rack-equipment-heading > div {
@@ -6166,17 +6171,21 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .connection-rack-ports {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  min-height: 10px;
+  display: grid;
+  grid-template-columns: repeat(var(--port-columns, 24), minmax(0, 1fr));
+  gap: 2px;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  align-content: center;
 }
 
 .connection-port-box {
   position: relative;
-  width: 19px;
-  height: 16px;
-  flex: 0 0 19px;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6190,7 +6199,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 
 .connection-port-box span {
   font-family: "JetBrains Mono", monospace;
-  font-size: 6px;
+  font-size: 5.5px;
   line-height: 1;
 }
 
@@ -6295,13 +6304,12 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   }
 
   .connection-rack-equipment {
-    margin-inline: 2px;
+    margin-inline: 1px;
     padding-inline: 4px;
   }
 
   .connection-port-box {
-    width: 16px;
-    flex-basis: 16px;
+    height: 13px;
   }
 
   .connection-port-tooltip {

@@ -512,88 +512,47 @@ function NewProject({
           CONTENT
           ===================================================== */}
 
-      <main className="wizard-content">
-
-        {/* ===================================================
-            HEADER
-            =================================================== */}
-
-        <div className="wizard-header">
-
-          <div>
-
-            <div className="eyebrow">
-              PROJECT SETUP
+      <main className="wizard-shell">
+        <aside className="wizard-sidebar">
+          <div className="wizard-sidebar-brand">
+            <div className="wizard-brand-mark">EF</div>
+            <div>
+              <strong>NetRack</strong>
+              <span>EDU-FIX · projekt</span>
             </div>
-
-            <h1>
-              Utwórz nowy projekt
-            </h1>
-
-            <p>
-              Skonfigurujemy podstawowe informacje
-              o dokumentowanej infrastrukturze.
-            </p>
-
           </div>
+          <div className="wizard-sidebar-intro">
+            <div className="eyebrow">NEW PROJECT</div>
+            <h1>Dokumentacja szafy</h1>
+            <p>Skonfiguruj infrastrukturę krok po kroku. Zmiany są zachowywane w projekcie roboczym.</p>
+          </div>
+          <nav className="wizard-steps wizard-steps-vertical" aria-label="Etapy projektu">
+            <WizardStep number="01" label="Dane projektu" active={currentStep === 1} completed={currentStep > 1} onClick={() => currentStep > 1 && setCurrentStep(1)} />
+            <WizardStep number="02" label="Szafa rack" active={currentStep === 2} completed={currentStep > 2} onClick={() => currentStep > 2 && setCurrentStep(2)} />
+            <WizardStep number="03" label="Urządzenia" active={currentStep === 3} completed={currentStep > 3} onClick={() => currentStep > 3 && setCurrentStep(3)} />
+            <WizardStep number="04" label="Patchpanele" active={currentStep === 4} completed={currentStep > 4} onClick={() => currentStep > 4 && setCurrentStep(4)} />
+            <WizardStep number="05" label="Podsumowanie" active={currentStep === 5} />
+          </nav>
+          <div className="wizard-sidebar-status">
+            <span className="status-dot" />
+            <div>
+              <strong>Projekt roboczy</strong>
+              <span>Zmiany nie są jeszcze zapisane</span>
+            </div>
+          </div>
+        </aside>
 
-        </div>
-
-        {/* ===================================================
-            STEPS
-            =================================================== */}
-
-        <div className="wizard-steps">
-
-          <WizardStep
-            number="01"
-            label="Dane projektu"
-            active={currentStep === 1}
-            completed={currentStep > 1}
-          />
-
-          <WizardStep
-            number="02"
-            label="Szafa"
-            active={currentStep === 2}
-            completed={currentStep > 2}
-          />
-
-          <WizardStep
-            number="03"
-            label="Urządzenia"
-            active={currentStep === 3}
-            completed={currentStep > 3}
-          />
-
-          <WizardStep
-            number="04"
-            label="Patchpanele"
-            active={currentStep === 4}
-            completed={currentStep > 4}
-          />
-
-          <WizardStep
-            number="05"
-            label="Podsumowanie"
-            active={currentStep === 5}
-            completed={false}
-          />
-
-        </div>
-
-        {/* ===================================================
-            CARD
-            =================================================== */}
-
-        <section className="wizard-card">
-          {renderStepContent()}
-        </section>
-
-        {/* ===================================================
-            FOOTER
-            =================================================== */}
-
+        <section className="wizard-main">
+          <div className="wizard-main-header">
+            <div>
+              <span className="wizard-step-kicker">KROK {String(currentStep).padStart(2, "0")} / 05</span>
+              <h2>{["Dane projektu", "Konfiguracja szafy", "Urządzenia", "Patchpanele", "Podsumowanie"][currentStep - 1]}</h2>
+            </div>
+            <button className="close-button" onClick={onCancel} aria-label="Zamknij">×</button>
+          </div>
+          <section className="wizard-card">
+            {renderStepContent()}
+          </section>
         <div className="wizard-footer">
 
           {currentStep === 1 ? (
@@ -637,7 +596,7 @@ function NewProject({
           )}
 
         </div>
-
+        </section>
       </main>
 
       {/* =====================================================

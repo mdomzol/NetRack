@@ -8894,7 +8894,8 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 
 /* Empty U sections stay compact; mounted equipment determines its visual weight. */
 .connection-map-page .connection-rack-grid {
-  min-height: max(360px, calc(var(--rack-height, 12) * 36px));
+  min-height: max(360px, calc(var(--rack-height, 12) * 18px));
+  grid-auto-rows: minmax(18px, auto);
 }
 
 .connection-map-page .connection-rack-row {
@@ -8908,7 +8909,8 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 .connection-map-page .connection-rack-equipment.is-device,
 .connection-map-page .connection-rack-equipment.is-patch-panel {
   min-height: 36px;
-  height: 36px;
+  height: auto;
+  align-self: stretch;
 }
 
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading,

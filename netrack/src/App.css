@@ -9019,6 +9019,27 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
   gap: 2px;
 }
 
+/* 48-port switches use narrower ports so 24 odd/even ports fit in each row. */
+.connection-map-page .connection-rack-equipment.is-device:has(.connection-rack-ports[style*="--port-columns: 24"]) .connection-port-box {
+  min-width: 0;
+}
+
+.connection-map-page .connection-rack-equipment.is-device:has(.connection-rack-ports[style*="--port-columns: 24"]) .connection-rack-port-groups {
+  gap: 4px;
+}
+
+.connection-map-page .connection-rack-equipment.is-device:has(.connection-rack-ports[style*="--port-columns: 24"]) .connection-rack-port-group {
+  gap: 4px;
+}
+
+.connection-map-page .connection-rack-equipment.is-device:has(.connection-rack-ports[style*="--port-columns: 24"]) .connection-rack-ports {
+  gap: 1px;
+}
+
+.connection-map-page .connection-rack-equipment.is-device:has(.connection-rack-ports[style*="--port-columns: 24"]) .connection-port-box > span {
+  font-size: 4px;
+}
+
 .connection-map-page .connection-port-box {
   min-height: 12px;
   height: 100%;

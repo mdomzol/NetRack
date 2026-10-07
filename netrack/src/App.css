@@ -5789,3 +5789,194 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     grid-template-columns:1fr;
   }
 }
+
+
+/* =========================================================
+   CONNECTION MODAL — COMPACT WORKSPACE
+   ========================================================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(4, 7, 11, 0.82);
+  backdrop-filter: blur(5px);
+}
+
+.connection-editor-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(900px, calc(100vw - 48px));
+  height: min(600px, calc(100vh - 48px));
+  max-height: none;
+  overflow: hidden;
+  border: 1px solid #303944;
+  border-radius: 10px;
+  background: #10151b;
+  box-shadow: 0 28px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.02);
+}
+
+.connection-editor-modal .editor-modal-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px 15px;
+  border-bottom: 1px solid #252d36;
+}
+
+.connection-editor-modal .editor-modal-header h2 {
+  margin: 5px 0 0;
+  color: #eef0f2;
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 650;
+}
+
+.connection-editor-modal .connection-modal-description {
+  max-width: 620px;
+  margin: 6px 0 0;
+  color: #697480;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.connection-editor-modal .connection-editor-route {
+  flex: 0 0 auto;
+  margin: 14px 20px 10px;
+  gap: 9px;
+}
+
+.connection-editor-modal .connection-endpoint {
+  padding: 10px 12px;
+}
+
+.connection-editor-modal .connection-endpoint strong {
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+.connection-editor-modal .connection-arrow {
+  font-size: 14px;
+}
+
+.connection-editor-modal .connection-editor-endpoints {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 20px 12px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.connection-editor-modal .connection-endpoint-editor {
+  min-width: 0;
+  padding: 11px;
+  overflow: hidden;
+}
+
+.connection-editor-modal .connection-endpoint-heading {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+}
+
+.connection-editor-modal .connection-endpoint-editor label {
+  gap: 4px;
+  margin-top: 7px;
+}
+
+.connection-editor-modal .connection-endpoint-editor select {
+  height: 34px;
+  padding: 0 8px;
+  font-size: 8px;
+}
+
+.connection-editor-modal .connection-editor-error {
+  flex: 0 0 auto;
+  margin: 0 20px 9px;
+  padding: 7px 9px;
+  font-size: 7px;
+}
+
+.connection-editor-modal .editor-modal-footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid #252d36;
+  background: #0e1319;
+}
+
+.connection-editor-modal .editor-modal-footer > div {
+  display: flex;
+  gap: 7px;
+}
+
+.connection-editor-modal .editor-modal-footer .primary-button,
+.connection-editor-modal .editor-modal-footer .secondary-button,
+.connection-editor-modal .editor-modal-footer .danger-button {
+  height: 34px;
+  font-size: 9px;
+}
+
+.connection-editor-modal .editor-modal-footer .primary-button {
+  padding: 0 13px;
+}
+
+.connection-editor-modal .editor-modal-footer .secondary-button,
+.connection-editor-modal .editor-modal-footer .danger-button {
+  padding: 0 11px;
+}
+
+@media (max-height: 680px) {
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .connection-editor-modal {
+    width: min(860px, calc(100vw - 24px));
+    height: calc(100vh - 24px);
+  }
+
+  .connection-editor-modal .editor-modal-header {
+    padding: 13px 16px 11px;
+  }
+
+  .connection-editor-modal .connection-editor-route {
+    margin: 9px 16px 7px;
+  }
+
+  .connection-editor-modal .connection-editor-endpoints {
+    padding: 0 16px 8px;
+  }
+
+  .connection-editor-modal .editor-modal-footer {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 700px) {
+  .connection-editor-modal {
+    width: calc(100vw - 24px);
+    height: calc(100vh - 24px);
+  }
+
+  .connection-editor-modal .connection-editor-route {
+    grid-template-columns: 1fr;
+  }
+
+  .connection-editor-modal .connection-arrow {
+    transform: rotate(90deg);
+    text-align: center;
+  }
+
+  .connection-editor-modal .connection-editor-endpoints {
+    grid-template-columns: 1fr 1fr;
+  }
+}

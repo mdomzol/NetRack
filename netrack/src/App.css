@@ -5594,7 +5594,17 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .connection-editor-modal {
-  width:min(680px,calc(100vw - 32px));
+  width:min(920px,calc(100vw - 32px));
+  max-height:calc(100vh - 32px);
+  overflow:auto;
+}
+
+.connection-modal-description {
+  margin:7px 0 0;
+  max-width:560px;
+  color:#697480;
+  font-size:9px;
+  line-height:1.5;
 }
 
 .connection-editor-route {
@@ -5645,48 +5655,66 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   font:700 16px/1 "JetBrains Mono",monospace;
 }
 
-.connection-editor-fields {
+.connection-editor-endpoints {
   display:grid;
-  grid-template-columns:1fr 140px;
-  gap:12px;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
 }
 
-.connection-editor-fields label {
+.connection-endpoint-editor {
+  padding:14px;
+  border:1px solid #2c353f;
+  border-radius:7px;
+  background:#11171d;
+}
+
+.connection-endpoint-heading {
   display:flex;
-  flex-direction:column;
-  gap:6px;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+  padding-bottom:11px;
+  border-bottom:1px solid #252e37;
 }
 
-.connection-editor-fields label > span {
+.connection-endpoint-heading span,
+.connection-endpoint-editor label > span {
   color:#66717d;
   font:700 7px/1 "JetBrains Mono",monospace;
   letter-spacing:.1em;
 }
 
-.connection-editor-fields select {
+.connection-endpoint-heading strong {
+  overflow:hidden;
+  color:#e7eaec;
+  font:700 10px/1.2 "JetBrains Mono",monospace;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.connection-endpoint-editor label {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:10px;
+}
+
+.connection-endpoint-editor select {
   width:100%;
-  height:40px;
+  height:38px;
   padding:0 10px;
   border:1px solid #2c353f;
   border-radius:5px;
   outline:0;
   background:#0d1217;
   color:#dce1e5;
-  font-size:10px;
+  font-size:9px;
   cursor:pointer;
 }
 
-.connection-editor-fields select:focus {
+.connection-endpoint-editor select:focus {
   border-color:#f36b21;
-}
-
-.connection-editor-fields label:nth-child(3) {
-  grid-column:1;
-}
-
-.connection-editor-fields label:nth-child(4) {
-  grid-column:2;
-  grid-row:2;
 }
 
 .connection-editor-error {
@@ -5757,13 +5785,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     transform:rotate(90deg);
   }
 
-  .connection-editor-fields {
+  .connection-editor-endpoints {
     grid-template-columns:1fr;
-  }
-
-  .connection-editor-fields label:nth-child(3),
-  .connection-editor-fields label:nth-child(4) {
-    grid-column:auto;
-    grid-row:auto;
   }
 }

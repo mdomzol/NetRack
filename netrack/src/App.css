@@ -3819,7 +3819,8 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 .equipment-actions .primary-button,
 .equipment-actions .secondary-button { min-height:36px; padding:0 12px; }
 
-.rack-equipment-workspace { min-height: 500px; }
+.rack-equipment-workspace { height: 520px; min-height: 0; overflow: hidden; }
+.rack-equipment-workspace .workspace-list { min-height: 0; height: 100%; overflow-y: auto; overflow-x: hidden; }
 .equipment-list { padding-bottom: 12px; }
 .equipment-group { padding: 12px; border-bottom:1px solid #202733; }
 .equipment-group-title { display:flex; align-items:center; justify-content:space-between; margin:0 2px 8px; color:#697481; font:700 8px/1 "JetBrains Mono",monospace; letter-spacing:.13em; }

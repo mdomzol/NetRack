@@ -44,6 +44,7 @@ const deviceLabels: Record<string, string> = {
 function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice }: Props) {
   const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
   const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(focusedDeviceId);
   const [creatingConnection, setCreatingConnection] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
@@ -140,18 +141,84 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   }
 
   if (view === "devices") {
+    const selectedDevice = project.devices.find((device) => device.id === selectedDeviceId) ?? null;
+    const mountedDevices = project.devices.filter((device) => mounted(device.positionU)).length;
+
     return (
-      <div className="documentation-page">
-        <PageHeader eyebrow="DOKUMENTACJA / URZĄDZENIA" title="Urządzenia" description="Lista urządzeń infrastruktury wraz z pozycją w szafie." />
-        <div className="documentation-toolbar"><span>{project.devices.length} urządzeń</span><span>{project.devices.filter((d) => mounted(d.positionU)).length} zamontowanych</span></div>
-        <section className="documentation-panel documentation-list-panel">
-          {project.devices.length ? project.devices.map((device) => (
-            <div className={`documentation-row ${focusedDeviceId === device.id ? "is-focused" : ""}`} key={device.id} id={`device-${device.id}`}>
-              <div className="documentation-type device-type">{deviceLabels[device.type] || "Urządzenie"}</div>
-              <div className="documentation-main"><strong>{device.name}</strong><span>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</span></div>
-              <div className="documentation-meta"><span>{device.ports} portów</span><span>{device.heightU}U</span><span className={mounted(device.positionU) ? "mounted" : ""}>{mounted(device.positionU) ? `U${device.positionU}` : "POZA RACKIEM"}</span></div>
+      <div className="documentation-page devices-page">
+        <PageHeader eyebrow="DOKUMENTACJA / URZĄDZENIA" title="Urządzenia" description="Katalog urządzeń infrastruktury. Kliknij urządzenie, aby zobaczyć jego szczegóły." />
+
+        <div className="devices-toolbar">
+          <div className="devices-toolbar-stat"><span>URZĄDZENIA</span><strong>{project.devices.length}</strong></div>
+          <div className="devices-toolbar-stat"><span>W RACKU</span><strong>{mountedDevices}</strong></div>
+          <div className="devices-toolbar-stat"><span>POZA RACKIEM</span><strong>{project.devices.length - mountedDevices}</strong></div>
+          <div className="devices-toolbar-stat"><span>PORTY</span><strong>{project.devices.reduce((sum, device) => sum + device.ports, 0)}</strong></div>
+        </div>
+
+        {selectedDevice && (
+          <section className="documentation-panel device-details-panel">
+            <div className="device-details-header">
+              <div className="device-details-title">
+                <span>{deviceLabels[selectedDevice.type] || "URZĄDZENIE"}</span>
+                <h2>{selectedDevice.name}</h2>
+                <p>{selectedDevice.manufacturer || "—"} · {selectedDevice.model || "Model nie podany"}</p>
+              </div>
+              <button type="button" className="device-details-close" onClick={() => setSelectedDeviceId(null)} aria-label="Zamknij">×</button>
             </div>
-          )) : <Empty text="Nie dodano jeszcze żadnych urządzeń." />}
+            <div className="device-details-content">
+              <div className="device-details-metrics">
+                <div><span>POZYCJA</span><strong>{mounted(selectedDevice.positionU) ? `U${selectedDevice.positionU}` : "POZA RACKIEM"}</strong></div>
+                <div><span>WYSOKOŚĆ</span><strong>{selectedDevice.heightU}U</strong></div>
+                <div><span>PORTY</span><strong>{selectedDevice.ports}</strong></div>
+                <div><span>MODEL</span><strong>{selectedDevice.model || "—"}</strong></div>
+              </div>
+              <div className="device-details-ports">
+                <div className="device-details-section-label">UKŁAD PORTÓW</div>
+                <div className="device-port-summary">
+                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "rj45").length || selectedDevice.ports}</strong> RJ45</span>
+                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp").length}</strong> SFP</span>
+                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp+").length}</strong> SFP+</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <section className="devices-list">
+          {project.devices.length ? project.devices.map((device) => {
+            const selected = selectedDeviceId === device.id;
+            const isMounted = mounted(device.positionU);
+            const layout = device.portLayout ?? [];
+            const rj45 = layout.filter((port) => port.type === "rj45").length || device.ports;
+            const sfp = layout.filter((port) => port.type === "sfp").length;
+            const sfpPlus = layout.filter((port) => port.type === "sfp+").length;
+
+            return (
+              <button
+                type="button"
+                key={device.id}
+                id={`device-${device.id}`}
+                className={`device-card ${selected ? "is-selected" : ""} ${focusedDeviceId === device.id ? "is-focused" : ""}`}
+                onClick={() => setSelectedDeviceId(device.id)}
+              >
+                <div className="device-card-type">{deviceLabels[device.type] || "Urządzenie"}</div>
+                <div className="device-card-main">
+                  <div>
+                    <strong>{device.name}</strong>
+                    <span>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</span>
+                  </div>
+                  <i>→</i>
+                </div>
+                <div className="device-card-footer">
+                  <span className={isMounted ? "is-mounted" : ""}>{isMounted ? `RACK · U${device.positionU}` : "POZA RACKIEM"}</span>
+                  <span>{device.heightU}U</span>
+                  <span>{rj45} RJ45</span>
+                  {sfp > 0 && <span>{sfp} SFP</span>}
+                  {sfpPlus > 0 && <span>{sfpPlus} SFP+</span>}
+                </div>
+              </button>
+            );
+          }) : <Empty text="Nie dodano jeszcze żadnych urządzeń." />}
         </section>
       </div>
     );

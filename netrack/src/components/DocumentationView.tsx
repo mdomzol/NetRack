@@ -278,10 +278,8 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-              );
-            })}
+          </div>
+        </div>
                   </div>
                 </div>
               );

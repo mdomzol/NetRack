@@ -8887,12 +8887,12 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 }
 
 .connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading {
-  min-height: 20px;
-  padding: 3px 7px;
+  min-height: 16px;
+  padding: 2px 6px;
 }
 
 .connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading strong {
-  font-size: 8px;
+  font-size: 7px;
 }
 
 .connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading span,
@@ -8901,7 +8901,7 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 }
 
 .connection-map-page .connection-rack-equipment.is-1u .connection-rack-port-groups {
-  padding: 4px 6px 5px;
+  padding: 2px 4px 3px;
   gap: 4px;
 }
 
@@ -8986,7 +8986,7 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 }
 
 .connection-map-page .connection-port-box {
-  min-height: 17px;
+  min-height: 12px;
   height: 100%;
 }
 

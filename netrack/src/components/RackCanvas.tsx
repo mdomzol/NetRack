@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Device, PatchPanel, Rack, RackAccessory } from "../types";
-import Icon from "./Icon";
 
 type RackItem = {
   id: string;
@@ -219,7 +218,6 @@ export default function RackCanvas({
                       item.positionU
                     }
                   >
-                    <span className="rack-canvas-item-grip"><Icon name="hardware" /></span>
                     <strong>{item.name}</strong>
                     <small>
                       {item.manufacturer || "—"} · {item.model || "—"}

@@ -141,7 +141,8 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   }
 
   if (view === "devices") {
-    const selectedDevice = project.devices.find((device) => device.id === selectedDeviceId) ?? null;
+    const activeDeviceId = selectedDeviceId ?? focusedDeviceId;
+    const selectedDevice = project.devices.find((device) => device.id === activeDeviceId) ?? null;
     const mountedDevices = project.devices.filter((device) => mounted(device.positionU)).length;
 
     return (
@@ -186,7 +187,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
         <section className="devices-list">
           {project.devices.length ? project.devices.map((device) => {
-            const selected = selectedDeviceId === device.id;
+            const selected = activeDeviceId === device.id;
             const isMounted = mounted(device.positionU);
             const layout = device.portLayout ?? [];
             const rj45 = layout.filter((port) => port.type === "rj45").length || device.ports;

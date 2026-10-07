@@ -560,7 +560,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
 
           <div
             className="connection-rack-grid"
-            style={{ gridTemplateRows: "repeat(" + project.rack.heightU + ", minmax(22px, 1fr))" }}
+            style={{ gridTemplateRows: "repeat(" + project.rack.heightU + ", minmax(18px, 1fr))" }}
           >
             {Array.from({ length: project.rack.heightU }, (_, index) => {
               const u = project.rack.heightU - index;

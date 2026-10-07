@@ -8865,3 +8865,155 @@ DEDICATED CONNECTION MAP
 
 /* RACK DOCUMENTATION ADD MENU */
 .rack-documentation-heading{position:relative}.rack-documentation-heading .rack-add-control{position:relative}.rack-documentation-heading .rack-add-button{min-height:34px;padding:0 12px;font-size:10px}.rack-add-menu{position:absolute;z-index:50;top:calc(100% + 8px);right:0;width:260px;padding:6px;background:#0e1319;border:1px solid #29313a;border-radius:5px;box-shadow:0 16px 36px rgba(0,0,0,.4)}.rack-add-menu button{display:flex;width:100%;flex-direction:column;align-items:flex-start;gap:4px;padding:10px 11px;border:0;border-radius:3px;background:transparent;color:#e0e5e8;text-align:left;cursor:pointer}.rack-add-menu button:hover{background:#171d24}.rack-add-menu strong{font:700 10px/1.2 "JetBrains Mono",monospace;letter-spacing:.04em}.rack-add-menu span{color:#68737e;font:500 9px/1.35 "IBM Plex Sans",sans-serif}.rack-add-menu button:hover strong{color:#f36b21}@media(max-width:700px){.rack-documentation-heading{align-items:flex-start}.rack-documentation-heading .rack-add-button{padding:0 9px}.rack-add-menu{right:0}}
+
+
+/* =========================================================
+CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
+========================================================= */
+
+/* Empty U sections stay compact; mounted equipment determines its visual weight. */
+.connection-map-page .connection-rack-grid {
+  min-height: max(360px, calc(var(--rack-height, 12) * 28px));
+  grid-auto-rows: minmax(18px, 1fr);
+}
+
+.connection-map-page .connection-rack-row {
+  min-height: 18px;
+}
+
+/* 1U equipment is intentionally denser than multi-U equipment. */
+.connection-map-page .connection-rack-equipment {
+  min-height: 18px;
+}
+
+.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading {
+  min-height: 20px;
+  padding: 3px 7px;
+}
+
+.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading strong {
+  font-size: 8px;
+}
+
+.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading span,
+.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading small {
+  font-size: 5px;
+}
+
+.connection-map-page .connection-rack-equipment.is-1u .connection-rack-port-groups {
+  padding: 4px 6px 5px;
+  gap: 4px;
+}
+
+.connection-map-page .connection-rack-equipment.is-multi-u .connection-rack-port-groups {
+  padding: 7px 8px 8px;
+}
+
+/* Maskownica / organizer are visual rack fillers, not network equipment. */
+.connection-map-page .connection-rack-equipment.is-accessory {
+  min-height: 18px;
+  border-color: #303944;
+  background: #11161c;
+}
+
+.connection-map-page .connection-rack-equipment.is-accessory .connection-rack-equipment-heading {
+  min-height: 100%;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.connection-map-page .connection-rack-equipment.is-accessory .connection-rack-equipment-heading strong {
+  font-size: 7px;
+}
+
+.connection-map-page .connection-rack-equipment.is-accessory .connection-rack-equipment-heading small {
+  font-size: 5px;
+}
+
+.connection-map-page .connection-rack-equipment.is-accessory .connection-rack-port-groups {
+  display: none;
+}
+
+.connection-map-page .connection-rack-equipment.is-maskownica {
+  opacity: .72;
+}
+
+.connection-map-page .connection-rack-equipment.is-organizer {
+  background: repeating-linear-gradient(
+    90deg,
+    #11161c 0,
+    #11161c 12px,
+    #151b21 12px,
+    #151b21 24px
+  );
+}
+
+/* Ports use the available width. A 24-port device therefore fills the same
+   logical rack face as a 48-port device instead of occupying only half. */
+.connection-map-page .connection-rack-port-groups {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.connection-map-page .connection-rack-port-group {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.connection-map-page .connection-rack-port-group:not(.is-sfp) {
+  flex: 1 1 auto;
+}
+
+.connection-map-page .connection-rack-port-group.is-sfp {
+  flex: 0 0 min(23%, 190px);
+}
+
+.connection-map-page .connection-rack-port-group-label {
+  font-size: 5px;
+  white-space: nowrap;
+}
+
+.connection-map-page .connection-rack-ports {
+  width: 100%;
+  grid-template-columns: repeat(var(--port-columns), minmax(0, 1fr));
+  gap: 2px;
+}
+
+.connection-map-page .connection-port-box {
+  min-height: 17px;
+  height: 100%;
+}
+
+.connection-map-page .connection-port-box > span {
+  font-size: 5px;
+}
+
+.connection-map-page .connection-rack-port-group.is-sfp .connection-port-box {
+  min-width: 18px;
+}
+
+/* 48 RJ45 ports form two compact rows; SFP stays beside them at the same
+   vertical level instead of being pushed underneath. */
+.connection-map-page .connection-rack-port-group:not(.is-sfp) .connection-rack-ports {
+  align-self: stretch;
+}
+
+.connection-map-page .connection-rack-port-group.is-sfp .connection-rack-ports {
+  align-self: stretch;
+}
+
+@media (max-width: 900px) {
+  .connection-map-page .connection-rack-port-groups {
+    gap: 5px;
+  }
+
+  .connection-map-page .connection-rack-port-group.is-sfp {
+    flex-basis: min(25%, 150px);
+  }
+}

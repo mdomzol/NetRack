@@ -4197,17 +4197,20 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .rack-canvas-grid {
-  height: 440px;
+  height: 100%;
   min-height: 0;
+  grid-template-rows: repeat(var(--rack-height, 1), minmax(0, 1fr)) !important;
 }
 
 .rack-canvas-slot {
   min-height: 0;
   height: auto;
+  min-width: 0;
 }
 
 .rack-canvas-item {
   min-height: 0;
+  height: 100%;
   box-sizing: border-box;
 }
 

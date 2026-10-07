@@ -23,7 +23,7 @@ function SummaryStep({ project, validationErrors }: SummaryStepProps) {
     (patchPanel) => patchPanel.positionU !== null
   ).length;
 
-  const totalEquipment = project.devices.length + project.patchPanels.length;
+  const totalEquipment = project.devices.length + project.patchPanels.length + project.accessories.length;
   const totalMounted = mountedDevices + mountedPatchPanels;
   const isValid = validationErrors.length === 0;
 
@@ -166,6 +166,8 @@ function SummaryStep({ project, validationErrors }: SummaryStepProps) {
                     </div>
                   </div>
                 ))}
+
+                {project.accessories.map((item)=><div className="summary-equipment-row" key={item.id}><div className="summary-equipment-index accessory">RA</div><div className="summary-equipment-main"><strong>{item.name}</strong><span>{item.type==="organizer"?"Organizer kablowy":item.type==="spacer"?"Panel zaślepiający":"UPS"} · {item.manufacturer||"—"}{item.model?" · "+item.model:""}</span></div><div className="summary-equipment-meta"><span>{item.heightU}U</span><span className={item.positionU!==null?"mounted":"unmounted"}>{item.positionU!==null?`U${item.positionU}`:"POZA RACKIEM"}</span></div></div>)}
 
                 {project.patchPanels.map((patchPanel) => {
                   const connected = patchPanel.portList.filter(

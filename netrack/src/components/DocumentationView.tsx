@@ -15,7 +15,22 @@ type Props = {
   onDeleteConnection: (id: string) => void;
 };
 
-function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {\n  if (endpoint.kind === "device") {\n    const device = project.devices.find((item) => item.id === endpoint.deviceId);\n    return (device?.name || "Nieznane urządzenie") + "-" + String(endpoint.port).padStart(2, "0");\n  }\n  const panel = project.patchPanels.find((item) => item.id === endpoint.patchPanelId);\n  const port = panel?.portList.find((item) => item.id === endpoint.portId);\n  return (panel?.name || "Nieznany patchpanel") + "-" + (port?.label || "??");\n}\n\nfunction endpointKindLabel(endpoint: ConnectionEndpoint) {\n  return endpoint.kind === "device" ? "AKTYWNE" : "PASYWNE";\n}\nconst deviceLabels: Record<string, string> = {
+function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {
+  if (endpoint.kind === "device") {
+    const device = project.devices.find((item) => item.id === endpoint.deviceId);
+    return (device?.name || "Nieznane urządzenie") + "-" + String(endpoint.port).padStart(2, "0");
+  }
+
+  const panel = project.patchPanels.find((item) => item.id === endpoint.patchPanelId);
+  const port = panel?.portList.find((item) => item.id === endpoint.portId);
+  return (panel?.name || "Nieznany patchpanel") + "-" + (port?.label || "??");
+}
+
+function endpointKindLabel(endpoint: ConnectionEndpoint) {
+  return endpoint.kind === "device" ? "AKTYWNE" : "PASYWNE";
+}
+
+const deviceLabels: Record<string, string> = {
   switch: "Switch",
   router: "Router",
   server: "Serwer",

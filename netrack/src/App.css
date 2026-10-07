@@ -9072,3 +9072,42 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
     flex-basis: min(25%, 150px);
   }
 }
+
+
+/* Rack item actions */
+.rack-item-details-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rack-item-delete-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #553034;
+  border-radius: 3px;
+  background: #171013;
+  color: #d78368;
+  cursor: pointer;
+  font: 700 9px/1 "JetBrains Mono", monospace;
+}
+
+.rack-item-delete-button:hover {
+  border-color: #8b4034;
+  background: #211417;
+  color: #ef9a7d;
+}
+
+.rack-mini-row.dragging {
+  opacity: .45;
+  border-color: rgba(243,107,33,.55);
+}
+
+.rack-mini-row:not(:disabled)[draggable="true"] {
+  cursor: grab;
+}
+
+.rack-mini-row:not(:disabled)[draggable="true"]:active {
+  cursor: grabbing;
+}

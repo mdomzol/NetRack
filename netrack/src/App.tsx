@@ -210,7 +210,9 @@ function App() {
                     ? "Urządzenia"
                     : view === "patch-panels"
                       ? "Patchpanele"
-                      : "Połączenia"}
+                      : view === "connections"
+                        ? "Połączenia"
+                        : "Mapa połączeń"}
               </h1>
             </div>
             <div className="project-info">

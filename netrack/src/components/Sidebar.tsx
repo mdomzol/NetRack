@@ -33,7 +33,7 @@ function Sidebar({ hasProject, activeView, onNavigate }: SidebarProps) {
           type="button"
           onClick={() => onNavigate("dashboard")}
         >
-          <Icon name="home" />
+          <Icon name="home" active={activeView === "dashboard"} />
           Panel główny
         </button>
 

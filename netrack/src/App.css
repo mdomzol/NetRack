@@ -8834,3 +8834,7 @@ DEDICATED CONNECTION MAP
 
 
 .equipment-accessory-actions{display:flex;gap:6px;flex-wrap:wrap}.equipment-row-icon.accessory{display:flex;align-items:center;justify-content:center;font:700 9px/1 "JetBrains Mono",monospace}.rack-canvas-item.accessory,.rack-preview-item.accessory{border-color:#3a424d;background:#151a21}.summary-equipment-index.accessory{color:#8a949f}
+
+
+/* RACK ACCESSORIES */
+.equipment-accessory-actions{display:flex;gap:6px;flex-wrap:wrap}.equipment-row-icon.accessory{display:flex;align-items:center;justify-content:center;font:700 9px/1 "JetBrains Mono",monospace}.rack-canvas-item.accessory,.rack-preview-item.accessory{border-color:#3a424d;background:#151a21}.summary-equipment-index.accessory{color:#8a949f}

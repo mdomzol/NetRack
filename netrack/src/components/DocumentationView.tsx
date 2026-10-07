@@ -443,13 +443,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                   <div><span>STATUS</span><strong>AKTYWNE</strong></div>
                 </div>
 
-                <div className="connection-detail-map">
-                  <div className="connection-detail-map-heading">
-                    <span>MAPA RACKA</span>
-                    <small>NAJEDŹ NA PORT, ABY ZOBACZYĆ DRUGI KONIEC</small>
-                  </div>
-                  <ConnectionRackMap project={project} selectedConnectionId={selectedConnection.id} />
-                </div>
               </section>
             ) : (
               <section className="documentation-panel connection-empty-state">
@@ -498,7 +491,7 @@ function endpointKey(endpoint: ConnectionEndpoint) {
     : "patch-panel:" + endpoint.patchPanelId + ":port:" + endpoint.portId;
 }
 
-function ConnectionRackMap({ project, selectedConnectionId }: { project: ProjectDraft; selectedConnectionId?: string | null }) {
+function ConnectionRackMap({ project }: { project: ProjectDraft }) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const mountedItems = [...project.devices, ...project.patchPanels]
     .filter((item) => item.positionU !== null)

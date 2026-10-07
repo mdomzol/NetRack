@@ -711,9 +711,8 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                                   "connection-port-box " +
                                   (port.type !== "rj45" ? "is-sfp " : "") +
                                   (connected ? "is-connected " : "is-free ") +
-                                  (selected || targetSelected
-                                    ? "is-highlighted"
-                                    : "")
+                                  (selected ? "is-highlighted is-source " : "") +
+                                  (targetSelected ? "is-highlighted is-target " : "")
                                 }
                                 onMouseEnter={() => setHoveredKey(key)}
                                 onMouseLeave={() => setHoveredKey(null)}

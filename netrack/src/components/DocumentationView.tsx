@@ -521,7 +521,7 @@ function endpointKey(endpoint: ConnectionEndpoint) {
 
 function ConnectionRackMap({ project }: { project: ProjectDraft }) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
-  const mountedItems = [...project.devices, ...project.patchPanels]
+  const mountedItems = [...project.devices, ...project.patchPanels, ...project.accessories]
     .filter((item) => item.positionU !== null)
     .sort((a, b) => (b.positionU ?? 0) - (a.positionU ?? 0));
 
@@ -572,6 +572,10 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
               const height = Math.max(1, item.heightU);
               const isDevice = project.devices.some((device) => device.id === item.id);
               const isPatchPanel = project.patchPanels.some((panel) => panel.id === item.id);
+              const isAccessory = project.accessories.some((accessory) => accessory.id === item.id);
+              const accessoryType = isAccessory
+                ? (item as typeof project.accessories[number]).type
+                : null;
               const portLayout = isDevice
                 ? (item as typeof project.devices[number]).portLayout ??
                   Array.from({ length: (item as typeof project.devices[number]).ports }, (_, index) => ({
@@ -581,7 +585,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                 : isPatchPanel
                   ? Array.from({ length: (item as typeof project.patchPanels[number]).ports }, (_, index) => ({
                     number: index + 1,
-                      type: "rj45" as const,
+                    type: "rj45" as const,
                   }))
                   : [];
 
@@ -633,6 +637,10 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                   key={item.id}
                   className={
                     "connection-rack-equipment " +
+                    (isDevice ? "is-device " : "") +
+                    (isPatchPanel ? "is-patch-panel " : "") +
+                    (isAccessory ? "is-accessory is-" + (accessoryType || "accessory") + " " : "") +
+                    (height === 1 ? "is-1u " : "is-multi-u ") +
                     (itemHighlighted ? "is-highlighted" : "")
                   }
                   style={{ gridRow: row + " / span " + height }}
@@ -641,7 +649,17 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                     <div>
                       <strong>{item.name}</strong>
                       <span>
-                        {isDevice ? "AKTYWNE" : isPatchPanel ? "PASYWNE" : "AKCESORIUM"} · {item.heightU}U
+                        {isDevice
+                          ? "AKTYWNE"
+                          : isPatchPanel
+                            ? "PASYWNE"
+                            : accessoryType === "maskownica"
+                              ? "MASKOWNICA"
+                              : accessoryType === "organizer"
+                                ? "ORGANIZER"
+                                : accessoryType === "ups"
+                                  ? "UPS"
+                                  : "AKCESORIUM"} · {item.heightU}U
                       </span>
                     </div>
                     <small>
@@ -650,7 +668,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                   </div>
 
                   <div className="connection-rack-port-groups">
-                    {portGroups.map((group) => (
+                    {portGroups.length > 0 && portGroups.map((group) => (
                       <div
                         key={group.type}
                         className={
@@ -667,7 +685,9 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                           style={
                             {
                               "--port-columns":
-                                group.ports.length <= 12 ? 12 : 24,
+                                group.type === "rj45"
+                                  ? 24
+                                  : Math.min(group.ports.length, 4),
                             } as CSSProperties
                           }
                         >
@@ -752,7 +772,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
           <div className="connection-rack-empty">
             <strong>Brak zamontowanego wyposażenia</strong>
             <span>
-              Zamontuj urządzenia lub patchpanele, aby zobaczyć mapę portów.
+              Zamontuj urządzenia, patchpanele lub akcesoria, aby zobaczyć obsadę szafy.
             </span>
           </div>
         )}

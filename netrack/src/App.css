@@ -135,11 +135,11 @@ SIDEBAR
   display: flex;
   align-items: center;
 
-  gap: 10px;
+  gap: 8px;
 
   width: 100%;
 
-  padding: 8px 10px;
+  padding: 6px 9px;
 
   border: 0;
   border-radius: 7px;
@@ -157,7 +157,7 @@ SIDEBAR
 }
 
 .nav-item span {
-  width: 18px;
+  width: 16px;
 
   color: #687384;
 
@@ -5621,3 +5621,15 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   }
 }
 
+
+/* Compact sidebar navigation icons */
+.nav-item .ui-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.nav-item > span:last-child {
+  font-size: 11px;
+  line-height: 1.2;
+}

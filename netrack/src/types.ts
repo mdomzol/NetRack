@@ -1,3 +1,7 @@
+export type RackAccessoryType = "organizer" | "spacer" | "ups";
+
+export type RackAccessory = { id: string; name: string; type: RackAccessoryType; manufacturer: string; model: string; heightU: number; positionU: number | null; };
+
 export type DeviceType =
   | "switch"
   | "router"
@@ -89,5 +93,6 @@ export type ProjectDraft = {
   rack: Rack;
   devices: Device[];
   patchPanels: PatchPanel[];
+  accessories: RackAccessory[];
   connections: Connection[];
 };

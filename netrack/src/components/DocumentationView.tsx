@@ -1,4 +1,6 @@
-import { ProjectDraft } from "../types";
+import { useState } from "react";
+import ConnectionEditorModal from "./ConnectionEditorModal";
+import { Connection, ProjectDraft } from "../types";
 
 export type DocumentationViewType =
   | "rack"
@@ -9,6 +11,8 @@ export type DocumentationViewType =
 type Props = {
   project: ProjectDraft;
   view: DocumentationViewType;
+  onSaveConnection: (connection: Connection) => void;
+  onDeleteConnection: (id: string) => void;
 };
 
 const deviceLabels: Record<string, string> = {
@@ -19,7 +23,9 @@ const deviceLabels: Record<string, string> = {
   other: "Inne",
 };
 
-function DocumentationView({ project, view }: Props) {
+function DocumentationView({ project, view, onSaveConnection, onDeleteConnection }: Props) {
+  const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
+  const [creatingConnection, setCreatingConnection] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
       total + panel.portList.filter((port) => port.status === "connected").length,
@@ -27,6 +33,7 @@ function DocumentationView({ project, view }: Props) {
   );
   const totalPorts = project.patchPanels.reduce((total, panel) => total + panel.ports, 0);
   const mounted = (position: number | null) => position !== null;
+  const editingConnection = project.connections.find((connection) => connection.id === editingConnectionId) ?? null;
 
   if (view === "rack") {
     return (
@@ -102,7 +109,11 @@ function DocumentationView({ project, view }: Props) {
 
   return (
     <div className="documentation-page">
-      <PageHeader eyebrow="DOKUMENTACJA / POŁĄCZENIA" title="Połączenia" description="Widok portów patchpaneli i ich aktualnego stanu." />
+      <PageHeader eyebrow="DOKUMENTACJA / POŁĄCZENIA" title="Połączenia" description="Powiąż konkretny port switcha z portem patchpanelu i utrzymuj aktualną mapę okablowania." />
+      <div className="connections-toolbar">
+        <div className="connection-toolbar-copy"><span>MAPA OKABLOWANIA</span><strong>{project.connections.length} połączeń</strong></div>
+        <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>+ Dodaj połączenie</button>
+      </div>
       <div className="connection-summary">
         <div><span>PATCHPANELE</span><strong>{project.patchPanels.length}</strong></div>
         <div><span>PORTY</span><strong>{totalPorts}</strong></div>
@@ -110,7 +121,36 @@ function DocumentationView({ project, view }: Props) {
         <div><span>WOLNE</span><strong>{totalPorts - connectedPorts}</strong></div>
       </div>
       <section className="documentation-panel connection-panel">
-        <PanelTitle eyebrow="PORTY" title="Mapa połączeń" />
+        <PanelTitle eyebrow="POŁĄCZENIA" title="Mapa okablowania" />
+        {project.connections.length ? (
+          <div className="connection-list">
+            {project.connections.map((connection) => {
+              const device = project.devices.find((item) => item.id === connection.deviceId);
+              const panel = project.patchPanels.find((item) => item.id === connection.patchPanelId);
+              const port = panel?.portList.find((item) => item.id === connection.patchPanelPortId);
+              return (
+                <div className="connection-row" key={connection.id}>
+                  <div className="connection-route-label">
+                    <span>SW</span>
+                    <strong>{device?.name || "Nieznany SW"}-{String(connection.devicePort).padStart(2, "0")}</strong>
+                    <b>→</b>
+                    <span className="patch">PP</span>
+                    <strong>{panel?.name || "Nieznany PP"}-{port?.label || "??"}</strong>
+                  </div>
+                  <div className="connection-row-actions">
+                    <button type="button" className="secondary-button" onClick={() => setEditingConnectionId(connection.id)}>Edytuj</button>
+                    <button type="button" className="connection-delete-button" onClick={() => onDeleteConnection(connection.id)}>×</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <Empty text="Dodaj pierwsze połączenie, aby rozpocząć dokumentowanie okablowania." />
+        )}
+      </section>
+      <section className="documentation-panel connection-panel">
+        <PanelTitle eyebrow="PORTY PATCHPANELI" title="Stan portów" />
         {project.patchPanels.length ? project.patchPanels.map((panel) => (
           <div className="port-group" key={panel.id}>
             <div className="port-group-header"><strong>{panel.name}</strong><span>{panel.type} · {panel.ports}P</span></div>
@@ -118,8 +158,30 @@ function DocumentationView({ project, view }: Props) {
               {panel.portList.map((port) => <div className={`port-cell ${port.status}`} key={port.id}><span>{port.label}</span><small>{port.status === "connected" ? "ZAJĘTY" : "WOLNY"}</small></div>)}
             </div>
           </div>
-        )) : <Empty text="Dodaj patchpanel, aby rozpocząć dokumentowanie połączeń." />}
+        )) : <Empty text="Dodaj patchpanel, aby rozpocząć dokumentowanie portów." />}
       </section>
+      {(creatingConnection || editingConnection) && (
+        <ConnectionEditorModal
+          devices={project.devices}
+          patchPanels={project.patchPanels}
+          connections={project.connections}
+          connection={editingConnection}
+          onSave={(connection) => {
+            onSaveConnection(connection);
+            setCreatingConnection(false);
+            setEditingConnectionId(null);
+          }}
+          onDelete={(id) => {
+            onDeleteConnection(id);
+            setCreatingConnection(false);
+            setEditingConnectionId(null);
+          }}
+          onCancel={() => {
+            setCreatingConnection(false);
+            setEditingConnectionId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

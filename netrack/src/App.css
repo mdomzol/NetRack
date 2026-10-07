@@ -4451,3 +4451,74 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     font-size: 5.5px;
   }
 }
+
+
+/* Rack tiles — readable typography */
+.rack-canvas-item strong {
+  font-size: 11px;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+
+.rack-canvas-item small {
+  font-size: 8.5px;
+  line-height: 1.1;
+}
+
+.rack-canvas-item-meta {
+  font-size: 8px;
+  line-height: 1.1;
+}
+
+.rack-canvas-item.rack-item-1u {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.rack-canvas-item.rack-item-1u strong {
+  font-size: 9px;
+}
+
+.rack-canvas-item.rack-item-1u small {
+  font-size: 7px;
+}
+
+.rack-canvas-item.rack-item-1u .rack-canvas-item-meta {
+  display: none;
+}
+
+.rack-canvas-item.rack-item-2u strong {
+  font-size: 10.5px;
+}
+
+.rack-canvas-item.rack-item-2u small,
+.rack-canvas-item.rack-item-2u .rack-canvas-item-meta {
+  font-size: 7.5px;
+}
+
+.rack-canvas-item.rack-item-3u strong,
+.rack-canvas-item.rack-item-4u strong {
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .rack-canvas-item strong {
+    font-size: 9.5px;
+  }
+
+  .rack-canvas-item small {
+    font-size: 7.5px;
+  }
+
+  .rack-canvas-item-meta {
+    font-size: 7px;
+  }
+
+  .rack-canvas-item.rack-item-1u strong {
+    font-size: 8px;
+  }
+
+  .rack-canvas-item.rack-item-1u small {
+    font-size: 6.5px;
+  }
+}

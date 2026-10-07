@@ -46,4 +46,5 @@ export const createEmptyProject = (): ProjectDraft => ({
 
   devices: [],
   patchPanels: [],
+  connections: [],
 });

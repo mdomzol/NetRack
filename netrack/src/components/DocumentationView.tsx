@@ -65,9 +65,9 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
               })}
             </div>
           </section>
-          <section className="documentation-panel">
-            <PanelTitle eyebrow="PARAMETRY" title="Specyfikacja" />
-            <DetailGrid items={[
+          <section className="documentation-panel rack-specification-panel">
+            <PanelTitle eyebrow="PARAMETRY FIZYCZNE" title="Specyfikacja" />
+            <DetailGrid className="rack-specification-grid" items={[
               ["Lokalizacja", project.rack.location || "—"],
               ["Producent", project.rack.manufacturer || "—"],
               ["Model", project.rack.model || "—"],
@@ -415,8 +415,8 @@ function PanelTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return <div className="documentation-panel-title"><div><span>{eyebrow}</span><h2>{title}</h2></div></div>;
 }
 
-function DetailGrid({ items }: { items: [string, string][] }) {
-  return <div className="documentation-details">{items.map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>;
+function DetailGrid({ items, className = "" }: { items: [string, string][]; className?: string }) {
+  return <div className={`documentation-details ${className}`.trim()}>{items.map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>;
 }
 
 function EquipmentRows({ project }: { project: ProjectDraft }) {

@@ -32,7 +32,7 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
           </div>
         </header>
 
-        <section className="content">
+        <section className="content dashboard-content">
           <div className={`welcome ${hasProject ? "welcome-project" : ""}`}>
             <div className="welcome-copy">
               <span className="eyebrow">EDU-FIX / NETRACK</span>

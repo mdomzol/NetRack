@@ -284,9 +284,9 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                   <h2>{selectedPanel.name}</h2>
                   <p>{selectedPanel.manufacturer || "—"} · {selectedPanel.model || "Model nie podany"} · {selectedPanel.type || "RJ45"}</p>
                   <div className="patch-panel-detail-badges">
-                    <span>{mounted(selectedPanel.positionU) ? `RACK · U${selectedPanel.positionU}` : "POZA RACKIEM"}</span>
-                    <span>{selectedPanel.heightU}U</span>
-                    <span>{selectedPanel.ports} PORTÓW</span>
+                    <span><small>LOKALIZACJA</small><strong>{mounted(selectedPanel.positionU) ? `RACK · U${selectedPanel.positionU}` : "POZA RACKIEM"}</strong></span>
+                    <span><small>WYSOKOŚĆ</small><strong>{selectedPanel.heightU}U</strong></span>
+                    <span><small>PORTY</small><strong>{selectedPanel.ports}</strong></span>
                   </div>
                 </div>
 

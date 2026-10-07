@@ -66,8 +66,18 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
             </div>
           </section>
           <section className="documentation-panel rack-specification-panel">
-            <PanelTitle eyebrow="PARAMETRY FIZYCZNE" title="Specyfikacja" />
-            <DetailGrid className="rack-specification-grid" items={[
+            <PanelTitle eyebrow="PARAMETRY" title="Specyfikacja" />
+            <div className="rack-specification-list">
+              <div className="rack-specification-item rack-specification-location"><span>Lokalizacja</span><strong>{project.rack.location || "—"}</strong></div>
+              <div className="rack-specification-item"><span>Producent</span><strong>{project.rack.manufacturer || "—"}</strong></div>
+              <div className="rack-specification-item"><span>Model</span><strong>{project.rack.model || "—"}</strong></div>
+              <div className="rack-specification-item"><span>Wysokość</span><strong>{project.rack.heightU}U</strong></div>
+              <div className="rack-specification-item"><span>Szerokość</span><strong>{project.rack.width}"</strong></div>
+              <div className="rack-specification-item"><span>Głębokość</span><strong>{project.rack.depth} mm</strong></div>
+            </div>
+            <div className="rack-specification-footer"><span>PARAMETRY FIZYCZNE SZAFY</span><strong>{project.rack.heightU}U · {project.rack.width}" · {project.rack.depth} mm</strong></div>
+          </section>
+          {/*
               ["Lokalizacja", project.rack.location || "—"],
               ["Producent", project.rack.manufacturer || "—"],
               ["Model", project.rack.model || "—"],

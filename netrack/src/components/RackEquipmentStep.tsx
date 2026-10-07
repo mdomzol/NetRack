@@ -1,6 +1,5 @@
 import { Device, PatchPanel, Rack, RackAccessory, RackAccessoryType } from "../types";
 import RackCanvas from "./RackCanvas";
-import Icon from "./Icon";
 
 type Props = {
   rack: Rack;
@@ -40,8 +39,8 @@ export default function RackEquipmentStep({
           <span>Układaj urządzenia i patchpanele bezpośrednio w szafie. Przeciągaj je między jednostkami U.</span>
         </div>
         <div className="equipment-actions">
-          <button className="secondary-button" onClick={onAddPatchPanel}><Icon name="patch-panel" /> Patchpanel</button>
-          <button className="primary-button" onClick={onAddDevice}><Icon name="switch" /> Urządzenie</button>
+          <button className="secondary-button" onClick={onAddPatchPanel}>Patchpanel</button>
+          <button className="secondary-button" onClick={onAddDevice}>Urządzenie</button>
           <div className="equipment-accessory-actions"><button className="secondary-button" onClick={()=>onAddAccessory("organizer")}>Organizer</button><button className="secondary-button" onClick={()=>onAddAccessory("maskownica")}>Maskownica</button><button className="secondary-button" onClick={()=>onAddAccessory("ups")}>UPS</button></div>
         </div>
       </div>
@@ -77,7 +76,6 @@ export default function RackEquipmentStep({
                 onClick={() => onEditDevice(device.id)}
                 className={`equipment-row ${editingDeviceId === device.id ? "editing" : ""}`}
               >
-                <span className="equipment-row-icon"><Icon name="switch" /></span>
                 <span className="equipment-row-main"><strong>{device.name}</strong><small>{device.manufacturer || "Brak producenta"} · {device.model || "Brak modelu"}</small></span>
                 <span className={`equipment-row-position ${device.positionU === null ? "unmounted" : ""}`}>{device.positionU ? `U${device.positionU}` : "NIEZAMONTOWANE"}<small>{device.positionU ? `${device.heightU}U` : "przeciągnij do racka"}</small></span>
                 <span className="equipment-row-remove" onClick={(event) => { event.stopPropagation(); onRemoveDevice(device.id); }}>×</span>
@@ -98,7 +96,6 @@ export default function RackEquipmentStep({
                 onClick={() => onEditPatchPanel(panel.id)}
                 className={`equipment-row ${editingPatchPanelId === panel.id ? "editing" : ""}`}
               >
-                <span className="equipment-row-icon pp"><Icon name="patch-panel" /></span>
                 <span className="equipment-row-main"><strong>{panel.name}</strong><small>{panel.type} · {panel.ports} portów</small></span>
                 <span className={`equipment-row-position ${panel.positionU === null ? "unmounted" : ""}`}>{panel.positionU ? `U${panel.positionU}` : "NIEZAMONTOWANE"}<small>{panel.positionU ? `${panel.heightU}U` : "przeciągnij do racka"}</small></span>
                 <span className="equipment-row-remove" onClick={(event) => { event.stopPropagation(); onRemovePatchPanel(panel.id); }}>×</span>

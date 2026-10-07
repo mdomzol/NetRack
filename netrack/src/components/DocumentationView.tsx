@@ -560,7 +560,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
 
           <div
             className="connection-rack-grid"
-            style={{ gridTemplateRows: "repeat(" + project.rack.heightU + ", minmax(18px, 1fr))" }}
+            style={{ gridTemplateRows: "repeat(" + project.rack.heightU + ", 36px)" }}
           >
             {Array.from({ length: project.rack.heightU }, (_, index) => {
               const u = project.rack.heightU - index;
@@ -686,12 +686,18 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                             {
                               "--port-columns":
                                 group.type === "rj45"
-                                  ? 24
+                                  ? Math.min(12, Math.ceil(group.ports.length / 2))
                                   : Math.min(group.ports.length, 4),
                             } as CSSProperties
                           }
                         >
-                          {group.ports.map((port) => {
+                          {(group.type === "rj45"
+  ? [
+      ...group.ports.filter((port) => port.number % 2 === 1),
+      ...group.ports.filter((port) => port.number % 2 === 0),
+    ]
+  : group.ports
+).map((port) => {
                             const key = isDevice
                               ? endpointKey({
                                   kind: "device",

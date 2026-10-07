@@ -3858,3 +3858,30 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   .device-editor-grid,.device-editor-grid.three { grid-template-columns:1fr; }
   .device-editor-grid .full { grid-column:auto; }
 }
+
+/* Rack preview: physical proportions and readable U scale */
+.rack-preview-body { padding:20px 18px 24px; }
+.rack-preview-scale { display:flex; align-items:stretch; justify-content:center; min-height:520px; }
+.rack-unit-numbers { display:grid; width:30px; margin-right:10px; }
+.rack-unit-numbers span { display:flex; align-items:center; justify-content:flex-end; padding-right:5px; color:#697480; font:600 9px/1 "JetBrains Mono",monospace; border-bottom:1px solid rgba(72,82,94,.28); }
+.rack-preview-unit { width:min(250px,58%); min-height:520px; }
+.rack-units { display:grid; height:100%; min-height:520px; }
+.rack-preview-row { min-height:10px; }
+.rack-preview-item { min-height:24px; inset-inline:1px; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:3px 7px; overflow:visible; }
+.rack-preview-item strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:8px; }
+.rack-preview-item span { flex:0 0 auto; font:700 7px/1 "JetBrains Mono",monospace; }
+.rack-preview-row-occupied { position:relative; }
+.rack-preview-row-occupied > .rack-preview-item { position:absolute; top:0; bottom:auto; }
+.rack-preview-footer { font-size:9px; }
+
+.rack-canvas-body { min-height:520px; padding:28px 24px; }
+.rack-canvas-scale { width:30px; margin-right:10px; }
+.rack-canvas-scale span { font-size:9px; font-weight:600; }
+.rack-canvas-frame { width:min(270px,68%); min-width:190px; padding:9px 25px; }
+.rack-canvas-grid { min-height:480px; }
+.rack-canvas-slot { min-height:24px; }
+.rack-canvas-item { padding:6px 9px 6px 21px; min-height:34px; }
+.rack-canvas-item strong { font-size:10px; line-height:1.15; }
+.rack-canvas-item small { font-size:8px; line-height:1.1; }
+.equipment-row-position.unmounted { color:#7c8792; font-size:7px; letter-spacing:.04em; }
+.equipment-row-position.unmounted small { color:#f36b21; }

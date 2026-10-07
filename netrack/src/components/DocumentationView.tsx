@@ -77,15 +77,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
             </div>
             <div className="rack-specification-footer"><span>PARAMETRY FIZYCZNE SZAFY</span><strong>{project.rack.heightU}U · {project.rack.width}" · {project.rack.depth} mm</strong></div>
           </section>
-          {/*
-              ["Lokalizacja", project.rack.location || "—"],
-              ["Producent", project.rack.manufacturer || "—"],
-              ["Model", project.rack.model || "—"],
-              ["Wysokość", `${project.rack.heightU}U`],
-              ["Szerokość", `${project.rack.width}"`],
-              ["Głębokość", `${project.rack.depth} mm`],
-            ]} />
-          </section>
           <section className="documentation-panel documentation-panel-wide">
             <PanelTitle eyebrow="OBSADA" title="Wyposażenie szafy" />
             <EquipmentRows project={project} />

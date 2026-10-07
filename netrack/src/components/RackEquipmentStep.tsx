@@ -41,7 +41,7 @@ export default function RackEquipmentStep({
         <div className="equipment-actions">
           <button className="secondary-button" onClick={onAddPatchPanel}>Patchpanel</button>
           <button className="secondary-button" onClick={onAddDevice}>Urządzenie</button>
-          <div className="equipment-accessory-actions"><button className="secondary-button" onClick={()=>onAddAccessory("organizer")}>Organizer</button><button className="secondary-button" onClick={()=>onAddAccessory("maskownica")}>Maskownica</button><button className="secondary-button" onClick={()=>onAddAccessory("ups")}>UPS</button></div>
+          <div className="equipment-accessory-actions"><button className="secondary-button" onClick={()=>onAddAccessory("organizer")}>Organizer</button><button className="secondary-button" onClick={()=>onAddAccessory("maskownica")}>Maskownica</button><button className="secondary-button" onClick={()=>onAddAccessory("ups")}>UPS</button><button className="secondary-button" onClick={()=>onAddAccessory("listwa")}>Listwa zasilająca</button></div>
         </div>
       </div>
 

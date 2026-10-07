@@ -156,7 +156,7 @@ export default function RackCanvas({
                         : "drop-invalid"
                       : "",
                   ].filter(Boolean).join(" ")}
-                  style={{ gridRow: positionU }}
+                  style={{ gridRow: `${rack.heightU - positionU + 1} / span ${item?.heightU ?? 1}` }}
                   onDragOver={(event) => {
                     event.preventDefault();
                     if (draggingItem) setDropU(positionU);
@@ -167,7 +167,7 @@ export default function RackCanvas({
                     <button
                       type="button"
                       className={"rack-canvas-item " + item.type}
-                      style={{ height: (440 / rack.heightU) * item.heightU + "px", minHeight: "0" }}
+                      style={{ height: "100%", minHeight: "0" }}
                       draggable
                       onDragStart={(event) => handleDragStart(event, item)}
                       onDragEnd={() => {

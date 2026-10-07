@@ -91,6 +91,38 @@ function NewProject({
      DEVICE MANAGEMENT
      ========================================================= */
 
+  const findAvailablePosition = (
+    heightU: number,
+    devices: Device[],
+    patchPanels: PatchPanel[]
+  ): number | null => {
+    const items = [
+      ...devices.map((device) => ({
+        positionU: device.positionU,
+        heightU: device.heightU,
+      })),
+      ...patchPanels.map((patchPanel) => ({
+        positionU: patchPanel.positionU,
+        heightU: patchPanel.heightU,
+      })),
+    ];
+
+    for (let position = project.rack.heightU - heightU + 1; position >= 1; position--) {
+      const overlaps = items.some((item) => {
+        if (item.positionU === null) return false;
+
+        const itemEnd = item.positionU + item.heightU - 1;
+        const candidateEnd = position + heightU - 1;
+
+        return position <= itemEnd && item.positionU <= candidateEnd;
+      });
+
+      if (!overlaps) return position;
+    }
+
+    return null;
+  };
+
   const addDevice = () => {
     const newDevice: Device = {
       id: crypto.randomUUID(),
@@ -102,15 +134,12 @@ function NewProject({
       model: "",
       ports: 24,
       heightU: 1,
-      positionU: null,
+      positionU: findAvailablePosition(1, project.devices, project.patchPanels),
     };
 
     setProject((current) => ({
       ...current,
-      devices: [
-        ...current.devices,
-        newDevice,
-      ],
+      devices: [...current.devices, newDevice],
     }));
 
     setEditingDeviceId(newDevice.id);
@@ -177,7 +206,7 @@ function NewProject({
       type: "Cat.6",
       ports: portCount,
       heightU: 1,
-      positionU: null,
+      positionU: findAvailablePosition(1, project.devices, project.patchPanels),
       portList: createPatchPanelPorts(portCount),
     };
 

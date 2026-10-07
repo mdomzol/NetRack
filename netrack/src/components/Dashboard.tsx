@@ -3,11 +3,12 @@ import StatCard from "./StatCard";
 import { ProjectDraft } from "../types";
 
 type DashboardProps = {
+  onNavigate?: (view: "rack" | "devices" | "patch-panels" | "connections") => void;
   project: ProjectDraft;
   onNewProject: () => void;
 };
 
-function Dashboard({ project, onNewProject }: DashboardProps) {
+function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
   const hasProject = Boolean(project.name.trim());
   const occupiedItems = [...project.devices, ...project.patchPanels];
   const totalPorts = project.patchPanels.reduce((total, panel) => total + panel.ports, 0);
@@ -92,10 +93,18 @@ function Dashboard({ project, onNewProject }: DashboardProps) {
           </div>
 
           <div className="stats">
-            <StatCard label="Urządzenia" value={String(project.devices.length)} icon="⌁" />
-            <StatCard label="Patchpanele" value={String(project.patchPanels.length)} icon="▤" />
-            <StatCard label="Porty patchpaneli" value={String(totalPorts)} icon="⊞" />
-            <StatCard label="Wolne porty" value={hasProject ? String(freePorts) : "—"} icon="○" />
+            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("devices")}>
+              <span className="stat-card-icon">⌁</span><span className="stat-card-label">Urządzenia</span><strong>{project.devices.length}</strong>
+            </button>
+            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("patch-panels")}>
+              <span className="stat-card-icon">▤</span><span className="stat-card-label">Patchpanele</span><strong>{project.patchPanels.length}</strong>
+            </button>
+            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("connections")}>
+              <span className="stat-card-icon">⊞</span><span className="stat-card-label">Porty patchpaneli</span><strong>{totalPorts}</strong>
+            </button>
+            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("connections")}>
+              <span className="stat-card-icon">○</span><span className="stat-card-label">Wolne porty</span><strong>{hasProject ? freePorts : "—"}</strong>
+            </button>
           </div>
 
           {hasProject && (

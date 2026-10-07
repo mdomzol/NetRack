@@ -46,6 +46,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(focusedDeviceId);
   const [selectedPatchPanelId, setSelectedPatchPanelId] = useState<string | null>(null);
+  const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const [creatingConnection, setCreatingConnection] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
@@ -361,17 +362,102 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   }
 
   return (
-    <div className="documentation-page">
+    <div className="documentation-page connections-page">
       <PageHeader
         eyebrow="DOKUMENTACJA / POŁĄCZENIA"
         title="Połączenia"
-        description="Mapa całej szafy z portami urządzeń. Najedź na port, aby zobaczyć jego połączenie i drugi koniec trasy."
+        description="Wybierz połączenie z listy, aby zobaczyć oba końce trasy i jej przebieg w racku."
       />
+
       <div className="connections-toolbar">
-        <div className="connection-toolbar-copy"><span>MAPA OKABLOWANIA</span><strong>{project.connections.length} połączeń</strong></div>
+        <div className="connection-toolbar-copy">
+          <span>MAPA OKABLOWANIA</span>
+          <strong>{project.connections.length} połączeń</strong>
+        </div>
         <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>+ Dodaj połączenie</button>
       </div>
-      <ConnectionRackMap project={project} />
+
+      <div className="connections-workspace">
+        <aside className="documentation-panel connection-selector">
+          <div className="connection-selector-heading">
+            <span>INWENTARZ</span>
+            <strong>Połączenia</strong>
+          </div>
+          <div className="connection-selector-list">
+            {project.connections.length ? project.connections.map((connection, index) => {
+              const selected = selectedConnectionId === connection.id;
+              return (
+                <button
+                  type="button"
+                  key={connection.id}
+                  className={`connection-selector-item ${selected ? "is-selected" : ""}`}
+                  onClick={() => setSelectedConnectionId(connection.id)}
+                >
+                  <span className="connection-selector-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="connection-selector-copy">
+                    <strong>{endpointLabel(connection.from, project)}</strong>
+                    <small>→ {endpointLabel(connection.to, project)}</small>
+                  </span>
+                  <span className="connection-selector-arrow">→</span>
+                </button>
+              );
+            }) : <Empty text="Nie dodano jeszcze żadnych połączeń." />}
+          </div>
+        </aside>
+
+        <section className="connection-detail-workspace">
+          {(() => {
+            const selectedConnection = project.connections.find((item) => item.id === selectedConnectionId) ?? null;
+
+            return selectedConnection ? (
+              <section className="documentation-panel connection-details-panel">
+                <div className="connection-detail-hero">
+                  <div className="connection-detail-eyebrow">TRASA · POŁĄCZENIE</div>
+                  <h2>{endpointLabel(selectedConnection.from, project)} <span>→</span> {endpointLabel(selectedConnection.to, project)}</h2>
+                  <p>Połączenie infrastruktury pomiędzy urządzeniem aktywnym i punktem pasywnym.</p>
+                  <div className="connection-detail-actions">
+                    <button type="button" className="secondary-button" onClick={() => setEditingConnectionId(selectedConnection.id)}>Edytuj połączenie</button>
+                  </div>
+                </div>
+
+                <div className="connection-endpoints">
+                  <div className="connection-endpoint-card">
+                    <span>A · ŹRÓDŁO</span>
+                    <strong>{endpointLabel(selectedConnection.from, project)}</strong>
+                    <small>{selectedConnection.from.kind === "device" ? "URZĄDZENIE AKTYWNE" : "PATCHPANEL"}</small>
+                  </div>
+                  <div className="connection-endpoint-line">→</div>
+                  <div className="connection-endpoint-card">
+                    <span>B · CEL</span>
+                    <strong>{endpointLabel(selectedConnection.to, project)}</strong>
+                    <small>{selectedConnection.to.kind === "device" ? "URZĄDZENIE AKTYWNE" : "PATCHPANEL"}</small>
+                  </div>
+                </div>
+
+                <div className="connection-detail-meta">
+                  <div><span>IDENTYFIKATOR</span><strong>{selectedConnection.id}</strong></div>
+                  <div><span>STATUS</span><strong>AKTYWNE</strong></div>
+                </div>
+
+                <div className="connection-detail-map">
+                  <div className="connection-detail-map-heading">
+                    <span>MAPA RACKA</span>
+                    <small>NAJEDŹ NA PORT, ABY ZOBACZYĆ DRUGI KONIEC</small>
+                  </div>
+                  <ConnectionRackMap project={project} selectedConnectionId={selectedConnection.id} />
+                </div>
+              </section>
+            ) : (
+              <section className="documentation-panel connection-empty-state">
+                <span>POŁĄCZENIA</span>
+                <h2>Wybierz połączenie</h2>
+                <p>Lista po lewej stronie służy do szybkiego przełączania między trasami. Po wyborze tutaj pojawią się oba końce połączenia, jego status oraz mapa racka.</p>
+              </section>
+            );
+          })()}
+        </section>
+      </div>
+
       {(creatingConnection || editingConnection) && (
         <ConnectionEditorModal
           devices={project.devices}
@@ -382,11 +468,13 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
             onSaveConnection(connection);
             setCreatingConnection(false);
             setEditingConnectionId(null);
+            setSelectedConnectionId(connection.id);
           }}
           onDelete={(id) => {
             onDeleteConnection(id);
             setCreatingConnection(false);
             setEditingConnectionId(null);
+            setSelectedConnectionId((current) => current === id ? null : current);
           }}
           onCancel={() => {
             setCreatingConnection(false);
@@ -396,6 +484,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
       )}
     </div>
   );
+
 }
 
 
@@ -405,7 +494,7 @@ function endpointKey(endpoint: ConnectionEndpoint) {
     : "patch-panel:" + endpoint.patchPanelId + ":port:" + endpoint.portId;
 }
 
-function ConnectionRackMap({ project }: { project: ProjectDraft }) {
+function ConnectionRackMap({ project, selectedConnectionId }: { project: ProjectDraft; selectedConnectionId?: string | null }) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const mountedItems = [...project.devices, ...project.patchPanels]
     .filter((item) => item.positionU !== null)

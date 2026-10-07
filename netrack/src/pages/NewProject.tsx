@@ -10,6 +10,7 @@ import ProjectStep from "../components/ProjectStep";
 import RackStep from "../components/RackStep";
 import DevicesStep from "../components/DevicesStep";
 import PatchPanelStep from "../components/PatchPanelStep";
+import RackEquipmentStep from "../components/RackEquipmentStep";
 import SummaryStep from "../components/SummaryStep";
 
 import {
@@ -382,7 +383,7 @@ function NewProject({
      ========================================================= */
 
   const goNext = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep((step) => step + 1);
       setEditingDeviceId(null);
       setEditingPatchPanelId(null);
@@ -430,33 +431,20 @@ function NewProject({
         );
 
       /* -----------------------------------------------------
-         STEP 3 — DEVICES
+         STEP 3 — RACK EQUIPMENT
          ----------------------------------------------------- */
 
       case 3:
         return (
-          <DevicesStep
+          <RackEquipmentStep
             rack={project.rack}
             devices={project.devices}
             patchPanels={project.patchPanels}
             editingDeviceId={editingDeviceId}
+            editingPatchPanelId={editingPatchPanelId}
             onAddDevice={addDevice}
             onEditDevice={setEditingDeviceId}
             onRemoveDevice={removeDevice}
-            onMoveItem={moveItem}
-          />
-        );
-
-      /* -----------------------------------------------------
-         STEP 4 — PATCH PANELS
-         ----------------------------------------------------- */
-
-      case 4:
-        return (
-          <PatchPanelStep
-            rack={project.rack}
-            devices={project.devices}
-            patchPanels={project.patchPanels}
             onAddPatchPanel={addPatchPanel}
             onEditPatchPanel={setEditingPatchPanelId}
             onRemovePatchPanel={removePatchPanel}
@@ -465,10 +453,10 @@ function NewProject({
         );
 
       /* -----------------------------------------------------
-         STEP 5 — SUMMARY
+         STEP 4 — SUMMARY
          ----------------------------------------------------- */
 
-      case 5:
+      case 4:
         return (
           <SummaryStep
             project={project}
@@ -553,9 +541,8 @@ function NewProject({
           <nav className="wizard-steps wizard-steps-vertical" aria-label="Etapy projektu">
             <WizardStep number="01" label="Dane projektu" active={currentStep === 1} completed={currentStep > 1} onClick={() => currentStep > 1 && setCurrentStep(1)} />
             <WizardStep number="02" label="Szafa rack" active={currentStep === 2} completed={currentStep > 2} onClick={() => currentStep > 2 && setCurrentStep(2)} />
-            <WizardStep number="03" label="Urządzenia" active={currentStep === 3} completed={currentStep > 3} onClick={() => currentStep > 3 && setCurrentStep(3)} />
-            <WizardStep number="04" label="Patchpanele" active={currentStep === 4} completed={currentStep > 4} onClick={() => currentStep > 4 && setCurrentStep(4)} />
-            <WizardStep number="05" label="Podsumowanie" active={currentStep === 5} />
+            <WizardStep number="03" label="Wyposażenie racka" active={currentStep === 3} completed={currentStep > 3} onClick={() => currentStep > 3 && setCurrentStep(3)} />
+            <WizardStep number="04" label="Podsumowanie" active={currentStep === 4} />
           </nav>
           <div className="wizard-sidebar-status">
             <span className="status-dot" />
@@ -569,8 +556,8 @@ function NewProject({
         <section className="wizard-main">
           <div className="wizard-main-header">
             <div>
-              <span className="wizard-step-kicker">KROK {String(currentStep).padStart(2, "0")} / 05</span>
-              <h2>{["Dane projektu", "Konfiguracja szafy", "Urządzenia", "Patchpanele", "Podsumowanie"][currentStep - 1]}</h2>
+              <span className="wizard-step-kicker">KROK {String(currentStep).padStart(2, "0")} / 04</span>
+              <h2>{["Dane projektu", "Konfiguracja szafy", "Wyposażenie racka", "Podsumowanie"][currentStep - 1]}</h2>
             </div>
             <button className="close-button" onClick={onCancel} aria-label="Zamknij">×</button>
           </div>
@@ -595,7 +582,7 @@ function NewProject({
             </button>
           )}
 
-          {currentStep < 5 ? (
+          {currentStep < 4 ? (
             <button
               className="primary-button"
               onClick={goNext}

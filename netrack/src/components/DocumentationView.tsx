@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import ConnectionEditorModal from "./ConnectionEditorModal";
 import { Connection, ConnectionEndpoint, ProjectDraft } from "../types";
 
@@ -199,7 +199,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
 
       <div className="connection-rack-stage">
         <div className="connection-rack-frame">
-          <div className="connection-rack-scale" style={{ "--rack-height": project.rack.heightU } as React.CSSProperties}>
+          <div className="connection-rack-scale" style={{ "--rack-height": project.rack.heightU } as CSSProperties}>
             {Array.from({ length: project.rack.heightU }, (_, index) => {
               const u = project.rack.heightU - index;
               return <span key={u}>{u}</span>;
@@ -231,12 +231,14 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
 
               const hoveredConnection = hoveredKey ? findConnection(hoveredKey) : null;
               const targetKey = hoveredConnection ? endpointKey(counterpart(hoveredConnection, hoveredKey!)) : null;
-              const itemDimmed = hoveredKey !== null && !itemKeys.includes(hoveredKey) && !itemKeys.includes(targetKey || "");
+              const itemHighlighted =
+                hoveredKey !== null &&
+                (itemKeys.includes(hoveredKey) || itemKeys.includes(targetKey || ""));
 
               return (
                 <div
                   key={item.id}
-                  className={"connection-rack-equipment " + (itemDimmed ? "is-dimmed" : "")}
+                  className={"connection-rack-equipment " + (itemHighlighted ? "is-highlighted" : "")}
                   style={{ gridRow: row + " / span " + height }}
                 >
                   <div className="connection-rack-equipment-heading">

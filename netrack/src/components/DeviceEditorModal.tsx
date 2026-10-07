@@ -66,7 +66,6 @@ function DeviceEditorModal({
       model: form.model,
       ports: form.ports,
       heightU: form.heightU,
-      positionU: form.positionU,
     });
   };
 

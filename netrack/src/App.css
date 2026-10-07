@@ -4124,3 +4124,40 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     overflow: hidden;
   }
 }
+
+
+/* Pixel-perfect U scale alignment: compensate for rack frame border/padding. */
+.rack-canvas-scale {
+  height: 440px;
+  margin-top: 10px;
+}
+
+.rack-canvas-frame {
+  height: 460px;
+}
+
+.rack-canvas-grid {
+  height: 440px;
+}
+
+.rack-preview-scale {
+  align-items: flex-start;
+}
+
+.rack-unit-numbers {
+  height: 502px;
+  margin-top: 9px;
+}
+
+.rack-preview-unit {
+  height: 520px;
+}
+
+.rack-units {
+  height: 502px;
+  min-height: 0;
+}
+
+.rack-preview-row {
+  min-height: 0;
+}

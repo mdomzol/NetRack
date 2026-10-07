@@ -92,6 +92,8 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                 {Array.from({ length: project.rack.heightU }, (_, i) => {
                   const u = project.rack.heightU - i;
                   const item = rackItems.find((x) => x.positionU !== null && u >= x.positionU && u < x.positionU + x.heightU);
+                  const isItemStart = Boolean(item && item.positionU === u);
+                  if (item && !isItemStart) return null;
                   const selected = item?.id === selectedRackItemId;
                   return (
                     <button

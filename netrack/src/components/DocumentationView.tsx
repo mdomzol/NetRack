@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import ConnectionEditorModal from "./ConnectionEditorModal";
+import { RackAccessoryType } from "../types";
 import { Connection, ConnectionEndpoint, ProjectDraft } from "../types";
 
 export type DocumentationViewType =
@@ -17,6 +18,9 @@ type Props = {
   onOpenDevice: (deviceId: string) => void;
   focusedDeviceId: string | null;
   onClearFocusedDevice: () => void;
+  onAddDevice: () => void;
+  onAddPatchPanel: () => void;
+  onAddAccessory: (type: RackAccessoryType) => void;
 };
 
 function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {
@@ -42,13 +46,14 @@ const deviceLabels: Record<string, string> = {
   other: "Inne",
 };
 
-function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice }: Props) {
+function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice, onAddDevice, onAddPatchPanel, onAddAccessory }: Props) {
   const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
   const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(focusedDeviceId);
   const [selectedPatchPanelId, setSelectedPatchPanelId] = useState<string | null>(null);
   const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const [creatingConnection, setCreatingConnection] = useState(false);
+  const [showRackAddMenu, setShowRackAddMenu] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
       total + panel.portList.filter((port) => port.status === "connected").length,
@@ -66,9 +71,18 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
       <div className="documentation-page">
         <div className="documentation-grid rack-documentation">
           <section className="documentation-panel rack-overview-panel">
-            <div className="documentation-panel-heading">
+            <div className="documentation-panel-heading rack-documentation-heading">
               <div><span>RACK</span><h2>{project.rack.name || "SR-01"}</h2></div>
-              <strong>{project.rack.heightU}U</strong>
+              <div className="rack-add-control">
+                <button type="button" className="secondary-button rack-add-button" onClick={() => setShowRackAddMenu((visible) => !visible)}>+ Dodaj element</button>
+                {showRackAddMenu && <div className="rack-add-menu">
+                  <button type="button" onClick={() => { onAddDevice(); setShowRackAddMenu(false); }}><strong>Urządzenie</strong><span>Switch, router, firewall, serwer</span></button>
+                  <button type="button" onClick={() => { onAddPatchPanel(); setShowRackAddMenu(false); }}><strong>Patchpanel</strong><span>Panel krosowy do szafy</span></button>
+                  <button type="button" onClick={() => { onAddAccessory("organizer"); setShowRackAddMenu(false); }}><strong>Organizer</strong><span>Organizacja przewodów</span></button>
+                  <button type="button" onClick={() => { onAddAccessory("maskownica"); setShowRackAddMenu(false); }}><strong>Maskownica</strong><span>Zaślepienie wolnej przestrzeni</span></button>
+                  <button type="button" onClick={() => { onAddAccessory("ups"); setShowRackAddMenu(false); }}><strong>UPS</strong><span>Zasilanie awaryjne</span></button>
+                </div>}
+              </div>
             </div>
             <div className="rack-visual-scroll">
               <div className="rack-chassis"><div className="rack-rail rack-rail-left" /><div className="rack-rail rack-rail-right" /><div className="rack-u-scale">

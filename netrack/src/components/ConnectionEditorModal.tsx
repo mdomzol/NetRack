@@ -120,6 +120,27 @@ export default function ConnectionEditorModal({
   });
 
   const sameEndpoint = endpointKey(selectedFrom) === endpointKey(selectedTo);
+
+  const existingConnectionFor = (endpoint: ConnectionEndpoint) => {
+    const key = endpointKey(endpoint);
+    return connections.find((item) => {
+      if (item.id === connection?.id) return false;
+      return endpointKey(item.from) === key || endpointKey(item.to) === key;
+    });
+  };
+
+  const connectionTargetLabel = (item: Connection) => {
+    const selectedKey = endpointKey(item.from) === endpointKey(selectedFrom)
+      ? endpointKey(item.from)
+      : endpointKey(item.to) === endpointKey(selectedFrom)
+        ? endpointKey(item.to)
+        : endpointKey(selectedTo);
+    const target = endpointKey(item.from) === selectedKey ? item.to : item.from;
+    return endpointTitle(target, devices, patchPanels);
+  };
+
+  const fromExisting = existingConnectionFor(selectedFrom);
+  const toExisting = existingConnectionFor(selectedTo);
   const canSave =
     endpointOptions.length >= 2 &&
     endpointAvailable(selectedFrom) &&
@@ -322,9 +343,29 @@ export default function ConnectionEditorModal({
               </div>
             )}
 
+            {fromExisting && !sameEndpoint && (
+              <div className="connection-editor-warning">
+                <strong>Port {endpointTitle(selectedFrom, devices, patchPanels)} jest już połączony z</strong>
+                <span>{connectionTargetLabel(fromExisting)}</span>
+              </div>
+            )}
+
+            {toExisting && !sameEndpoint && (
+              <div className="connection-editor-warning">
+                <strong>Port {endpointTitle(selectedTo, devices, patchPanels)} jest już połączony z</strong>
+                <span>{endpointTitle(
+                  endpointKey(fromExisting ?? toExisting) === endpointKey(toExisting.from)
+                    ? toExisting.to
+                    : toExisting.from,
+                  devices,
+                  patchPanels
+                )}</span>
+              </div>
+            )}
+
             {conflict && !sameEndpoint && (
               <div className="connection-editor-error">
-                Co najmniej jeden z wybranych portów jest już przypisany do innego połączenia.
+                Nie można zapisać nowego połączenia, dopóki wybrany port jest zajęty. Wybierz wolny port albo edytuj istniejące połączenie.
               </div>
             )}
 

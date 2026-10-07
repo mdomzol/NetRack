@@ -8,8 +8,11 @@ import DocumentationView, {
 } from "./components/DocumentationView";
 import NewProject from "./pages/NewProject";
 
-import { createEmptyProject } from "./constants";
-import { Connection, ConnectionEndpoint, ProjectDraft } from "./types";
+import { createEmptyProject, DEVICE_MODELS } from "./constants";
+import DeviceEditorModal from "./components/DeviceEditorModal";
+import PatchPanelEditorModal from "./components/PatchPanelEditorModal";
+import RackAccessoryEditorModal from "./components/RackAccessoryEditorModal";
+import { Connection, ConnectionEndpoint, ProjectDraft, Device, PatchPanel, PatchPanelPort, RackAccessory, RackAccessoryType } from "./types";
 
 type View = "dashboard" | DocumentationViewType | "new-project";
 const STORAGE_KEY = "netrack:project";
@@ -112,6 +115,9 @@ function App() {
   const [project, setProject] = useState<ProjectDraft>(loadProject);
   const [draft, setDraft] = useState<ProjectDraft>(createEmptyProject);
   const [focusedDeviceId, setFocusedDeviceId] = useState<string | null>(null);
+  const [editingDevice, setEditingDevice] = useState<Device | null>(null);
+  const [editingPatchPanel, setEditingPatchPanel] = useState<PatchPanel | null>(null);
+  const [editingAccessory, setEditingAccessory] = useState<RackAccessory | null>(null);
 
   useEffect(() => {
     try {
@@ -133,6 +139,29 @@ function App() {
     setView("dashboard");
   };
 
+  const createPatchPanelPorts = (count: number): PatchPanelPort[] =>
+    Array.from({ length: count }, (_, index) => ({ id: crypto.randomUUID(), number: index + 1, label: String(index + 1).padStart(2, "0"), status: "free" }));
+
+  const addDevice = () => {
+    const device: Device = { id: crypto.randomUUID(), name: "SW-" + String(project.devices.length + 1).padStart(2, "0"), type: "switch", manufacturer: "", model: "", ports: 24, heightU: 1, positionU: null };
+    setProject((current) => ({ ...current, devices: [...current.devices, device] }));
+    setEditingDevice(device);
+  };
+
+  const addPatchPanel = () => {
+    const ports = 24;
+    const panel: PatchPanel = { id: crypto.randomUUID(), name: "PP-" + String(project.patchPanels.length + 1).padStart(2, "0"), manufacturer: "", model: "", type: "Cat.6", ports, heightU: 1, positionU: null, portList: createPatchPanelPorts(ports) };
+    setProject((current) => ({ ...current, patchPanels: [...current.patchPanels, panel] }));
+    setEditingPatchPanel(panel);
+  };
+
+  const addAccessory = (type: RackAccessoryType) => {
+    const labels: Record<RackAccessoryType, string> = { organizer: "ORGANIZER", maskownica: "MASKOWNICA", ups: "UPS" };
+    const heights: Record<RackAccessoryType, number> = { organizer: 1, maskownica: 1, ups: 2 };
+    const item: RackAccessory = { id: crypto.randomUUID(), name: labels[type] + "-" + String(project.accessories.filter((x) => x.type === type).length + 1).padStart(2, "0"), type, manufacturer: "", model: "", heightU: heights[type], positionU: null };
+    setProject((current) => ({ ...current, accessories: [...current.accessories, item] }));
+    setEditingAccessory(item);
+  };
   const saveConnection = (connection: Connection) => {
     setProject((current) => {
       const connections = current.connections.some((item) => item.id === connection.id)
@@ -225,6 +254,9 @@ function App() {
               onOpenDevice={openDevice}
               focusedDeviceId={focusedDeviceId}
               onClearFocusedDevice={() => setFocusedDeviceId(null)}
+              onAddDevice={addDevice}
+              onAddPatchPanel={addPatchPanel}
+              onAddAccessory={addAccessory}
             />
           </section>
         </main>

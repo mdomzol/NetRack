@@ -133,7 +133,7 @@ function NewProject({
       model: "",
       ports: 24,
       heightU: 1,
-      positionU: findAvailablePosition(1, project.devices, project.patchPanels),
+      positionU: null,
     };
 
     setProject((current) => ({

@@ -223,7 +223,7 @@ function NewProject({
       type: "Cat.6",
       ports: portCount,
       heightU: 1,
-      positionU: findAvailablePosition(1, project.devices, project.patchPanels),
+      positionU: null,
       portList: createPatchPanelPorts(portCount),
     };
 

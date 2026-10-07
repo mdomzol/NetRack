@@ -68,7 +68,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
               <strong>{project.rack.heightU}U</strong>
             </div>
             <div className="rack-visual-scroll">
-              <div className="rack-visual-mini">
+              <div className="rack-chassis"><div className="rack-rail rack-rail-left" /><div className="rack-rail rack-rail-right" /><div className="rack-u-scale">
                 {Array.from({ length: project.rack.heightU }, (_, i) => {
                   const u = project.rack.heightU - i;
                   const item = rackItems.find((x) => x.positionU !== null && u >= x.positionU && u < x.positionU + x.heightU);
@@ -88,7 +88,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                     </button>
                   );
                 })}
-              </div>
+              </div></div>
             </div>
           </section>
 

@@ -124,50 +124,16 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
   return (
     <div className="documentation-page">
-      <PageHeader eyebrow="DOKUMENTACJA / POŁĄCZENIA" title="Połączenia" description="Twórz połączenia pomiędzy dowolnymi portami urządzeń aktywnych i pasywnych, a następnie utrzymuj aktualną mapę okablowania." />
+      <PageHeader
+        eyebrow="DOKUMENTACJA / POŁĄCZENIA"
+        title="Połączenia"
+        description="Mapa całej szafy z portami urządzeń. Najedź na port, aby zobaczyć jego połączenie i drugi koniec trasy."
+      />
       <div className="connections-toolbar">
         <div className="connection-toolbar-copy"><span>MAPA OKABLOWANIA</span><strong>{project.connections.length} połączeń</strong></div>
         <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>+ Dodaj połączenie</button>
       </div>
-      <div className="connection-summary">
-        <div><span>PATCHPANELE</span><strong>{project.patchPanels.length}</strong></div>
-        <div><span>PORTY</span><strong>{totalPorts}</strong></div>
-        <div><span>ZAJĘTE</span><strong>{connectedPorts}</strong></div>
-        <div><span>WOLNE</span><strong>{totalPorts - connectedPorts}</strong></div>
-      </div>
-      <section className="documentation-panel connection-panel">
-        <PanelTitle eyebrow="POŁĄCZENIA" title="Mapa okablowania" />
-        {project.connections.length ? (
-          <div className="connection-list">
-            {project.connections.map((connection) => {
-                            return (
-                <div className="connection-row" key={connection.id}>
-                  <div className="connection-route-label">
-                    <span>{endpointKindLabel(connection.from)}</span>\n                    <strong>{endpointLabel(connection.from, project)}</strong>\n                    <b>↔</b>\n                    <span className="patch">{endpointKindLabel(connection.to)}</span>\n                    <strong>{endpointLabel(connection.to, project)}</strong>
-                  </div>
-                  <div className="connection-row-actions">
-                    <button type="button" className="secondary-button" onClick={() => setEditingConnectionId(connection.id)}>Edytuj</button>
-                    <button type="button" className="connection-delete-button" onClick={() => onDeleteConnection(connection.id)}>×</button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <Empty text="Dodaj pierwsze połączenie, aby rozpocząć dokumentowanie okablowania." />
-        )}
-      </section>
-      <section className="documentation-panel connection-panel">
-        <PanelTitle eyebrow="PORTY PATCHPANELI" title="Stan portów" />
-        {project.patchPanels.length ? project.patchPanels.map((panel) => (
-          <div className="port-group" key={panel.id}>
-            <div className="port-group-header"><strong>{panel.name}</strong><span>{panel.type} · {panel.ports}P</span></div>
-            <div className="port-grid">
-              {panel.portList.map((port) => <div className={`port-cell ${port.status}`} key={port.id}><span>{port.label}</span><small>{port.status === "connected" ? "ZAJĘTY" : "WOLNY"}</small></div>)}
-            </div>
-          </div>
-        )) : <Empty text="Dodaj patchpanel, aby rozpocząć dokumentowanie portów." />}
-      </section>
+      <ConnectionRackMap project={project} />
       {(creatingConnection || editingConnection) && (
         <ConnectionEditorModal
           devices={project.devices}

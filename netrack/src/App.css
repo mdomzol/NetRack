@@ -5633,3 +5633,173 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   font-size: 11px;
   line-height: 1.2;
 }
+
+
+/* =========================================================
+   DASHBOARD / NO SCROLL
+   Local overrides only — other views remain unchanged.
+   ========================================================= */
+
+.dashboard-content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 24px 34px;
+}
+
+.dashboard-content .welcome {
+  flex: 0 0 auto;
+  min-height: 0;
+  height: 210px;
+  padding: 28px 34px;
+}
+
+.dashboard-content .welcome h2 {
+  margin: 9px 0 10px;
+  font-size: 26px;
+}
+
+.dashboard-content .welcome p {
+  margin-bottom: 17px;
+  line-height: 1.5;
+}
+
+.dashboard-content .welcome-graphic {
+  height: 170px;
+}
+
+.dashboard-content .graphic-rack {
+  top: 12px;
+}
+
+.dashboard-content .section-header {
+  flex: 0 0 auto;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.dashboard-content .stats {
+  flex: 0 0 auto;
+}
+
+.dashboard-content .project-status-card {
+  min-height: 132px;
+  padding: 12px;
+}
+
+.dashboard-content .project-status-card-top {
+  min-height: 34px;
+}
+
+.dashboard-content .project-status-card-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.dashboard-content .project-status-card-icon .ui-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.dashboard-content .project-status-card .stat-card-content {
+  margin-top: 7px;
+}
+
+.dashboard-content .project-status-card strong {
+  margin-top: 4px;
+  font-size: 26px;
+}
+
+.dashboard-content .project-status-card-meta {
+  margin-top: 4px;
+}
+
+.dashboard-content .project-status-card-footer {
+  padding-top: 5px;
+}
+
+.dashboard-content .dashboard-details {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 12px;
+}
+
+@media (max-height: 820px) {
+  .dashboard-content {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .dashboard-content .welcome {
+    height: 180px;
+    padding: 22px 28px;
+  }
+
+  .dashboard-content .welcome h2 {
+    font-size: 23px;
+  }
+
+  .dashboard-content .welcome p {
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+
+  .dashboard-content .welcome-graphic {
+    height: 145px;
+    transform: scale(.9);
+    transform-origin: right center;
+  }
+
+  .dashboard-content .section-header {
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+
+  .dashboard-content .project-status-card {
+    min-height: 118px;
+  }
+
+  .dashboard-content .dashboard-details {
+    margin-top: 8px;
+  }
+}
+
+@media (max-height: 700px) {
+  .dashboard-content {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .dashboard-content .welcome {
+    height: 155px;
+    padding: 18px 24px;
+  }
+
+  .dashboard-content .welcome h2 {
+    font-size: 21px;
+  }
+
+  .dashboard-content .welcome p {
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+
+  .dashboard-content .welcome-graphic {
+    display: none;
+  }
+
+  .dashboard-content .section-header {
+    margin-top: 10px;
+    margin-bottom: 6px;
+  }
+
+  .dashboard-content .project-status-card {
+    min-height: 105px;
+    padding: 10px;
+  }
+
+  .dashboard-content .project-status-card strong {
+    font-size: 23px;
+  }
+}

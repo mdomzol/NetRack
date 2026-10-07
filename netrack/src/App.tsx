@@ -162,6 +162,76 @@ function App() {
     setProject((current) => ({ ...current, accessories: [...current.accessories, item] }));
     setEditingAccessory(item);
   };
+  const moveRackItem = (
+    id: string,
+    type: "device" | "patch-panel" | "accessory",
+    positionU: number
+  ): boolean => {
+    let moved = false;
+
+    setProject((current) => {
+      const items = [
+        ...current.devices.map((item) => ({ id: item.id, heightU: item.heightU, positionU: item.positionU })),
+        ...current.patchPanels.map((item) => ({ id: item.id, heightU: item.heightU, positionU: item.positionU })),
+        ...current.accessories.map((item) => ({ id: item.id, heightU: item.heightU, positionU: item.positionU })),
+      ];
+      const item = items.find((candidate) => candidate.id === id);
+      if (!item) return current;
+      if (positionU < 1 || positionU + item.heightU - 1 > current.rack.heightU) return current;
+
+      const overlaps = items.some((other) => {
+        if (other.id === id || other.positionU === null) return false;
+        const nextStart = positionU;
+        const nextEnd = positionU + item.heightU - 1;
+        const otherStart = other.positionU;
+        const otherEnd = other.positionU + other.heightU - 1;
+        return nextStart <= otherEnd && otherStart <= nextEnd;
+      });
+      if (overlaps) return current;
+
+      moved = true;
+      if (type === "device") {
+        return { ...current, devices: current.devices.map((device) => device.id === id ? { ...device, positionU } : device) };
+      }
+      if (type === "patch-panel") {
+        return { ...current, patchPanels: current.patchPanels.map((panel) => panel.id === id ? { ...panel, positionU } : panel) };
+      }
+      return { ...current, accessories: current.accessories.map((accessory) => accessory.id === id ? { ...accessory, positionU } : accessory) };
+    });
+
+    return moved;
+  };
+
+  const removeRackItem = (id: string, type: "device" | "patch-panel" | "accessory") => {
+    setProject((current) => {
+      if (type === "device") {
+        const connections = current.connections.filter((connection) =>
+          ![connection.from, connection.to].some((endpoint) => endpoint.kind === "device" && endpoint.deviceId === id)
+        );
+        return {
+          ...current,
+          devices: current.devices.filter((device) => device.id !== id),
+          connections,
+          patchPanels: updateConnectionPortStatuses(current.patchPanels, connections),
+        };
+      }
+      if (type === "patch-panel") {
+        const connections = current.connections.filter((connection) =>
+          ![connection.from, connection.to].some((endpoint) => endpoint.kind === "patch-panel" && endpoint.patchPanelId === id)
+        );
+        return {
+          ...current,
+          patchPanels: updateConnectionPortStatuses(current.patchPanels.filter((panel) => panel.id !== id), connections),
+          connections,
+        };
+      }
+      return { ...current, accessories: current.accessories.filter((accessory) => accessory.id !== id) };
+    });
+    if (type === "device") setEditingDevice((current) => current?.id === id ? null : current);
+    if (type === "patch-panel") setEditingPatchPanel((current) => current?.id === id ? null : current);
+    if (type === "accessory") setEditingAccessory((current) => current?.id === id ? null : current);
+  };
+
   const saveConnection = (connection: Connection) => {
     setProject((current) => {
       const connections = current.connections.some((item) => item.id === connection.id)
@@ -257,6 +327,8 @@ function App() {
               onAddDevice={addDevice}
               onAddPatchPanel={addPatchPanel}
               onAddAccessory={addAccessory}
+              onMoveItem={moveRackItem}
+              onRemoveItem={removeRackItem}
             />
           </section>
         </main>

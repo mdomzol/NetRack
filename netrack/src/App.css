@@ -8902,31 +8902,33 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
   min-height: 18px;
 }
 
-/* 1U equipment is intentionally denser than multi-U equipment. */
-.connection-map-page .connection-rack-equipment {
-  min-height: 18px;
+/* Mounted network equipment keeps the previous, larger visual scale.
+   Only empty U sections and rack fillers stay compact. */
+.connection-map-page .connection-rack-equipment.is-device,
+.connection-map-page .connection-rack-equipment.is-patch-panel {
+  min-height: 64px;
 }
 
-.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading {
-  min-height: 16px;
-  padding: 2px 6px;
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading {
+  min-height: 38px;
+  padding: 7px 11px;
 }
 
-.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading strong {
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading strong,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading strong {
+  font-size: 10px;
+}
+
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading span,
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading small,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading span,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading small {
   font-size: 7px;
 }
 
-.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading span,
-.connection-map-page .connection-rack-equipment.is-1u .connection-rack-equipment-heading small {
-  font-size: 5px;
-}
-
-.connection-map-page .connection-rack-equipment.is-1u .connection-rack-port-groups {
-  padding: 2px 4px 3px;
-  gap: 4px;
-}
-
-.connection-map-page .connection-rack-equipment.is-multi-u .connection-rack-port-groups {
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-port-groups,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-port-groups {
   padding: 7px 8px 8px;
 }
 

@@ -119,7 +119,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                     {project.devices.some((device) => device.id === selectedRackItem.id) ? (
                       <button type="button" className="primary-button" onClick={() => onOpenDevice(selectedRackItem.id)}>Otwórz urządzenie <span>→</span></button>
                     ) : (
-                      <button type="button" className="primary-button" onClick={() => setSelectedRackItemId(null)}>Otwórz patchpanel <span>→</span></button>
+                      <button type="button" className="primary-button" onClick={() => setSelectedRackItemId(null)}>Zamknij szczegóły <span>×</span></button>
                     )}
                   </div>
                 </div>
@@ -557,16 +557,19 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
               const row = project.rack.heightU - (item.positionU ?? 1) + 1;
               const height = Math.max(1, item.heightU);
               const isDevice = project.devices.some((device) => device.id === item.id);
+              const isPatchPanel = project.patchPanels.some((panel) => panel.id === item.id);
               const portLayout = isDevice
                 ? (item as typeof project.devices[number]).portLayout ??
-                  Array.from({ length: item.ports }, (_, index) => ({
+                  Array.from({ length: (item as typeof project.devices[number]).ports }, (_, index) => ({
                     number: index + 1,
                     type: "rj45" as const,
                   }))
-                : Array.from({ length: item.ports }, (_, index) => ({
+                : isPatchPanel
+                  ? Array.from({ length: (item as typeof project.patchPanels[number]).ports }, (_, index) => ({
                     number: index + 1,
-                    type: "rj45" as const,
-                  }));
+                      type: "rj45" as const,
+                  }))
+                  : [];
 
               const portGroups = [
                 {
@@ -624,7 +627,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                     <div>
                       <strong>{item.name}</strong>
                       <span>
-                        {isDevice ? "AKTYWNE" : "PASYWNE"} · {item.heightU}U
+                        {isDevice ? "AKTYWNE" : isPatchPanel ? "PASYWNE" : "AKCESORIUM"} · {item.heightU}U
                       </span>
                     </div>
                     <small>

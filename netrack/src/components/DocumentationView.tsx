@@ -384,12 +384,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
   return (
     <div className="documentation-page connections-page">
-      <PageHeader
-        eyebrow="DOKUMENTACJA / POŁĄCZENIA"
-        title="Połączenia"
-        description="Wybierz połączenie z listy, aby zobaczyć oba końce trasy i jej przebieg w racku."
-      />
-
       <div className="connections-toolbar">
         <div className="connection-toolbar-copy">
           <span>MAPA OKABLOWANIA</span>

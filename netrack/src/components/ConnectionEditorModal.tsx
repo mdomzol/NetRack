@@ -120,6 +120,10 @@ export default function ConnectionEditorModal({
   });
 
   const sameEndpoint = endpointKey(selectedFrom) === endpointKey(selectedTo);
+  const sameDevice =
+    selectedFrom.kind === "device" &&
+    selectedTo.kind === "device" &&
+    selectedFrom.deviceId === selectedTo.deviceId;
 
   const existingConnectionFor = (endpoint: ConnectionEndpoint) => {
     const key = endpointKey(endpoint);
@@ -336,6 +340,13 @@ export default function ConnectionEditorModal({
             {sameEndpoint && (
               <div className="connection-editor-error">
                 Punkt A i punkt B wskazują ten sam port. Wybierz dwa różne punkty końcowe.
+              </div>
+            )}
+
+            {sameDevice && !sameEndpoint && (
+              <div className="connection-editor-warning connection-editor-same-device-warning">
+                <strong>Uwaga: łączysz dwa porty tego samego urządzenia</strong>
+                <span>To połączenie zostanie zapisane jako połączenie wewnętrzne urządzenia.</span>
               </div>
             )}
 

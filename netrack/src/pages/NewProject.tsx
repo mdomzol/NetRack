@@ -145,6 +145,24 @@ function NewProject({
     setEditingDeviceId(newDevice.id);
   };
 
+  const moveItem = (id: string, type: "device" | "patch-panel", positionU: number) => {
+    const item = type === "device"
+      ? project.devices.find((candidate) => candidate.id === id)
+      : project.patchPanels.find((candidate) => candidate.id === id);
+    if (!item || positionU < 1 || positionU + item.heightU - 1 > project.rack.heightU) return false;
+    const overlaps = [...project.devices, ...project.patchPanels].some((candidate) => {
+      if (candidate.id === id || candidate.positionU === null) return false;
+      return positionU <= candidate.positionU + candidate.heightU - 1 &&
+        candidate.positionU <= positionU + item.heightU - 1;
+    });
+    if (overlaps) return false;
+    setProject((current) => type === "device"
+      ? { ...current, devices: current.devices.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) }
+      : { ...current, patchPanels: current.patchPanels.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) }
+    );
+    return true;
+  };
+
   const removeDevice = (id: string) => {
     setProject((current) => ({
       ...current,
@@ -418,11 +436,14 @@ function NewProject({
       case 3:
         return (
           <DevicesStep
+            rack={project.rack}
             devices={project.devices}
+            patchPanels={project.patchPanels}
             editingDeviceId={editingDeviceId}
             onAddDevice={addDevice}
             onEditDevice={setEditingDeviceId}
             onRemoveDevice={removeDevice}
+            onMoveItem={moveItem}
           />
         );
 
@@ -433,10 +454,13 @@ function NewProject({
       case 4:
         return (
           <PatchPanelStep
+            rack={project.rack}
+            devices={project.devices}
             patchPanels={project.patchPanels}
             onAddPatchPanel={addPatchPanel}
             onEditPatchPanel={setEditingPatchPanelId}
             onRemovePatchPanel={removePatchPanel}
+            onMoveItem={moveItem}
           />
         );
 

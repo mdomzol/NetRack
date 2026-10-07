@@ -5,6 +5,14 @@ export type DeviceType =
   | "firewall"
   | "other";
 
+export type DevicePortType = "rj45" | "sfp" | "sfp+";
+
+export type DevicePortDefinition = {
+  number: number;
+  type: DevicePortType;
+  label?: string;
+};
+
 export type Device = {
   id: string;
   name: string;
@@ -12,6 +20,7 @@ export type Device = {
   manufacturer: string;
   model: string;
   ports: number;
+  portLayout?: DevicePortDefinition[];
   heightU: number;
   positionU: number | null;
 };
@@ -22,6 +31,7 @@ export type DeviceModel = {
   model: string;
   type: DeviceType;
   ports: number;
+  portLayout?: DevicePortDefinition[];
   heightU: number;
 };
 

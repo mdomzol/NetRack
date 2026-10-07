@@ -127,70 +127,81 @@ export default function RackCanvas({
           <div
             className="rack-canvas-grid"
             style={{
-              gridTemplateRows:
-                "repeat(" + rack.heightU + ", minmax(0, 1fr))",
-            }}
+              "--rack-height": rack.heightU,
+              gridTemplateRows: "repeat(" + rack.heightU + ", minmax(0, 1fr))",
+            } as React.CSSProperties}
           >
-            {rackRows.map((positionU) => {
-              const item = itemAt(positionU);
-              const draggingItem = dragging
-                ? items.find((candidate) => candidate.id === dragging)
-                : null;
-              const valid = draggingItem
-                ? canPlace(draggingItem, positionU)
-                : false;
-              const isDropTarget =
-                dropU === positionU &&
-                draggingItem?.id !== item?.id;
-              const isStart = item?.positionU === positionU;
+            <div className="rack-canvas-drop-grid">
+              {rackRows.map((positionU) => {
+                const item = itemAt(positionU);
+                const draggingItem = dragging
+                  ? items.find((candidate) => candidate.id === dragging)
+                  : null;
+                const valid = draggingItem
+                  ? canPlace(draggingItem, positionU)
+                  : false;
+                const isDropTarget =
+                  dropU === positionU &&
+                  draggingItem?.id !== item?.id;
 
-              return (
-                <div
-                  key={positionU}
-                  className={[
-                    "rack-canvas-slot",
-                    item ? "occupied" : "",
-                    isDropTarget
-                      ? valid
-                        ? "drop-valid"
-                        : "drop-invalid"
-                      : "",
-                  ].filter(Boolean).join(" ")}
-                  style={{ gridRow: `${rack.heightU - positionU + 1} / span ${item?.heightU ?? 1}` }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    if (draggingItem) setDropU(positionU);
-                  }}
-                  onDrop={(event) => handleDrop(event, positionU)}
-                >
-                  {isStart && item && (
-                    <button
-                      type="button"
-                      className={"rack-canvas-item " + item.type}
-                      style={{ height: "100%", minHeight: "0" }}
-                      draggable
-                      onDragStart={(event) => handleDragStart(event, item)}
-                      onDragEnd={() => {
-                        setDragging(null);
-                        setDropU(null);
-                      }}
-                      onDoubleClick={() => onEditItem?.(item.id, item.type)}
-                      title={
-                        item.name +
-                        " · " +
-                        item.heightU +
-                        "U · U" +
-                        item.positionU
-                      }
-                    >
-                      <span className="rack-canvas-item-grip">⋮⋮</span>
-                      <strong>{item.name}</strong>
-                      <small>U{item.positionU} · {item.heightU}U</small>
-                    </button>
-                  )}
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={positionU}
+                    className={[
+                      "rack-canvas-slot",
+                      item ? "occupied" : "",
+                      isDropTarget
+                        ? valid
+                          ? "drop-valid"
+                          : "drop-invalid"
+                        : "",
+                    ].filter(Boolean).join(" ")}
+                    style={{ gridRow: rack.heightU - positionU + 1 }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      if (draggingItem) setDropU(positionU);
+                    }}
+                    onDrop={(event) => handleDrop(event, positionU)}
+                  />
+                );
+              })}
+            </div>
+
+            <div className="rack-canvas-items">
+              {items
+                .filter((item) => item.positionU !== null)
+                .map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={"rack-canvas-item " + item.type}
+                    style={{
+                      gridRow:
+                        (rack.heightU - (item.positionU ?? 1) + 1) +
+                        " / span " +
+                        item.heightU,
+                    }}
+                    draggable
+                    onDragStart={(event) => handleDragStart(event, item)}
+                    onDragEnd={() => {
+                      setDragging(null);
+                      setDropU(null);
+                    }}
+                    onDoubleClick={() => onEditItem?.(item.id, item.type)}
+                    title={
+                      item.name +
+                      " · " +
+                      item.heightU +
+                      "U · U" +
+                      item.positionU
+                    }
+                  >
+                    <span className="rack-canvas-item-grip">⋮⋮</span>
+                    <strong>{item.name}</strong>
+                    <small>U{item.positionU} · {item.heightU}U</small>
+                  </button>
+                ))}
+            </div>
           </div>
         </div>
       </div>

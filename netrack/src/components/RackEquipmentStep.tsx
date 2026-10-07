@@ -51,8 +51,9 @@ export default function RackEquipmentStep({
           rack={rack}
           devices={devices}
           patchPanels={patchPanels}
+          accessories={accessories}
           onMoveItem={onMoveItem}
-          onEditItem={(id, type) => type === "device" ? onEditDevice(id) : onEditPatchPanel(id)}
+          onEditItem={(id, type) => type === "device" ? onEditDevice(id) : type === "patch-panel" ? onEditPatchPanel(id) : onEditAccessory(id)}
         />
 
         <div className="workspace-list equipment-list">

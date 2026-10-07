@@ -42,6 +42,14 @@ export type PatchPanelPort = {
   status: "free" | "connected";
 };
 
+export type Connection = {
+  id: string;
+  deviceId: string;
+  devicePort: number;
+  patchPanelId: string;
+  patchPanelPortId: string;
+};
+
 export type PatchPanel = {
   id: string;
   name: string;
@@ -61,4 +69,5 @@ export type ProjectDraft = {
   rack: Rack;
   devices: Device[];
   patchPanels: PatchPanel[];
+  connections: Connection[];
 };

@@ -5803,3 +5803,77 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     font-size: 23px;
   }
 }
+
+
+/* Dashboard hero graphic replacement */
+.dashboard-content .welcome {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-content .welcome::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 38%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #10151c 0%, rgba(16,21,28,.88) 18%, rgba(16,21,28,0) 100%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 28px);
+  opacity: .7;
+}
+
+.dashboard-content .welcome-graphic {
+  position: relative;
+  width: 280px;
+  height: 100%;
+  flex: 0 0 280px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+.dashboard-content .graphic-rack {
+  position: relative;
+  inset: auto;
+  width: 190px;
+  padding: 9px;
+  border: 1px solid #2a333d;
+  background: rgba(11,15,20,.72);
+  transform: perspective(700px) rotateY(-10deg);
+  box-shadow: 0 20px 45px rgba(0,0,0,.2);
+}
+
+.dashboard-content .graphic-grid,
+.dashboard-content .graphic-lines {
+  display: none;
+}
+
+.dashboard-content .rack-unit {
+  height: 28px;
+  margin-bottom: 4px;
+  padding: 7px;
+}
+
+.dashboard-content .rack-unit i {
+  float: right;
+  width: 5px;
+  height: 5px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: #f36b21;
+  opacity: .75;
+}
+
+@media (max-width: 900px) {
+  .dashboard-content .welcome-graphic {
+    display: none;
+  }
+
+  .dashboard-content .welcome::after {
+    width: 55%;
+  }
+}

@@ -89,18 +89,42 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
             </div>
           </div>
 
-          <div className="stats">
-            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("devices")}>
-              <span className="stat-card-icon">⌁</span><span className="stat-card-label">Urządzenia</span><strong>{project.devices.length}</strong>
+          <div className="stats project-status-grid">
+            <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("devices")}>
+              <span className="stat-card-icon">⌁</span>
+              <span className="stat-card-content">
+                <span className="stat-card-label">Urządzenia</span>
+                <strong>{project.devices.length}</strong>
+                <small>{project.devices.filter((device) => device.positionU !== null).length} zamontowanych w racku</small>
+              </span>
+              <span className="stat-card-arrow">→</span>
             </button>
-            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("patch-panels")}>
-              <span className="stat-card-icon">▤</span><span className="stat-card-label">Patchpanele</span><strong>{project.patchPanels.length}</strong>
+            <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("patch-panels")}>
+              <span className="stat-card-icon">▤</span>
+              <span className="stat-card-content">
+                <span className="stat-card-label">Patchpanele</span>
+                <strong>{project.patchPanels.length}</strong>
+                <small>{project.patchPanels.filter((panel) => panel.positionU !== null).length} zamontowanych w racku</small>
+              </span>
+              <span className="stat-card-arrow">→</span>
             </button>
-            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("connections")}>
-              <span className="stat-card-icon">⊞</span><span className="stat-card-label">Porty patchpaneli</span><strong>{totalPorts}</strong>
+            <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("connections")}>
+              <span className="stat-card-icon">⊞</span>
+              <span className="stat-card-content">
+                <span className="stat-card-label">Porty patchpaneli</span>
+                <strong>{totalPorts}</strong>
+                <small>{totalPorts - freePorts} zajętych · {freePorts} wolnych</small>
+              </span>
+              <span className="stat-card-arrow">→</span>
             </button>
-            <button className="stat-card stat-card-link" type="button" onClick={() => onNavigate?.("connections")}>
-              <span className="stat-card-icon">○</span><span className="stat-card-label">Wolne porty</span><strong>{hasProject ? freePorts : "—"}</strong>
+            <button className="stat-card stat-card-link project-status-card project-status-card-accent" type="button" onClick={() => onNavigate?.("connections")}>
+              <span className="stat-card-icon">○</span>
+              <span className="stat-card-content">
+                <span className="stat-card-label">Wolne porty</span>
+                <strong>{hasProject ? freePorts : "—"}</strong>
+                <small>{totalPorts ? Math.round((freePorts / totalPorts) * 100) + "% dostępnych" : "Brak patchpaneli"}</small>
+              </span>
+              <span className="stat-card-arrow">→</span>
             </button>
           </div>
 

@@ -1,4 +1,5 @@
 import StatCard from "./StatCard";
+import Icon from "./Icon";
 import { ProjectDraft } from "../types";
 
 type DashboardProps = {
@@ -91,7 +92,7 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
 
           <div className="stats project-status-grid">
             <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("devices")}>
-              <span className="stat-card-icon">⌁</span>
+              <span className="stat-card-icon"><Icon name="switch" /></span>
               <span className="stat-card-content">
                 <span className="stat-card-label">Urządzenia</span>
                 <strong>{project.devices.length}</strong>
@@ -100,7 +101,7 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
               <span className="stat-card-arrow">→</span>
             </button>
             <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("patch-panels")}>
-              <span className="stat-card-icon">▤</span>
+              <span className="stat-card-icon"><Icon name="patch-panel" /></span>
               <span className="stat-card-content">
                 <span className="stat-card-label">Patchpanele</span>
                 <strong>{project.patchPanels.length}</strong>
@@ -109,7 +110,7 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
               <span className="stat-card-arrow">→</span>
             </button>
             <button className="stat-card stat-card-link project-status-card" type="button" onClick={() => onNavigate?.("connections")}>
-              <span className="stat-card-icon">⊞</span>
+              <span className="stat-card-icon"><Icon name="port" /></span>
               <span className="stat-card-content">
                 <span className="stat-card-label">Porty patchpaneli</span>
                 <strong>{totalPorts}</strong>
@@ -118,7 +119,7 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
               <span className="stat-card-arrow">→</span>
             </button>
             <button className="stat-card stat-card-link project-status-card project-status-card-accent" type="button" onClick={() => onNavigate?.("connections")}>
-              <span className="stat-card-icon">○</span>
+              <span className="stat-card-icon"><Icon name="port" active /></span>
               <span className="stat-card-content">
                 <span className="stat-card-label">Wolne porty</span>
                 <strong>{hasProject ? freePorts : "—"}</strong>

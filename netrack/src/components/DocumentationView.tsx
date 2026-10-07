@@ -6,7 +6,8 @@ export type DocumentationViewType =
   | "rack"
   | "devices"
   | "patch-panels"
-  | "connections";
+  | "connections"
+  | "connection-map";
 
 type Props = {
   project: ProjectDraft;

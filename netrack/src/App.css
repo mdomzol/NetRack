@@ -7227,3 +7227,45 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Patch panel detail badges readability */
+.patch-panel-detail-badges {
+  align-items: stretch;
+  gap: 8px;
+}
+
+.patch-panel-detail-badges span {
+  min-width: 112px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.patch-panel-detail-badges span small {
+  color: #56616d;
+  font: 700 6px/1 "JetBrains Mono", monospace;
+  letter-spacing: .12em;
+}
+
+.patch-panel-detail-badges span strong {
+  color: #cbd2d7;
+  font: 700 9px/1 "JetBrains Mono", monospace;
+  white-space: nowrap;
+}
+
+.patch-panel-detail-badges span:first-child strong {
+  color: #d37a48;
+}
+
+@media (max-width: 650px) {
+  .patch-panel-detail-badges {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .patch-panel-detail-badges span {
+    min-width: 0;
+  }
+}

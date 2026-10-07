@@ -261,6 +261,58 @@ function App() {
           </section>
         </main>
       )}
+
+      {editingDevice && (
+        <DeviceEditorModal
+          device={editingDevice}
+          rackHeight={project.rack.heightU}
+          deviceModels={DEVICE_MODELS}
+          onSave={(changes) => {
+            setProject((current) => ({
+              ...current,
+              devices: current.devices.map((device) =>
+                device.id === editingDevice.id ? { ...device, ...changes } : device
+              ),
+            }));
+            setEditingDevice(null);
+          }}
+          onCancel={() => setEditingDevice(null)}
+        />
+      )}
+
+      {editingPatchPanel && (
+        <PatchPanelEditorModal
+          patchPanel={editingPatchPanel}
+          rackHeight={project.rack.heightU}
+          onSave={(updatedPatchPanel) => {
+            setProject((current) => ({
+              ...current,
+              patchPanels: current.patchPanels.map((panel) =>
+                panel.id === updatedPatchPanel.id ? updatedPatchPanel : panel
+              ),
+            }));
+            setEditingPatchPanel(null);
+          }}
+          onCancel={() => setEditingPatchPanel(null)}
+        />
+      )}
+
+      {editingAccessory && (
+        <RackAccessoryEditorModal
+          accessory={editingAccessory}
+          rackHeight={project.rack.heightU}
+          onSave={(changes) => {
+            setProject((current) => ({
+              ...current,
+              accessories: current.accessories.map((accessory) =>
+                accessory.id === editingAccessory.id ? { ...accessory, ...changes } : accessory
+              ),
+            }));
+            setEditingAccessory(null);
+          }}
+          onCancel={() => setEditingAccessory(null)}
+        />
+      )}
     </div>
   );
 }

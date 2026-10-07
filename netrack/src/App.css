@@ -4322,13 +4322,16 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .rack-canvas-item {
+  position: relative;
   pointer-events: auto;
   min-height: 0;
   height: auto !important;
-  width: 100%;
+  width: calc(100% - 2px);
   align-self: stretch;
+  justify-self: start;
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 1px;
+  inset: auto;
 }
 
 .rack-canvas-items .rack-canvas-item {

@@ -3800,3 +3800,61 @@ EDU-FIX WIZARD / REDESIGN
 .workspace-list .device-list,.workspace-list .patch-panel-list { padding:12px; }.workspace-list .device-row,.workspace-list .patch-panel-row { cursor:grab; }.workspace-list .device-row:active,.workspace-list .patch-panel-row:active { cursor:grabbing; }
 .empty-state.compact { min-height:330px; padding:30px 20px; }
 @media(max-width:900px){.layout-workspace{grid-template-columns:1fr}.rack-canvas{border-right:0;border-bottom:1px solid #202733}.workspace-list{max-height:360px}}
+
+/* =========================================================
+UNIFIED RACK EQUIPMENT WORKSPACE
+========================================================= */
+.equipment-header { gap: 18px; }
+.equipment-actions { display:flex; gap:8px; flex:0 0 auto; }
+.equipment-actions .primary-button,
+.equipment-actions .secondary-button { min-height:36px; padding:0 12px; }
+
+.rack-equipment-workspace { min-height: 500px; }
+.equipment-list { padding-bottom: 12px; }
+.equipment-group { padding: 12px; border-bottom:1px solid #202733; }
+.equipment-group-title { display:flex; align-items:center; justify-content:space-between; margin:0 2px 8px; color:#697481; font:700 8px/1 "JetBrains Mono",monospace; letter-spacing:.13em; }
+.equipment-group-title em { display:grid; place-items:center; min-width:20px; height:18px; border:1px solid #29313d; border-radius:4px; color:#7e8996; font-style:normal; font-size:8px; letter-spacing:0; }
+.equipment-row { width:100%; display:grid; grid-template-columns:32px minmax(0,1fr) 40px 20px; align-items:center; gap:8px; min-height:54px; padding:7px 8px; margin-top:5px; border:1px solid #29323b; border-radius:6px; background:#12171c; color:inherit; text-align:left; cursor:grab; }
+.equipment-row:hover { border-color:#3b4651; background:#171c22; }
+.equipment-row:active { cursor:grabbing; }
+.equipment-row.editing { border-color:rgba(243,107,33,.55); background:rgba(243,107,33,.07); }
+.equipment-row-icon { display:grid; place-items:center; width:30px; height:30px; border:1px solid #343e48; border-radius:5px; background:#0d1115; color:#f36b21; font:700 8px/1 "JetBrains Mono",monospace; }
+.equipment-row-icon.pp { color:#aeb6bf; }
+.equipment-row-main { min-width:0; }
+.equipment-row-main strong,.equipment-row-main small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.equipment-row-main strong { color:#e4e7ea; font-size:10px; font-weight:650; }
+.equipment-row-main small { margin-top:3px; color:#68727d; font-size:8px; }
+.equipment-row-position { color:#f36b21; font:700 9px/1 "JetBrains Mono",monospace; text-align:right; }
+.equipment-row-position small { display:block; margin-top:3px; color:#59636f; font-size:7px; font-weight:400; }
+.equipment-row-remove { display:grid; place-items:center; width:20px; height:20px; border-radius:4px; color:#59636f; font-size:15px; cursor:pointer; }
+.equipment-row-remove:hover { color:#f36b21; background:rgba(243,107,33,.08); }
+.equipment-empty { padding:13px 4px 4px; color:#58636f; font-size:9px; line-height:1.5; }
+
+.rack-canvas-scale { grid-template-rows:repeat(var(--rack-height, 1), minmax(20px, 1fr)); }
+
+/* Compact, viewport-contained device editor */
+.device-modal-overlay { padding:16px; }
+.device-modal { width:min(640px, calc(100vw - 32px)); max-height:calc(100vh - 32px); border-radius:8px; }
+.device-modal-header { padding:16px 18px; }
+.device-modal-header h2 { font-size:16px; margin:5px 0 3px; }
+.device-modal-header p { font-size:9px; }
+.device-modal-body { padding:16px 18px; }
+.device-editor-section { padding-bottom:16px; margin-bottom:16px; }
+.device-editor-section-title { margin-bottom:11px; font-size:9px; }
+.device-editor-grid { gap:11px; }
+.device-modal select,.device-modal input { height:36px; padding:0 10px; font-size:10px; }
+.device-modal-footer { padding:12px 18px; gap:8px; }
+.device-summary { gap:10px; padding:10px; }
+.device-summary-icon { width:32px; height:32px; }
+.device-summary strong { font-size:10px; }
+.device-summary span { font-size:9px; }
+@media(max-width:720px) {
+  .equipment-header { align-items:flex-start; flex-direction:column; }
+  .equipment-actions { width:100%; }
+  .equipment-actions button { flex:1; }
+  .device-modal-overlay { padding:8px; }
+  .device-modal { width:calc(100vw - 16px); max-height:calc(100vh - 16px); }
+  .device-modal-header,.device-modal-body { padding-left:13px; padding-right:13px; }
+  .device-editor-grid,.device-editor-grid.three { grid-template-columns:1fr; }
+  .device-editor-grid .full { grid-column:auto; }
+}

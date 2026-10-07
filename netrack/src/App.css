@@ -7269,3 +7269,101 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     min-width: 0;
   }
 }
+
+/* Active device physical port map */
+.device-details-ports {
+  min-width: 0;
+}
+
+.device-port-map {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #202832;
+  border-radius: 4px;
+  background: #080d12;
+}
+
+.device-port-row {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.device-port-box {
+  min-width: 0;
+  min-height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #303a44;
+  border-radius: 2px;
+  background: #111820;
+  color: #aeb7bf;
+  font: 700 7px/1 "JetBrains Mono", monospace;
+  box-sizing: border-box;
+}
+
+.device-port-box.rj45 {
+  border-top-color: #414c57;
+}
+
+.device-port-sfp-section {
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid #202832;
+}
+
+.device-port-group-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #596571;
+  font: 700 6px/1 "JetBrains Mono", monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.device-port-sfp-row {
+  grid-template-columns: repeat(4, minmax(0, 42px));
+  justify-content: start;
+}
+
+.device-port-box.sfp,
+.device-port-box.sfp-plus {
+  min-height: 31px;
+  border-color: #4a3a31;
+  background: #17130f;
+  color: #c77b4d;
+}
+
+.device-port-box.sfp-plus {
+  border-color: #5a3d2c;
+  color: #e18a50;
+}
+
+/* 24 RJ45: 12 ports per physical row.
+   48 RJ45: 24 ports per physical row.
+   Port numbers are preserved in device order: top row, then bottom row. */
+.device-details-ports:has(.device-port-row:nth-child(2)) .device-port-row {
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+}
+
+@media (max-width: 1100px) {
+  .device-port-row {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .device-details-ports:has(.device-port-row:nth-child(2)) .device-port-row {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .device-port-row,
+  .device-details-ports:has(.device-port-row:nth-child(2)) .device-port-row {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+
+  .device-port-sfp-row {
+    grid-template-columns: repeat(4, minmax(32px, 1fr));
+  }
+}

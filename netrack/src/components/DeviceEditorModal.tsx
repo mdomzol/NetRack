@@ -257,15 +257,7 @@ function DeviceEditorModal({
                   type="number"
                   min="0"
                   value={form.ports}
-                  onChange={(event) =>
-                    updateField(
-                      "ports",
-                      Math.max(
-                        0,
-                        Number(event.target.value)
-                      )
-                    )
-                  }
+                  onChange={() => setForm((current) => ({ ...current, ports: Math.max(0, Number((document.getElementById("device-ports") as HTMLInputElement)?.value ?? 0)), portLayout: undefined }))}                  }
                 />
               </div>
 

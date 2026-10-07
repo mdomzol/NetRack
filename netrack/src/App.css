@@ -5475,3 +5475,295 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   .documentation-details > div:last-child { border-bottom:0; }
   .port-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
 }
+
+
+/* =========================================================
+   CONNECTION EDITOR
+   ========================================================= */
+
+.connections-toolbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.connection-toolbar-copy {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.connection-toolbar-copy span {
+  color:#f36b21;
+  font:700 7px/1 "JetBrains Mono",monospace;
+  letter-spacing:.14em;
+}
+
+.connection-toolbar-copy strong {
+  color:#dfe3e7;
+  font-size:10px;
+  font-weight:650;
+}
+
+.connection-list {
+  display:flex;
+  flex-direction:column;
+}
+
+.connection-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:64px;
+  padding:10px 13px;
+  border-bottom:1px solid #202832;
+}
+
+.connection-row:last-child {
+  border-bottom:0;
+}
+
+.connection-route-label {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+
+.connection-route-label > span {
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:21px;
+  border:1px solid rgba(243,107,33,.3);
+  border-radius:4px;
+  background:rgba(243,107,33,.06);
+  color:#f36b21;
+  font:700 7px/1 "JetBrains Mono",monospace;
+}
+
+.connection-route-label > span.patch {
+  border-color:#37414c;
+  background:#151a20;
+  color:#aeb6bf;
+}
+
+.connection-route-label strong {
+  color:#dfe3e7;
+  font:700 9px/1 "JetBrains Mono",monospace;
+  white-space:nowrap;
+}
+
+.connection-route-label b {
+  color:#697480;
+  font:700 11px/1 "JetBrains Mono",monospace;
+}
+
+.connection-row-actions {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+}
+
+.connection-row-actions .secondary-button {
+  height:30px;
+  padding:0 10px;
+  font-size:9px;
+}
+
+.connection-delete-button {
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  border:1px solid #303944;
+  border-radius:5px;
+  background:transparent;
+  color:#7a8490;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.connection-delete-button:hover {
+  border-color:rgba(243,107,33,.4);
+  background:rgba(243,107,33,.06);
+  color:#f36b21;
+}
+
+.connection-editor-modal {
+  width:min(680px,calc(100vw - 32px));
+}
+
+.connection-editor-route {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:12px;
+  margin:0 0 18px;
+}
+
+.connection-endpoint {
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(243,107,33,.3);
+  border-radius:6px;
+  background:rgba(243,107,33,.06);
+  text-align:center;
+}
+
+.connection-endpoint.patch {
+  border-color:#37414c;
+  background:#151a20;
+}
+
+.connection-endpoint span {
+  display:block;
+  color:#f36b21;
+  font:700 7px/1 "JetBrains Mono",monospace;
+  letter-spacing:.12em;
+}
+
+.connection-endpoint.patch span {
+  color:#aeb6bf;
+}
+
+.connection-endpoint strong {
+  display:block;
+  margin-top:7px;
+  overflow:hidden;
+  color:#e7eaec;
+  font:700 13px/1.1 "JetBrains Mono",monospace;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.connection-arrow {
+  color:#f36b21;
+  font:700 16px/1 "JetBrains Mono",monospace;
+}
+
+.connection-editor-fields {
+  display:grid;
+  grid-template-columns:1fr 140px;
+  gap:12px;
+}
+
+.connection-editor-fields label {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.connection-editor-fields label > span {
+  color:#66717d;
+  font:700 7px/1 "JetBrains Mono",monospace;
+  letter-spacing:.1em;
+}
+
+.connection-editor-fields select {
+  width:100%;
+  height:40px;
+  padding:0 10px;
+  border:1px solid #2c353f;
+  border-radius:5px;
+  outline:0;
+  background:#0d1217;
+  color:#dce1e5;
+  font-size:10px;
+  cursor:pointer;
+}
+
+.connection-editor-fields select:focus {
+  border-color:#f36b21;
+}
+
+.connection-editor-fields label:nth-child(3) {
+  grid-column:1;
+}
+
+.connection-editor-fields label:nth-child(4) {
+  grid-column:2;
+  grid-row:2;
+}
+
+.connection-editor-error {
+  margin-top:12px;
+  padding:9px 11px;
+  border:1px solid rgba(243,107,33,.3);
+  border-radius:5px;
+  background:rgba(243,107,33,.06);
+  color:#e6a47c;
+  font-size:8px;
+  line-height:1.45;
+}
+
+.connection-editor-empty {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:28px 16px;
+  text-align:center;
+}
+
+.connection-editor-empty strong {
+  color:#cfd4d9;
+  font-size:10px;
+}
+
+.connection-editor-empty span {
+  max-width:390px;
+  color:#697480;
+  font-size:8px;
+  line-height:1.5;
+}
+
+.danger-button {
+  height:40px;
+  padding:0 14px;
+  border:1px solid rgba(243,107,33,.3);
+  border-radius:7px;
+  background:transparent;
+  color:#f36b21;
+  font-size:11px;
+  font-weight:650;
+  cursor:pointer;
+}
+
+.danger-button:hover {
+  background:rgba(243,107,33,.08);
+}
+
+@media (max-width:620px) {
+  .connections-toolbar {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .connection-row {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .connection-editor-route {
+    grid-template-columns:1fr;
+  }
+
+  .connection-arrow {
+    text-align:center;
+    transform:rotate(90deg);
+  }
+
+  .connection-editor-fields {
+    grid-template-columns:1fr;
+  }
+
+  .connection-editor-fields label:nth-child(3),
+  .connection-editor-fields label:nth-child(4) {
+    grid-column:auto;
+    grid-row:auto;
+  }
+}

@@ -229,10 +229,9 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                     })
               );
 
-              const itemDimmed = hoveredKey !== null && !itemKeys.includes(hoveredKey) && !itemKeys.some((key) => {
-                const connection = findConnection(key);
-                return connection ? endpointKey(counterpart(connection, hoveredKey)) === key : false;
-              });
+              const hoveredConnection = hoveredKey ? findConnection(hoveredKey) : null;
+              const targetKey = hoveredConnection ? endpointKey(counterpart(hoveredConnection, hoveredKey!)) : null;
+              const itemDimmed = hoveredKey !== null && !itemKeys.includes(hoveredKey) && !itemKeys.includes(targetKey || "");
 
               return (
                 <div

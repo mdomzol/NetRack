@@ -17,7 +17,10 @@ const STORAGE_KEY = "netrack:project";
 function loadProject(): ProjectDraft {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored) as ProjectDraft;
+    if (stored) {
+      const parsed = JSON.parse(stored) as ProjectDraft;
+      return { ...parsed, connections: parsed.connections ?? [] };
+    }
   } catch {
     // Ignore invalid local data and start clean.
   }

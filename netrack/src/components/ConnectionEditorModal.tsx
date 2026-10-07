@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Connection, Device, PatchPanel } from "../types";
+import { useEffect, useMemo, useState } from "react";
+import { Connection, ConnectionEndpoint, Device, PatchPanel } from "../types";
 
 type Props = {
   devices: Device[];
@@ -11,8 +11,45 @@ type Props = {
   onCancel: () => void;
 };
 
+type EndpointSide = "from" | "to";
+
 function portLabel(number: number) {
   return String(number).padStart(2, "0");
+}
+
+function endpointKey(endpoint: ConnectionEndpoint) {
+  return endpoint.kind === "device"
+    ? `device:${endpoint.deviceId}:port:${endpoint.port}`
+    : `patch-panel:${endpoint.patchPanelId}:port:${endpoint.portId}`;
+}
+
+function endpointTitle(
+  endpoint: ConnectionEndpoint,
+  devices: Device[],
+  patchPanels: PatchPanel[]
+) {
+  if (endpoint.kind === "device") {
+    const device = devices.find((item) => item.id === endpoint.deviceId);
+    return `${device?.name ?? "Urządzenie"}-${portLabel(endpoint.port)}`;
+  }
+
+  const panel = patchPanels.find((item) => item.id === endpoint.patchPanelId);
+  const port = panel?.portList.find((item) => item.id === endpoint.portId);
+  return `${panel?.name ?? "Patchpanel"}-${port?.label ?? "??"}`;
+}
+
+function initialEndpoint(
+  endpoint: ConnectionEndpoint | undefined,
+  devices: Device[],
+  patchPanels: PatchPanel[]
+): ConnectionEndpoint {
+  if (endpoint) return endpoint;
+  if (devices[0]) return { kind: "device", deviceId: devices[0].id, port: 1 };
+  return {
+    kind: "patch-panel",
+    patchPanelId: patchPanels[0]?.id ?? "",
+    portId: patchPanels[0]?.portList[0]?.id ?? "",
+  };
 }
 
 export default function ConnectionEditorModal({
@@ -24,130 +61,303 @@ export default function ConnectionEditorModal({
   onDelete,
   onCancel,
 }: Props) {
-  const switches = useMemo(
-    () => devices.filter((device) => device.type === "switch"),
-    [devices]
+  const endpointOptions = useMemo(
+    () => [
+      ...devices.map((device) => ({
+        kind: "device" as const,
+        id: device.id,
+        name: device.name,
+        detail: `${device.manufacturer || "Producent nie podany"} · ${device.ports}P`,
+      })),
+      ...patchPanels.map((panel) => ({
+        kind: "patch-panel" as const,
+        id: panel.id,
+        name: panel.name,
+        detail: `${panel.model || "Model nie podany"} · ${panel.ports}P`,
+      })),
+    ],
+    [devices, patchPanels]
   );
 
-  const [deviceId, setDeviceId] = useState(connection?.deviceId ?? switches[0]?.id ?? "");
-  const [devicePort, setDevicePort] = useState(connection?.devicePort ?? 1);
-  const [patchPanelId, setPatchPanelId] = useState(
-    connection?.patchPanelId ?? patchPanels[0]?.id ?? ""
+  const [from, setFrom] = useState<ConnectionEndpoint>(() =>
+    initialEndpoint(connection?.from, devices, patchPanels)
   );
-  const [patchPanelPortId, setPatchPanelPortId] = useState(
-    connection?.patchPanelPortId ?? patchPanels[0]?.portList[0]?.id ?? ""
+  const [to, setTo] = useState<ConnectionEndpoint>(() =>
+    initialEndpoint(connection?.to, devices, patchPanels)
   );
 
-  const selectedSwitch = switches.find((device) => device.id === deviceId);
-  const selectedPanel = patchPanels.find((panel) => panel.id === patchPanelId);
+  useEffect(() => {
+    if (!connection) return;
+    setFrom(connection.from);
+    setTo(connection.to);
+  }, [connection]);
+
+  const endpointAvailable = (endpoint: ConnectionEndpoint) =>
+    endpointOptions.some(
+      (option) =>
+        option.kind === endpoint.kind &&
+        option.id ===
+          (endpoint.kind === "device"
+            ? endpoint.deviceId
+            : endpoint.patchPanelId)
+    );
+
+  const normalizeEndpoint = (endpoint: ConnectionEndpoint): ConnectionEndpoint => {
+    if (endpointAvailable(endpoint)) return endpoint;
+    return initialEndpoint(undefined, devices, patchPanels);
+  };
+
+  const selectedFrom = normalizeEndpoint(from);
+  const selectedTo = normalizeEndpoint(to);
 
   const conflict = connections.some((item) => {
     if (item.id === connection?.id) return false;
+    const occupied = [item.from, item.to].map(endpointKey);
     return (
-      (item.deviceId === deviceId && item.devicePort === devicePort) ||
-      (item.patchPanelId === patchPanelId &&
-        item.patchPanelPortId === patchPanelPortId)
+      occupied.includes(endpointKey(selectedFrom)) ||
+      occupied.includes(endpointKey(selectedTo))
     );
   });
 
+  const sameEndpoint = endpointKey(selectedFrom) === endpointKey(selectedTo);
   const canSave =
-    Boolean(selectedSwitch && selectedPanel && patchPanelPortId) && !conflict;
+    endpointOptions.length >= 2 &&
+    endpointAvailable(selectedFrom) &&
+    endpointAvailable(selectedTo) &&
+    !sameEndpoint &&
+    !conflict;
 
-  const handlePanelChange = (id: string) => {
-    setPatchPanelId(id);
-    const panel = patchPanels.find((item) => item.id === id);
-    setPatchPanelPortId(panel?.portList[0]?.id ?? "");
+  const changeKind = (side: EndpointSide, kind: ConnectionEndpoint["kind"]) => {
+    const collection = kind === "device" ? devices : patchPanels;
+    const next = collection[0]
+      ? kind === "device"
+        ? { kind, deviceId: collection[0].id, port: 1 } as ConnectionEndpoint
+        : {
+            kind,
+            patchPanelId: collection[0].id,
+            portId: collection[0].portList[0]?.id ?? "",
+          } as ConnectionEndpoint
+      : null;
+
+    if (!next) return;
+    side === "from" ? setFrom(next) : setTo(next);
   };
 
-  const handleSave = () => {
-    if (!canSave || !selectedSwitch || !selectedPanel) return;
+  const changeResource = (side: EndpointSide, id: string) => {
+    const current = side === "from" ? selectedFrom : selectedTo;
+    const next: ConnectionEndpoint =
+      current.kind === "device"
+        ? { kind: "device", deviceId: id, port: 1 }
+        : {
+            kind: "patch-panel",
+            patchPanelId: id,
+            portId:
+              patchPanels.find((panel) => panel.id === id)?.portList[0]?.id ??
+              "",
+          };
 
-    onSave({
-      id: connection?.id ?? crypto.randomUUID(),
-      deviceId,
-      devicePort,
-      patchPanelId,
-      patchPanelPortId,
-    });
+    side === "from" ? setFrom(next) : setTo(next);
+  };
+
+  const changePort = (side: EndpointSide, value: string) => {
+    const current = side === "from" ? selectedFrom : selectedTo;
+    const next: ConnectionEndpoint =
+      current.kind === "device"
+        ? { ...current, port: Number(value) }
+        : { ...current, portId: value };
+
+    side === "from" ? setFrom(next) : setTo(next);
+  };
+
+  const renderEndpoint = (side: EndpointSide, endpoint: ConnectionEndpoint) => {
+    const resourceId =
+      endpoint.kind === "device" ? endpoint.deviceId : endpoint.patchPanelId;
+    const resource = endpointOptions.find(
+      (option) => option.kind === endpoint.kind && option.id === resourceId
+    );
+
+    const ports =
+      endpoint.kind === "device"
+        ? Array.from(
+            {
+              length:
+                devices.find((device) => device.id === endpoint.deviceId)
+                  ?.ports ?? 0,
+            },
+            (_, index) => ({
+              value: String(index + 1),
+              label: portLabel(index + 1),
+            })
+          )
+        : patchPanels
+            .find((panel) => panel.id === endpoint.patchPanelId)
+            ?.portList.map((port) => ({
+              value: port.id,
+              label: port.label,
+            })) ?? [];
+
+    return (
+      <div className="connection-endpoint-editor">
+        <div className="connection-endpoint-heading">
+          <span>{side === "from" ? "PUNKT A" : "PUNKT B"}</span>
+          <strong>{endpointTitle(endpoint, devices, patchPanels)}</strong>
+        </div>
+
+        <label>
+          <span>TYP</span>
+          <select
+            value={endpoint.kind}
+            onChange={(event) =>
+              changeKind(
+                side,
+                event.target.value as ConnectionEndpoint["kind"]
+              )
+            }
+          >
+            <option value="device">URZĄDZENIE AKTYWNE</option>
+            <option value="patch-panel">URZĄDZENIE PASYWNE</option>
+          </select>
+        </label>
+
+        <label>
+          <span>URZĄDZENIE / PANEL</span>
+          <select
+            value={resourceId}
+            onChange={(event) => changeResource(side, event.target.value)}
+          >
+            {endpointOptions
+              .filter((option) => option.kind === endpoint.kind)
+              .map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name} · {option.detail}
+                </option>
+              ))}
+          </select>
+        </label>
+
+        <label>
+          <span>PORT</span>
+          <select
+            value={
+              endpoint.kind === "device"
+                ? String(endpoint.port)
+                : endpoint.portId
+            }
+            onChange={(event) => changePort(side, event.target.value)}
+          >
+            {ports.map((port) => (
+              <option key={port.value} value={port.value}>
+                {port.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+    );
   };
 
   return (
-    <div className="modal-backdrop">
-      <section className="editor-modal connection-editor-modal" role="dialog" aria-modal="true" aria-labelledby="connection-editor-title">
+    <div
+      className="modal-backdrop"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onCancel();
+      }}
+    >
+      <section
+        className="editor-modal connection-editor-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="connection-editor-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
         <header className="editor-modal-header">
           <div>
-            <span className="eyebrow">POŁĄCZENIE</span>
+            <span className="eyebrow">KREATOR POŁĄCZENIA</span>
             <h2 id="connection-editor-title">
-              {connection ? "Edytuj połączenie" : "Dodaj połączenie"}
+              {connection ? "Edytuj połączenie" : "Nowe połączenie"}
             </h2>
+            <p className="connection-modal-description">
+              Połącz dowolne urządzenie aktywne z innym urządzeniem lub urządzeniem pasywnym.
+            </p>
           </div>
-          <button type="button" className="close-button" onClick={onCancel} aria-label="Zamknij">×</button>
+          <button
+            type="button"
+            className="close-button"
+            onClick={onCancel}
+            aria-label="Zamknij"
+          >
+            ×
+          </button>
         </header>
 
-        {switches.length === 0 || patchPanels.length === 0 ? (
+        {endpointOptions.length < 2 ? (
           <div className="connection-editor-empty">
-            <strong>Brak dostępnych punktów końcowych</strong>
-            <span>Dodaj co najmniej jeden switch i jeden patchpanel, aby utworzyć połączenie.</span>
+            <strong>Brak wystarczającej liczby punktów końcowych</strong>
+            <span>
+              Dodaj co najmniej dwa urządzenia lub patchpanele z portami.
+            </span>
           </div>
         ) : (
           <>
             <div className="connection-editor-route">
               <div className="connection-endpoint">
-                <span>SWITCH</span>
-                <strong>{selectedSwitch?.name || "—"}-{portLabel(devicePort)}</strong>
+                <span>PUNKT A</span>
+                <strong>{endpointTitle(selectedFrom, devices, patchPanels)}</strong>
               </div>
-              <div className="connection-arrow">→</div>
+              <div className="connection-arrow">↔</div>
               <div className="connection-endpoint patch">
-                <span>PATCHPANEL</span>
-                <strong>{selectedPanel?.name || "—"}-{selectedPanel?.portList.find((port) => port.id === patchPanelPortId)?.label || "—"}</strong>
+                <span>PUNKT B</span>
+                <strong>{endpointTitle(selectedTo, devices, patchPanels)}</strong>
               </div>
             </div>
 
-            <div className="connection-editor-fields">
-              <label>
-                <span>PORT SWITCHA</span>
-                <select value={deviceId} onChange={(event) => { setDeviceId(event.target.value); setDevicePort(1); }}>
-                  {switches.map((device) => <option key={device.id} value={device.id}>{device.name} · {device.manufacturer || "Producent nie podany"} · {device.ports}P</option>)}
-                </select>
-              </label>
-
-              <label>
-                <span>NUMER PORTU</span>
-                <select value={devicePort} onChange={(event) => setDevicePort(Number(event.target.value))}>
-                  {Array.from({ length: selectedSwitch?.ports ?? 0 }, (_, index) => index + 1).map((port) => (
-                    <option key={port} value={port}>{portLabel(port)}</option>
-                  ))}
-                </select>
-              </label>
-
-              <label>
-                <span>PATCHPANEL</span>
-                <select value={patchPanelId} onChange={(event) => handlePanelChange(event.target.value)}>
-                  {patchPanels.map((panel) => <option key={panel.id} value={panel.id}>{panel.name} · {panel.model || "Model nie podany"} · {panel.ports}P</option>)}
-                </select>
-              </label>
-
-              <label>
-                <span>PORT PATCHPANELA</span>
-                <select value={patchPanelPortId} onChange={(event) => setPatchPanelPortId(event.target.value)}>
-                  {selectedPanel?.portList.map((port) => <option key={port.id} value={port.id}>{port.label}</option>)}
-                </select>
-              </label>
+            <div className="connection-editor-endpoints">
+              {renderEndpoint("from", selectedFrom)}
+              {renderEndpoint("to", selectedTo)}
             </div>
 
-            {conflict && (
+            {sameEndpoint && (
               <div className="connection-editor-error">
-                Wybrany port jest już przypisany do innego połączenia. Każdy port może wystąpić tylko raz.
+                Punkt A i punkt B wskazują ten sam port. Wybierz dwa różne punkty końcowe.
+              </div>
+            )}
+
+            {conflict && !sameEndpoint && (
+              <div className="connection-editor-error">
+                Co najmniej jeden z wybranych portów jest już przypisany do innego połączenia.
               </div>
             )}
 
             <footer className="editor-modal-footer">
               {connection && onDelete ? (
-                <button type="button" className="danger-button" onClick={() => onDelete(connection.id)}>Usuń</button>
-              ) : <span />}
+                <button
+                  type="button"
+                  className="danger-button"
+                  onClick={() => onDelete(connection.id)}
+                >
+                  Usuń
+                </button>
+              ) : (
+                <span />
+              )}
               <div>
-                <button type="button" className="secondary-button" onClick={onCancel}>Anuluj</button>
-                <button type="button" className="primary-button" disabled={!canSave} onClick={handleSave}>Zapisz połączenie</button>
+                <button type="button" className="secondary-button" onClick={onCancel}>
+                  Anuluj
+                </button>
+                <button
+                  type="button"
+                  className="primary-button"
+                  disabled={!canSave}
+                  onClick={() =>
+                    onSave({
+                      id: connection?.id ?? crypto.randomUUID(),
+                      from: selectedFrom,
+                      to: selectedTo,
+                    })
+                  }
+                >
+                  Zapisz połączenie
+                </button>
               </div>
             </footer>
           </>

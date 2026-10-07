@@ -129,12 +129,8 @@ export default function ConnectionEditorModal({
     });
   };
 
-  const connectionTargetLabel = (item: Connection) => {
-    const selectedKey = endpointKey(item.from) === endpointKey(selectedFrom)
-      ? endpointKey(item.from)
-      : endpointKey(item.to) === endpointKey(selectedFrom)
-        ? endpointKey(item.to)
-        : endpointKey(selectedTo);
+  const connectionTargetLabel = (item: Connection, endpoint: ConnectionEndpoint) => {
+    const selectedKey = endpointKey(endpoint);
     const target = endpointKey(item.from) === selectedKey ? item.to : item.from;
     return endpointTitle(target, devices, patchPanels);
   };
@@ -346,20 +342,14 @@ export default function ConnectionEditorModal({
             {fromExisting && !sameEndpoint && (
               <div className="connection-editor-warning">
                 <strong>Port {endpointTitle(selectedFrom, devices, patchPanels)} jest już połączony z</strong>
-                <span>{connectionTargetLabel(fromExisting)}</span>
+                <span>{connectionTargetLabel(fromExisting, selectedFrom)}</span>
               </div>
             )}
 
             {toExisting && !sameEndpoint && (
               <div className="connection-editor-warning">
                 <strong>Port {endpointTitle(selectedTo, devices, patchPanels)} jest już połączony z</strong>
-                <span>{endpointTitle(
-                  endpointKey(fromExisting ?? toExisting) === endpointKey(toExisting.from)
-                    ? toExisting.to
-                    : toExisting.from,
-                  devices,
-                  patchPanels
-                )}</span>
+                <span>{connectionTargetLabel(toExisting, selectedTo)}</span>
               </div>
             )}
 

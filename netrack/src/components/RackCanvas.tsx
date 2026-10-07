@@ -39,7 +39,7 @@ export default function RackCanvas({ rack, devices, patchPanels, onMoveItem, onE
     <div className="rack-canvas">
       <div className="rack-canvas-header"><div><span className="rack-canvas-kicker">RACK LAYOUT</span><strong>{rack.name || "SR-01"}</strong></div><span>{rack.heightU}U · {rack.width}" · {rack.depth} mm</span></div>
       <div className="rack-canvas-body">
-        <div className="rack-canvas-scale">{Array.from({ length: rack.heightU }, (_, index) => <span key={index}>{rack.heightU - index}</span>)}</div>
+        <div className="rack-canvas-scale" style={{ gridTemplateRows: `repeat(${rack.heightU}, minmax(20px, 1fr))` }}>{Array.from({ length: rack.heightU }, (_, index) => <span key={index}>{rack.heightU - index}</span>)}</div>
         <div className="rack-canvas-frame"><div className="rack-canvas-rail left" /><div className="rack-canvas-rail right" />
           <div className="rack-canvas-grid" style={{ gridTemplateRows: `repeat(${rack.heightU}, minmax(20px, 1fr))` }}>
             {Array.from({ length: rack.heightU }, (_, index) => {

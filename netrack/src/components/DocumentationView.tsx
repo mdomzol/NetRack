@@ -143,6 +143,43 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
     );
   }
 
+  if (view === "connection-map") {
+    return (
+      <div className="documentation-page connection-map-page">
+        <PageHeader
+          eyebrow="DOKUMENTACJA / MAPA POŁĄCZEŃ"
+          title="Mapa połączeń"
+          description="Kompletny widok szafy rack. Najedź na port, aby zobaczyć drugi koniec połączenia."
+        />
+        <section className="documentation-panel connection-map-full-panel">
+          <div className="connection-map-full-heading">
+            <div>
+              <span>MAPA OKABLOWANIA</span>
+              <strong>{String(project.connections.length).padStart(2, "0")} <small>POŁĄCZENIA</small></strong>
+            </div>
+            <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>
+              + Dodaj połączenie
+            </button>
+          </div>
+          <ConnectionRackMap project={project} />
+        </section>
+
+        {creatingConnection && (
+          <ConnectionEditorModal
+            devices={project.devices}
+            patchPanels={project.patchPanels}
+            connections={project.connections}
+            onSave={(connection) => {
+              onSaveConnection(connection);
+              setCreatingConnection(false);
+            }}
+            onCancel={() => setCreatingConnection(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
   if (view === "devices") {
     const activeDeviceId = selectedDeviceId ?? focusedDeviceId;
     const selectedDevice = project.devices.find((device) => device.id === activeDeviceId) ?? null;

@@ -21,6 +21,8 @@ type Props = {
   onAddDevice: () => void;
   onAddPatchPanel: () => void;
   onAddAccessory: (type: RackAccessoryType) => void;
+  onMoveItem: (id: string, type: "device" | "patch-panel" | "accessory", positionU: number) => boolean | void;
+  onRemoveItem: (id: string, type: "device" | "patch-panel" | "accessory") => void;
 };
 
 function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {
@@ -46,7 +48,7 @@ const deviceLabels: Record<string, string> = {
   other: "Inne",
 };
 
-function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice, onAddDevice, onAddPatchPanel, onAddAccessory }: Props) {
+function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice, onAddDevice, onAddPatchPanel, onAddAccessory, onMoveItem, onRemoveItem }: Props) {
   const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
   const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(focusedDeviceId);
@@ -54,6 +56,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   const [selectedConnectionId, setSelectedConnectionId] = useState<string | null>(null);
   const [creatingConnection, setCreatingConnection] = useState(false);
   const [showRackAddMenu, setShowRackAddMenu] = useState(false);
+  const [draggingRackItemId, setDraggingRackItemId] = useState<string | null>(null);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
       total + panel.portList.filter((port) => port.status === "connected").length,
@@ -94,9 +97,44 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                     <button
                       key={u}
                       type="button"
-                      className={`rack-mini-row ${item ? "occupied" : ""} ${selected ? "selected" : ""}`}
+                      className={`rack-mini-row ${item ? "occupied" : ""} ${selected ? "selected" : ""} ${draggingRackItemId === item?.id ? "dragging" : ""}`}
+                      draggable={Boolean(item)}
+                      onDragStart={(event) => {
+                        if (!item) return;
+                        setDraggingRackItemId(item.id);
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData(
+                          "text/netrack-item",
+                          JSON.stringify({
+                            id: item.id,
+                            type: project.devices.some((device) => device.id === item.id)
+                              ? "device"
+                              : project.patchPanels.some((panel) => panel.id === item.id)
+                                ? "patch-panel"
+                                : "accessory",
+                          })
+                        );
+                      }}
+                      onDragEnd={() => setDraggingRackItemId(null)}
+                      onDragOver={(event) => {
+                        if (!draggingRackItemId) return;
+                        event.preventDefault();
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        if (!draggingRackItemId) return;
+                        const dragged = rackItems.find((candidate) => candidate.id === draggingRackItemId);
+                        if (!dragged) return;
+                        const type = project.devices.some((device) => device.id === dragged.id)
+                          ? "device"
+                          : project.patchPanels.some((panel) => panel.id === dragged.id)
+                            ? "patch-panel"
+                            : "accessory";
+                        onMoveItem(dragged.id, type, u);
+                        setDraggingRackItemId(null);
+                      }}
                       onClick={() => item && setSelectedRackItemId(item.id)}
-                      disabled={!item}
+                      disabled={!item && !draggingRackItemId}
                     >
                       <span>{u}</span>
                       <div>
@@ -135,6 +173,21 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                     ) : (
                       <button type="button" className="primary-button" onClick={() => setSelectedRackItemId(null)}>Zamknij szczegóły <span>×</span></button>
                     )}
+                    <button
+                      type="button"
+                      className="danger-button rack-item-delete-button"
+                      onClick={() => {
+                        const type = project.devices.some((device) => device.id === selectedRackItem.id)
+                          ? "device"
+                          : project.patchPanels.some((panel) => panel.id === selectedRackItem.id)
+                            ? "patch-panel"
+                            : "accessory";
+                        onRemoveItem(selectedRackItem.id, type);
+                        setSelectedRackItemId(null);
+                      }}
+                    >
+                      Usuń element
+                    </button>
                   </div>
                 </div>
               </>

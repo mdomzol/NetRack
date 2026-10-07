@@ -42,12 +42,22 @@ export type PatchPanelPort = {
   status: "free" | "connected";
 };
 
+export type ConnectionEndpoint =
+  | {
+      kind: "device";
+      deviceId: string;
+      port: number;
+    }
+  | {
+      kind: "patch-panel";
+      patchPanelId: string;
+      portId: string;
+    };
+
 export type Connection = {
   id: string;
-  deviceId: string;
-  devicePort: number;
-  patchPanelId: string;
-  patchPanelPortId: string;
+  from: ConnectionEndpoint;
+  to: ConnectionEndpoint;
 };
 
 export type PatchPanel = {

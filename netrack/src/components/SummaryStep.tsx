@@ -7,280 +7,195 @@ type SummaryStepProps = {
   }[];
 };
 
-function SummaryStep({
-  project,
-  validationErrors,
-}: SummaryStepProps) {
-  return (
-    <>
-      <div className="wizard-card-header">
-        <div>
-          <h2>Podsumowanie</h2>
+function SummaryStep({ project, validationErrors }: SummaryStepProps) {
+  const connectedPorts = project.patchPanels.reduce(
+    (total, patchPanel) =>
+      total +
+      patchPanel.portList.filter((port) => port.status === "connected").length,
+    0
+  );
 
-          <span>
-            Sprawdź konfigurację przed utworzeniem projektu
-          </span>
+  const mountedDevices = project.devices.filter(
+    (device) => device.positionU !== null
+  ).length;
+
+  const mountedPatchPanels = project.patchPanels.filter(
+    (patchPanel) => patchPanel.positionU !== null
+  ).length;
+
+  const totalEquipment = project.devices.length + project.patchPanels.length;
+  const totalMounted = mountedDevices + mountedPatchPanels;
+  const isValid = validationErrors.length === 0;
+
+  return (
+    <div className="summary-page">
+      <div className="summary-intro">
+        <div>
+          <span className="summary-eyebrow">FINAL CHECK</span>
+          <h2>Podsumowanie projektu</h2>
+          <p>Zweryfikuj najważniejsze informacje i wyposażenie przed utworzeniem dokumentacji.</p>
+        </div>
+        <div className={`summary-state-badge ${isValid ? "valid" : "invalid"}`}>
+          <span>{isValid ? "✓" : "!"}</span>
+          {isValid ? "GOTOWE DO UTWORZENIA" : "WYMAGA POPRAWY"}
         </div>
       </div>
 
-      {validationErrors.length > 0 ? (
-        <div className="summary-validation error">
-          <div className="summary-validation-icon">
-            !
-          </div>
+      <div className="summary-overview">
+        <div className="summary-project-card">
+          <span className="summary-card-kicker">PROJEKT</span>
+          <strong>{project.name || "Projekt bez nazwy"}</strong>
+          <span>{project.location || "Lokalizacja nie podana"}</span>
+          {project.description && <p>{project.description}</p>}
+        </div>
 
-          <div className="summary-validation-content">
-            <strong>
-              Konfiguracja wymaga poprawy
-            </strong>
+        <div className="summary-stat">
+          <span>RACK</span>
+          <strong>{project.rack.heightU}U</strong>
+          <small>{project.rack.name || "Bez nazwy"}</small>
+        </div>
 
-            <span>
-              {validationErrors.length === 1
-                ? "Wykryto 1 problem przed utworzeniem projektu."
-                : `Wykryto ${validationErrors.length} problemy przed utworzeniem projektu.`}
-            </span>
+        <div className="summary-stat">
+          <span>URZĄDZENIA</span>
+          <strong>{project.devices.length}</strong>
+          <small>{mountedDevices} zamontowanych</small>
+        </div>
 
-            <div className="summary-validation-list">
+        <div className="summary-stat">
+          <span>PATCHPANELE</span>
+          <strong>{project.patchPanels.length}</strong>
+          <small>{connectedPorts} aktywnych portów</small>
+        </div>
+
+        <div className="summary-stat">
+          <span>MONTAŻ</span>
+          <strong>{totalMounted}/{totalEquipment}</strong>
+          <small>{totalEquipment ? "elementów w racku" : "brak wyposażenia"}</small>
+        </div>
+      </div>
+
+      {!isValid && (
+        <section className="summary-alert error">
+          <div className="summary-alert-icon">!</div>
+          <div>
+            <strong>Przed utworzeniem projektu popraw {validationErrors.length === 1 ? "wskazany problem" : "wskazane problemy"}.</strong>
+            <div className="summary-alert-list">
               {validationErrors.map((error, index) => (
-                <div key={index}>
-                  <span>•</span>
-                  {error.message}
-                </div>
+                <div key={index}>{error.message}</div>
               ))}
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="summary-validation success">
-          <div className="summary-validation-icon">
-            ✓
-          </div>
-
-          <div className="summary-validation-content">
-            <strong>
-              Konfiguracja jest poprawna
-            </strong>
-
-            <span>
-              Projekt jest gotowy do utworzenia.
-            </span>
-          </div>
-        </div>
+        </section>
       )}
 
-      <div className="summary-content">
-        <section className="summary-section">
-          <div className="summary-section-title">
-            Projekt
-          </div>
-
-          <div className="summary-grid">
-            <div className="summary-item">
-              <span>Nazwa projektu</span>
-              <strong>
-                {project.name || "Nie podano"}
-              </strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Lokalizacja</span>
-              <strong>
-                {project.location || "Nie podano"}
-              </strong>
-            </div>
-
-            <div className="summary-item summary-item-wide">
-              <span>Opis</span>
-              <strong>
-                {project.description || "Brak opisu"}
-              </strong>
-            </div>
+      {isValid && (
+        <section className="summary-alert success">
+          <div className="summary-alert-icon">✓</div>
+          <div>
+            <strong>Konfiguracja jest kompletna.</strong>
+            <span>Projekt można teraz utworzyć i zapisać.</span>
           </div>
         </section>
+      )}
 
-        <section className="summary-section">
-          <div className="summary-section-title">
-            Szafa rack
-          </div>
+      <div className="summary-columns">
+        <div className="summary-column">
+          <section className="summary-panel">
+            <div className="summary-panel-header">
+              <div>
+                <span className="summary-panel-kicker">01 / PROJECT</span>
+                <h3>Informacje projektu</h3>
+              </div>
+            </div>
+            <div className="summary-details">
+              <div><span>Nazwa</span><strong>{project.name || "—"}</strong></div>
+              <div><span>Lokalizacja</span><strong>{project.location || "—"}</strong></div>
+              <div className="wide"><span>Opis</span><strong>{project.description || "Brak opisu"}</strong></div>
+            </div>
+          </section>
 
-          <div className="summary-grid">
-            <div className="summary-item">
-              <span>Nazwa</span>
-              <strong>
-                {project.rack.name || "Nie podano"}
-              </strong>
+          <section className="summary-panel">
+            <div className="summary-panel-header">
+              <div>
+                <span className="summary-panel-kicker">02 / RACK</span>
+                <h3>Parametry szafy</h3>
+              </div>
+              <span className="summary-panel-code">{project.rack.name || "SR-01"}</span>
+            </div>
+            <div className="summary-details">
+              <div><span>Lokalizacja</span><strong>{project.rack.location || "—"}</strong></div>
+              <div><span>Producent</span><strong>{project.rack.manufacturer || "—"}</strong></div>
+              <div><span>Model</span><strong>{project.rack.model || "—"}</strong></div>
+              <div><span>Wysokość</span><strong>{project.rack.heightU}U</strong></div>
+              <div><span>Szerokość</span><strong>{project.rack.width}"</strong></div>
+              <div><span>Głębokość</span><strong>{project.rack.depth} mm</strong></div>
+            </div>
+          </section>
+        </div>
+
+        <div className="summary-column">
+          <section className="summary-panel summary-equipment-panel">
+            <div className="summary-panel-header">
+              <div>
+                <span className="summary-panel-kicker">03 / EQUIPMENT</span>
+                <h3>Wyposażenie racka</h3>
+              </div>
+              <span className="summary-panel-count">{totalEquipment}</span>
             </div>
 
-            <div className="summary-item">
-              <span>Lokalizacja</span>
-              <strong>
-                {project.rack.location || "Nie podano"}
-              </strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Producent</span>
-              <strong>
-                {project.rack.manufacturer || "Nie podano"}
-              </strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Model</span>
-              <strong>
-                {project.rack.model || "Nie podano"}
-              </strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Wysokość</span>
-              <strong>
-                {project.rack.heightU}U
-              </strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Wymiary</span>
-              <strong>
-                {project.rack.width}" ×{" "}
-                {project.rack.depth} mm
-              </strong>
-            </div>
-          </div>
-        </section>
-
-        <section className="summary-section">
-          <div className="summary-section-header">
-            <div className="summary-section-title">
-              Urządzenia
-            </div>
-
-            <span className="summary-count">
-              {project.devices.length}
-            </span>
-          </div>
-
-          {project.devices.length === 0 ? (
-            <div className="summary-empty">
-              Nie dodano żadnych urządzeń.
-            </div>
-          ) : (
-            <div className="summary-list">
-              {project.devices.map((device) => (
-                <div
-                  key={device.id}
-                  className="summary-list-row"
-                >
-                  <div>
-                    <strong>{device.name}</strong>
-
-                    <span>
-                      {device.manufacturer ||
-                        "Nie określono producenta"}
-
-                      {" · "}
-
-                      {device.model ||
-                        "Nie określono modelu"}
-                    </span>
-                  </div>
-
-                  <div className="summary-list-meta">
-                    <span>
-                      {device.type}
-                    </span>
-
-                    <span>
-                      {device.ports} portów
-                    </span>
-
-                    <span>
-                      {device.heightU}U
-                    </span>
-
-                    <span>
-                      {device.positionU
-                        ? `U${device.positionU}`
-                        : "Pozycja nieustalona"}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className="summary-section">
-          <div className="summary-section-header">
-            <div className="summary-section-title">
-              Patchpanele
-            </div>
-
-            <span className="summary-count">
-              {project.patchPanels.length}
-            </span>
-          </div>
-
-          {project.patchPanels.length === 0 ? (
-            <div className="summary-empty">
-              Nie dodano żadnych patchpaneli.
-            </div>
-          ) : (
-            <div className="summary-list">
-              {project.patchPanels.map(
-                (patchPanel) => (
-                  <div
-                    key={patchPanel.id}
-                    className="summary-list-row"
-                  >
-                    <div>
-                      <strong>
-                        {patchPanel.name}
-                      </strong>
-
-                      <span>
-                        {patchPanel.manufacturer ||
-                          "Nie określono producenta"}
-
-                        {" · "}
-
-                        {patchPanel.model ||
-                          "Nie określono modelu"}
-                      </span>
+            {totalEquipment === 0 ? (
+              <div className="summary-empty-state">
+                <strong>Brak wyposażenia</strong>
+                <span>Dodaj urządzenia lub patchpanele w poprzednim kroku.</span>
+              </div>
+            ) : (
+              <div className="summary-equipment-list">
+                {project.devices.map((device) => (
+                  <div className="summary-equipment-row" key={device.id}>
+                    <div className="summary-equipment-index">SW</div>
+                    <div className="summary-equipment-main">
+                      <strong>{device.name}</strong>
+                      <span>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</span>
                     </div>
-
-                    <div className="summary-list-meta">
-                      <span>
-                        {patchPanel.ports} portów
-                      </span>
-
-                      <span>
-                        {patchPanel.heightU}U
-                      </span>
-
-                      <span>
-                        {patchPanel.type}
-                      </span>
-
-                      <span>
-                        {
-                          patchPanel.portList.filter(
-                            (port) =>
-                              port.status ===
-                              "connected"
-                          ).length
-                        }{" "}
-                        podłączonych
+                    <div className="summary-equipment-meta">
+                      <span>{device.ports}P</span>
+                      <span>{device.heightU}U</span>
+                      <span className={device.positionU !== null ? "mounted" : "unmounted"}>
+                        {device.positionU !== null ? `U${device.positionU}` : "POZA RACKIEM"}
                       </span>
                     </div>
                   </div>
-                )
-              )}
-            </div>
-          )}
-        </section>
+                ))}
+
+                {project.patchPanels.map((patchPanel) => {
+                  const connected = patchPanel.portList.filter(
+                    (port) => port.status === "connected"
+                  ).length;
+
+                  return (
+                    <div className="summary-equipment-row" key={patchPanel.id}>
+                      <div className="summary-equipment-index pp">PP</div>
+                      <div className="summary-equipment-main">
+                        <strong>{patchPanel.name}</strong>
+                        <span>{patchPanel.manufacturer || "—"} · {patchPanel.model || "Model nie podany"}</span>
+                      </div>
+                      <div className="summary-equipment-meta">
+                        <span>{patchPanel.ports}P</span>
+                        <span>{patchPanel.heightU}U</span>
+                        <span>{connected}/{patchPanel.ports} PRT.</span>
+                        <span className={patchPanel.positionU !== null ? "mounted" : "unmounted"}>
+                          {patchPanel.positionU !== null ? `U${patchPanel.positionU}` : "POZA RACKIEM"}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

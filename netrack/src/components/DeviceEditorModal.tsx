@@ -47,6 +47,7 @@ function DeviceEditorModal({
       model: model.model,
       type: model.type,
       ports: model.ports,
+      portLayout: model.portLayout,
       heightU: model.heightU,
     }));
   };
@@ -65,6 +66,7 @@ function DeviceEditorModal({
       manufacturer: form.manufacturer,
       model: form.model,
       ports: form.ports,
+      portLayout: form.portLayout,
       heightU: form.heightU,
     });
   };
@@ -353,7 +355,15 @@ function DeviceEditorModal({
                   {" · "}
                   {form.model || "Brak modelu"}
                   {" · "}
-                  {form.ports} portów
+                  {form.portLayout?.filter((port) => port.type === "rj45").length ?? form.ports} RJ45
+                  {(form.portLayout?.filter((port) => port.type !== "rj45").length ?? 0) > 0 && (
+                    <>
+                      {" · "}
+                      {form.portLayout?.filter((port) => port.type === "sfp").length ?? 0} SFP
+                      {" · "}
+                      {form.portLayout?.filter((port) => port.type === "sfp+").length ?? 0} SFP+
+                    </>
+                  )}
                   {" · "}
                   {form.heightU}U
                 </span>

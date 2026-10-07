@@ -8894,47 +8894,56 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 
 /* Empty U sections stay compact; mounted equipment determines its visual weight. */
 .connection-map-page .connection-rack-grid {
-  min-height: max(360px, calc(var(--rack-height, 12) * 28px));
-  grid-auto-rows: minmax(18px, 1fr);
+  min-height: max(360px, calc(var(--rack-height, 12) * 36px));
 }
 
 .connection-map-page .connection-rack-row {
   min-height: 18px;
+  height: 18px;
+  align-self: start;
 }
 
 /* Mounted network equipment keeps the previous, larger visual scale.
    Only empty U sections and rack fillers stay compact. */
 .connection-map-page .connection-rack-equipment.is-device,
 .connection-map-page .connection-rack-equipment.is-patch-panel {
-  min-height: 64px;
+  min-height: 36px;
+  height: 36px;
 }
 
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading,
 .connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading {
-  min-height: 38px;
-  padding: 7px 11px;
+  min-height: 18px;
+  padding: 3px 8px;
 }
 
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading strong,
 .connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading strong {
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading span,
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-equipment-heading small,
 .connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading span,
 .connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-equipment-heading small {
-  font-size: 7px;
+  font-size: 6px;
 }
 
 .connection-map-page .connection-rack-equipment.is-device .connection-rack-port-groups,
 .connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-port-groups {
-  padding: 7px 8px 8px;
+  padding: 3px 6px 4px;
+  gap: 5px;
+}
+
+.connection-map-page .connection-rack-equipment.is-device .connection-rack-ports,
+.connection-map-page .connection-rack-equipment.is-patch-panel .connection-rack-ports {
+  grid-auto-rows: minmax(12px, 1fr);
 }
 
 /* Maskownica / organizer are visual rack fillers, not network equipment. */
 .connection-map-page .connection-rack-equipment.is-accessory {
   min-height: 18px;
+  height: 18px;
   border-color: #303944;
   background: #11161c;
 }

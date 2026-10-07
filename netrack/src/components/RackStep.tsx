@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-import { Device, PatchPanel, Rack, RackAccessory, RackAccessoryType } from "../types";
+import { Device, PatchPanel, Rack, RackAccessory } from "../types";
 
 type RackStepProps = {
 rack: Rack;
@@ -11,9 +9,6 @@ updateRackField: <K extends keyof Rack>(
 field: K,
 value: Rack[K]
 ) => void;
-onAddDevice: () => void;
-onAddPatchPanel: () => void;
-onAddAccessory: (type: RackAccessoryType) => void;
 };
 
 function RackStep({
@@ -21,12 +16,8 @@ rack,
 devices,
 patchPanels,
 accessories,
-onAddDevice,
-onAddPatchPanel,
-onAddAccessory,
 updateRackField,
 }: RackStepProps) {
-const [showAddMenu, setShowAddMenu] = useState(false);
 const rackItems = [
 ...accessories.map((accessory) => ({id:accessory.id,name:accessory.name,type:"accessory" as const,positionU:accessory.positionU,heightU:accessory.heightU})),
 ...devices.map((device) => ({
@@ -67,41 +58,8 @@ return (
   <div className="rack-config">
     <div className="rack-form">
       <div className="rack-form-section">
-        <div className="form-section-heading">
-          <div className="form-section-title">Identyfikacja</div>
-          <div className="rack-add-control">
-            <button
-              type="button"
-              className="secondary-button rack-add-button"
-              onClick={() => setShowAddMenu((visible) => !visible)}
-            >
-              + Dodaj element
-            </button>
-            {showAddMenu && (
-              <div className="rack-add-menu">
-                <button type="button" onClick={() => { onAddDevice(); setShowAddMenu(false); }}>
-                  <strong>Urządzenie</strong>
-                  <span>Switch, router, firewall, serwer</span>
-                </button>
-                <button type="button" onClick={() => { onAddPatchPanel(); setShowAddMenu(false); }}>
-                  <strong>Patchpanel</strong>
-                  <span>Panel krosowy do szafy</span>
-                </button>
-                <button type="button" onClick={() => { onAddAccessory("organizer"); setShowAddMenu(false); }}>
-                  <strong>Organizer</strong>
-                  <span>Organizacja przewodów</span>
-                </button>
-                <button type="button" onClick={() => { onAddAccessory("maskownica"); setShowAddMenu(false); }}>
-                  <strong>Maskownica</strong>
-                  <span>Zaślepienie wolnej przestrzeni</span>
-                </button>
-                <button type="button" onClick={() => { onAddAccessory("ups"); setShowAddMenu(false); }}>
-                  <strong>UPS</strong>
-                  <span>Zasilanie awaryjne</span>
-                </button>
-              </div>
-            )}
-          </div>
+        <div className="form-section-title">
+          Identyfikacja
         </div>
 
         <div className="form-grid">

@@ -686,7 +686,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                             {
                               "--port-columns":
                                 group.type === "rj45"
-                                  ? Math.min(12, Math.ceil(group.ports.length / 2))
+                                  ? Math.min(group.ports.length >= 48 ? 24 : 12, Math.ceil(group.ports.length / 2))
                                   : Math.min(group.ports.length, 4),
                             } as CSSProperties
                           }

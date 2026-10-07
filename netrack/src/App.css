@@ -63,10 +63,10 @@ SIDEBAR
   display: flex;
   flex-direction: column;
 
-  width: 240px;
+  width: 216px;
   height: 100%;
 
-  padding: 22px 14px;
+  padding: 18px 12px;
 
   background: #10151c;
 
@@ -77,9 +77,9 @@ SIDEBAR
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 10px;
 
-  padding: 0 10px 28px;
+  padding: 0 8px 22px;
 }
 
 .brand-mark {
@@ -87,22 +87,22 @@ SIDEBAR
   align-items: center;
   justify-content: center;
 
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
 
   border-radius: 9px;
 
   background: #e5e7eb;
   color: #10151c;
 
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
 }
 
 .brand-name {
   color: #f3f4f6;
 
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -122,7 +122,7 @@ SIDEBAR
 }
 
 .nav-section-title {
-  margin: 16px 10px 7px;
+  margin: 13px 8px 6px;
 
   color: #596272;
 
@@ -135,11 +135,11 @@ SIDEBAR
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 10px;
 
   width: 100%;
 
-  padding: 10px 12px;
+  padding: 8px 10px;
 
   border: 0;
   border-radius: 7px;
@@ -5439,8 +5439,8 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  min-height: 178px;
-  padding: 18px;
+  min-height: 158px;
+  padding: 15px;
   overflow: hidden;
   text-align: left;
   border-color: #232b35;
@@ -5480,25 +5480,25 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  min-height: 48px;
+  min-height: 40px;
 }
 
 .project-status-card-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border: 1px solid #303945;
-  border-radius: 9px;
+  border-radius: 7px;
   background: #0b1016;
   color: #9aa3ae;
   transition: border-color .18s ease, background .18s ease, transform .18s ease;
 }
 
 .project-status-card-icon .ui-icon {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .project-status-card:hover .project-status-card-icon {
@@ -5514,7 +5514,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .project-status-card .stat-card-content {
-  margin-top: 14px;
+  margin-top: 10px;
   gap: 0;
 }
 
@@ -5529,10 +5529,10 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 
 .project-status-card strong {
   display: block;
-  margin: 7px 0 0;
+  margin: 6px 0 0;
   color: #f0f2f4;
   font-family: "JetBrains Mono", monospace;
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 650;
   line-height: .95;
   letter-spacing: -.04em;
@@ -5540,7 +5540,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 
 .project-status-card-meta {
   display: block;
-  margin-top: 9px;
+  margin-top: 6px;
   color: #626c78;
   font-size: 9px;
   line-height: 1.3;
@@ -5556,7 +5556,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   align-items: center;
   gap: 10px;
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: 8px;
 }
 
 .project-status-card-track {
@@ -5620,5 +5620,4 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 

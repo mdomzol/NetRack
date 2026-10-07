@@ -59,7 +59,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   const editingConnection = project.connections.find((connection) => connection.id === editingConnectionId) ?? null;
 
   if (view === "rack") {
-    const rackItems = [...project.devices, ...project.patchPanels];
+    const rackItems = [...project.devices, ...project.patchPanels, ...project.accessories];
     const selectedRackItem = rackItems.find((item) => item.id === selectedRackItemId) ?? null;
 
     return (

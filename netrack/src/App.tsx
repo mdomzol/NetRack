@@ -110,6 +110,7 @@ function App() {
   const [view, setView] = useState<View>("dashboard");
   const [project, setProject] = useState<ProjectDraft>(loadProject);
   const [draft, setDraft] = useState<ProjectDraft>(createEmptyProject);
+  const [focusedDeviceId, setFocusedDeviceId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -178,6 +179,10 @@ function App() {
   }
 
   const navigate = (nextView: View) => setView(nextView);
+  const openDevice = (deviceId: string) => {
+    setFocusedDeviceId(deviceId);
+    setView("devices");
+  };
 
   return (
     <div className="app">
@@ -220,6 +225,9 @@ function App() {
               view={view}
               onSaveConnection={saveConnection}
               onDeleteConnection={deleteConnection}
+              onOpenDevice={openDevice}
+              focusedDeviceId={focusedDeviceId}
+              onClearFocusedDevice={() => setFocusedDeviceId(null)}
             />
           </section>
         </main>

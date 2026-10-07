@@ -249,7 +249,10 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                     <small>{item.manufacturer || "—"} · {item.model || "—"}</small>
                   </div>
 
-                  <div className="connection-rack-ports">
+                  <div
+                    className="connection-rack-ports"
+                    style={{ "--port-columns": item.ports <= 12 ? 12 : 24 } as CSSProperties}
+                  >
                     {itemKeys.map((key, index) => {
                       const connection = findConnection(key);
                       const target = connection ? counterpart(connection, key) : null;

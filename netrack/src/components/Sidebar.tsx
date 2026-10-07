@@ -1,3 +1,5 @@
+import Icon from "./Icon";
+
 type NavigationView = "dashboard" | "rack" | "devices" | "patch-panels" | "connections";
 
 type SidebarProps = {
@@ -7,11 +9,11 @@ type SidebarProps = {
 };
 
 function Sidebar({ hasProject, activeView, onNavigate }: SidebarProps) {
-  const items: { view: NavigationView; icon: string; label: string }[] = [
-    { view: "rack", icon: "▣", label: "Szafa" },
-    { view: "devices", icon: "◈", label: "Urządzenia" },
-    { view: "patch-panels", icon: "▤", label: "Patchpanele" },
-    { view: "connections", icon: "⌁", label: "Połączenia" },
+  const items: { view: NavigationView; icon: "rack" | "switch" | "patch-panel" | "link"; label: string }[] = [
+    { view: "rack", icon: "rack", label: "Szafa" },
+    { view: "devices", icon: "switch", label: "Urządzenia" },
+    { view: "patch-panels", icon: "patch-panel", label: "Patchpanele" },
+    { view: "connections", icon: "link", label: "Połączenia" },
   ];
 
   return (
@@ -27,24 +29,24 @@ function Sidebar({ hasProject, activeView, onNavigate }: SidebarProps) {
       <nav className="navigation" aria-label="Nawigacja">
         <div className="nav-section-title">WORKSPACE</div>
         <button
-          className={`nav-item ${activeView === "dashboard" ? "active" : ""}`}
+          className={"nav-item " + (activeView === "dashboard" ? "active" : "")}
           type="button"
           onClick={() => onNavigate("dashboard")}
         >
-          <span>⌂</span>
+          <Icon name="home" />
           Panel główny
         </button>
 
         <div className="nav-section-title">DOKUMENTACJA</div>
         {items.map(({ view, icon, label }) => (
           <button
-            className={`nav-item ${activeView === view ? "active" : ""}`}
+            className={"nav-item " + (activeView === view ? "active" : "")}
             type="button"
             key={view}
             onClick={() => onNavigate(view)}
             disabled={!hasProject}
           >
-            <span>{icon}</span>
+            <Icon name={icon} active={activeView === view} />
             {label}
             <em>{hasProject ? "" : "—"}</em>
           </button>

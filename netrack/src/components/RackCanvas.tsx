@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Device, PatchPanel, Rack } from "../types";
+import { Device, PatchPanel, Rack, RackAccessory } from "../types";
 import Icon from "./Icon";
 
 type RackItem = {
@@ -18,6 +18,7 @@ type RackCanvasProps = {
   rack: Rack;
   devices: Device[];
   patchPanels: PatchPanel[];
+  accessories: RackAccessory[];
   onMoveItem?: (
     id: string,
     type: "device" | "patch-panel",
@@ -30,6 +31,7 @@ export default function RackCanvas({
   rack,
   devices,
   patchPanels,
+  accessories,
   onMoveItem,
   onEditItem,
 }: RackCanvasProps) {
@@ -37,6 +39,7 @@ export default function RackCanvas({
   const [dropU, setDropU] = useState<number | null>(null);
 
   const items: RackItem[] = [
+    ...accessories.map((item) => ({ id:item.id,name:item.name,type:"accessory" as const,positionU:item.positionU,heightU:item.heightU,manufacturer:item.manufacturer,model:item.model,ports:0,detail:item.type })),
     ...devices.map((item) => ({
       id: item.id, name: item.name, type: "device" as const,
       positionU: item.positionU,

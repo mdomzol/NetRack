@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { RackAccessory, RackAccessoryType } from "../types";
+import { RackAccessory } from "../types";
 type Props={accessory:RackAccessory;rackHeight:number;onSave:(changes:Partial<RackAccessory>)=>void;onCancel:()=>void};
 export default function RackAccessoryEditorModal({accessory,rackHeight,onSave,onCancel}:Props){
  const [form,setForm]=useState(accessory); useEffect(()=>setForm(accessory),[accessory]);
  return <div className="device-modal-overlay" onMouseDown={e=>e.target===e.currentTarget&&onCancel()}>
   <div className="device-modal" role="dialog" aria-modal="true" aria-labelledby="rack-accessory-title">
-   <header className="device-modal-header"><div><div className="form-section-title">ELEMENT RACKA</div><h2 id="rack-accessory-title">{form.name||"Nowy element"}</h2><p>Konfiguracja organizera, maskownicaa lub UPS-a.</p></div><button className="close-button" onClick={onCancel}>×</button></header>
+   <header className="device-modal-header"><div><div className="form-section-title">ELEMENT RACKA</div><h2 id="rack-accessory-title">{form.name||"Nowy element"}</h2><p>Konfiguracja elementu racka.</p></div><button className="close-button" onClick={onCancel}>×</button></header>
    <div className="device-modal-body">
     <section className="device-editor-section"><div className="device-editor-section-title">Informacje podstawowe</div><div className="device-editor-grid">
      <div className="form-field full"><label>Nazwa</label><input autoFocus value={form.name} onChange={e=>setForm(v=>({...v,name:e.target.value}))}/></div>
-     <div className="form-field full"><label>Typ</label><select value={form.type} onChange={e=>setForm(v=>({...v,type:e.target.value as RackAccessoryType}))}><option value="organizer">Organizer kablowy</option><option value="maskownica">Panel zaślepiający</option><option value="ups">UPS</option></select></div>
      <div className="form-field"><label>Producent</label><input value={form.manufacturer} onChange={e=>setForm(v=>({...v,manufacturer:e.target.value}))}/></div>
      <div className="form-field"><label>Model</label><input value={form.model} onChange={e=>setForm(v=>({...v,model:e.target.value}))}/></div>
     </div></section>

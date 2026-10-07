@@ -199,7 +199,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
 
       <div className="connection-rack-stage">
         <div className="connection-rack-frame">
-          <div className="connection-rack-scale">
+          <div className="connection-rack-scale" style={{ "--rack-height": project.rack.heightU } as React.CSSProperties}>
             {Array.from({ length: project.rack.heightU }, (_, index) => {
               const u = project.rack.heightU - index;
               return <span key={u}>{u}</span>;

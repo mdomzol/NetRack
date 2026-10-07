@@ -7672,6 +7672,51 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   }
 }
 
+/* Connections toolbar */
+.connections-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 50px;
+  margin-bottom: 10px;
+  padding: 8px 10px 8px 14px;
+  border: 1px solid #202832;
+  border-radius: 4px;
+  background: #0e1319;
+}
+
+.connection-toolbar-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.connection-toolbar-copy > span {
+  color: #56616d;
+  font: 700 6px/1 "JetBrains Mono", monospace;
+  letter-spacing: .14em;
+}
+
+.connection-toolbar-copy > div {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.connection-toolbar-copy strong {
+  color: #e0e5e8;
+  font: 700 16px/1 "JetBrains Mono", monospace;
+  letter-spacing: .02em;
+}
+
+.connection-toolbar-copy small {
+  color: #707b86;
+  font: 700 7px/1 "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+}
+
 /* Connections documentation workspace */
 .connections-page .page-header {
   margin-bottom: 12px;

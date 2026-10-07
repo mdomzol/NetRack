@@ -8,8 +8,6 @@ import { DEVICE_MODELS } from "../constants";
 
 import ProjectStep from "../components/ProjectStep";
 import RackStep from "../components/RackStep";
-import DevicesStep from "../components/DevicesStep";
-import PatchPanelStep from "../components/PatchPanelStep";
 import RackEquipmentStep from "../components/RackEquipmentStep";
 import SummaryStep from "../components/SummaryStep";
 

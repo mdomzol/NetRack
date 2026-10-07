@@ -80,7 +80,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                   <button type="button" onClick={() => { onAddPatchPanel(); setShowRackAddMenu(false); }}><strong>Patchpanel</strong><span>Panel krosowy do szafy</span></button>
                   <button type="button" onClick={() => { onAddAccessory("organizer"); setShowRackAddMenu(false); }}><strong>Organizer</strong><span>Organizacja przewodów</span></button>
                   <button type="button" onClick={() => { onAddAccessory("maskownica"); setShowRackAddMenu(false); }}><strong>Maskownica</strong><span>Zaślepienie wolnej przestrzeni</span></button>
-                  <button type="button" onClick={() => { onAddAccessory("ups"); setShowRackAddMenu(false); }}><strong>UPS</strong><span>Zasilanie awaryjne</span></button>
+                  <button type="button" onClick={() => { onAddAccessory("ups"); setShowRackAddMenu(false); }}><strong>UPS</strong><span>Zasilanie awaryjne</span></button><button type="button" onClick={() => { onAddAccessory("listwa"); setShowRackAddMenu(false); }}><strong>Listwa zasilająca</strong><span>Zasilanie urządzeń rackowych</span></button>
                 </div>}
               </div>
             </div>
@@ -659,7 +659,9 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                                 ? "ORGANIZER"
                                 : accessoryType === "ups"
                                   ? "UPS"
-                                  : "AKCESORIUM"} · {item.heightU}U
+                                  : accessoryType === "listwa"
+                                    ? "LISTWA ZASILAJĄCA"
+                                    : "AKCESORIUM"} · {item.heightU}U
                       </span>
                     </div>
                     <small>

@@ -9,7 +9,7 @@ import DocumentationView, {
 import NewProject from "./pages/NewProject";
 
 import { createEmptyProject } from "./constants";
-import { ProjectDraft } from "./types";
+import { Connection, ProjectDraft } from "./types";
 
 type View = "dashboard" | DocumentationViewType | "new-project";
 const STORAGE_KEY = "netrack:project";
@@ -50,6 +50,45 @@ function App() {
   const createProject = (createdProject: ProjectDraft) => {
     setProject(createdProject);
     setView("dashboard");
+  };
+
+  const updateConnectionPortStatuses = (patchPanels: ProjectDraft["patchPanels"], connections: Connection[]) => {
+    const connectedPorts = new Set(
+      connections.map((connection) => `${connection.patchPanelId}:${connection.patchPanelPortId}`)
+    );
+
+    return patchPanels.map((panel) => ({
+      ...panel,
+      portList: panel.portList.map((port) => ({
+        ...port,
+        status: connectedPorts.has(`${panel.id}:${port.id}`) ? "connected" : "free",
+      })),
+    }));
+  };
+
+  const saveConnection = (connection: Connection) => {
+    setProject((current) => {
+      const connections = current.connections.some((item) => item.id === connection.id)
+        ? current.connections.map((item) => item.id === connection.id ? connection : item)
+        : [...current.connections, connection];
+
+      return {
+        ...current,
+        connections,
+        patchPanels: updateConnectionPortStatuses(current.patchPanels, connections),
+      };
+    });
+  };
+
+  const deleteConnection = (id: string) => {
+    setProject((current) => {
+      const connections = current.connections.filter((connection) => connection.id !== id);
+      return {
+        ...current,
+        connections,
+        patchPanels: updateConnectionPortStatuses(current.patchPanels, connections),
+      };
+    });
   };
 
   if (view === "new-project") {

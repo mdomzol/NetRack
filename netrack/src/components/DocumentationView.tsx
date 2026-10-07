@@ -175,12 +175,44 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                 <div><span>MODEL</span><strong>{selectedDevice.model || "—"}</strong></div>
               </div>
               <div className="device-details-ports">
-                <div className="device-details-section-label">UKŁAD PORTÓW</div>
-                <div className="device-port-summary">
-                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "rj45").length || selectedDevice.ports}</strong> RJ45</span>
-                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp").length}</strong> SFP</span>
-                  <span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp+").length}</strong> SFP+</span>
-                </div>
+                <div className="device-details-section-label">UKŁAD PORTÓW · NUMERACJA FIZYCZNA</div>
+                {(() => {
+                  const ports = selectedDevice.portLayout?.length
+                    ? selectedDevice.portLayout
+                    : Array.from({ length: selectedDevice.ports }, (_, index) => ({ number: index + 1, type: "rj45" as const }));
+                  const rj45Ports = ports.filter((port) => port.type === "rj45");
+                  const sfpPorts = ports.filter((port) => port.type !== "rj45");
+                  const rj45PerRow = rj45Ports.length >= 48 ? 24 : rj45Ports.length >= 24 ? 12 : Math.max(rj45Ports.length, 1);
+                  const rows = Array.from({ length: Math.ceil(rj45Ports.length / rj45PerRow) }, (_, index) =>
+                    rj45Ports.slice(index * rj45PerRow, (index + 1) * rj45PerRow)
+                  );
+
+                  return (
+                    <div className="device-port-map">
+                      {rows.map((row, rowIndex) => (
+                        <div className="device-port-row" key={`rj45-${rowIndex}`}>
+                          {row.map((port) => (
+                            <span className="device-port-box rj45" key={`rj45-${port.number}`}>
+                              {port.number}
+                            </span>
+                          ))}
+                        </div>
+                      ))}
+                      {sfpPorts.length > 0 && (
+                        <div className="device-port-sfp-section">
+                          <span className="device-port-group-label">SFP / SFP+</span>
+                          <div className="device-port-row device-port-sfp-row">
+                            {sfpPorts.map((port) => (
+                              <span className={`device-port-box ${port.type}`} key={`${port.type}-${port.number}`}>
+                                {port.number}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </section>

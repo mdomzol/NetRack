@@ -313,7 +313,7 @@ CONTENT
 
   color: #f3f4f6;
 
-  font-size: 34px;
+  font-size: 30px;
   line-height: 1.15;
   font-weight: 650;
   letter-spacing: -0.03em;
@@ -522,7 +522,7 @@ STATS
 
   min-height: 100px;
 
-  padding: 18px;
+  padding: 15px;
 
   border: 1px solid #202733;
   border-radius: 9px;
@@ -1428,8 +1428,8 @@ DEVICE EDITOR
 }
 
 .device-editor-header .close-button {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 
   font-size: 18px;
 }
@@ -3594,7 +3594,7 @@ EDU-FIX WIZARD / REDESIGN
   grid-template-columns: 32px 1fr;
   align-items: center;
   width: 100%;
-  min-height: 48px;
+  min-height: 40px;
   padding: 6px 8px;
   border: 1px solid transparent;
   border-radius: 7px;
@@ -5439,7 +5439,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  min-height: 205px;
+  min-height: 178px;
   padding: 18px;
   overflow: hidden;
   text-align: left;
@@ -5487,8 +5487,8 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border: 1px solid #303945;
   border-radius: 9px;
   background: #0b1016;
@@ -5514,7 +5514,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 }
 
 .project-status-card .stat-card-content {
-  margin-top: 20px;
+  margin-top: 14px;
   gap: 0;
 }
 
@@ -5556,7 +5556,7 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   align-items: center;
   gap: 10px;
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: 12px;
 }
 
 .project-status-card-track {

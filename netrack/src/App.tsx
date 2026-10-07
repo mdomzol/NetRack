@@ -23,6 +23,7 @@ function loadProject(): ProjectDraft {
 function App() {
   const [view, setView] = useState<View>("dashboard");
   const [project, setProject] = useState<ProjectDraft>(loadProject);
+  const [draft, setDraft] = useState<ProjectDraft>(createEmptyProject);
 
   useEffect(() => {
     try {
@@ -33,7 +34,7 @@ function App() {
   }, [project]);
 
   const openNewProject = () => {
-    setProject(createEmptyProject());
+    setDraft(createEmptyProject());
     setView("new-project");
   };
 
@@ -47,8 +48,8 @@ function App() {
   if (view === "new-project") {
     return (
       <NewProject
-        project={project}
-        setProject={setProject}
+        project={draft}
+        setProject={setDraft}
         onCancel={cancelNewProject}
         onCreateProject={createProject}
       />

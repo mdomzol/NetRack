@@ -4043,3 +4043,84 @@ UNIFIED RACK EQUIPMENT WORKSPACE
   .rack-preview { min-height: 540px; }
   .rack-preview-unit { width: 320px; min-width: 320px; max-width: 320px; }
 }
+
+
+/* =========================================================
+   WIZARD — NO PAGE/CARD SCROLL + EXACT RACK U ALIGNMENT
+   ========================================================= */
+.wizard-topbar {
+  height: 64px;
+  min-height: 64px;
+}
+
+.wizard-shell {
+  height: calc(100vh - 64px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wizard-main {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-main > .wizard-card {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wizard-main > .wizard-footer {
+  flex: 0 0 auto;
+}
+
+/* The U scale and the rack grid share exactly the same pixel height and row model. */
+.rack-canvas-body {
+  align-items: flex-start;
+}
+
+.rack-canvas-scale,
+.rack-canvas-frame {
+  height: 460px;
+  flex: 0 0 auto;
+}
+
+.rack-canvas-scale {
+  display: grid;
+  grid-template-rows: repeat(var(--rack-height, 1), 1fr) !important;
+}
+
+.rack-canvas-frame {
+  display: block;
+}
+
+.rack-canvas-grid {
+  height: 440px;
+  min-height: 0;
+  grid-template-rows: repeat(var(--rack-height, 1), 1fr) !important;
+}
+
+.rack-canvas-slot {
+  min-height: 0;
+  height: auto;
+}
+
+.rack-canvas-item {
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .wizard-shell,
+  .wizard-main {
+    height: calc(100vh - 64px);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .wizard-main > .wizard-card {
+    overflow: hidden;
+  }
+}

@@ -148,7 +148,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
     return (
       <div className="documentation-page devices-page">
-        <PageHeader eyebrow="DOKUMENTACJA / URZĄDZENIA" title="Urządzenia" description="Katalog urządzeń infrastruktury. Kliknij urządzenie, aby zobaczyć jego szczegóły." />
+        <PageHeader eyebrow="DOKUMENTACJA / URZĄDZENIA" title="Urządzenia" description="Wybierz urządzenie z listy, aby wyświetlić jego szczegóły." />
 
         <div className="devices-toolbar">
           <div className="devices-toolbar-stat"><span>URZĄDZENIA</span><strong>{project.devices.length}</strong></div>
@@ -157,103 +157,105 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
           <div className="devices-toolbar-stat"><span>PORTY</span><strong>{project.devices.reduce((sum, device) => sum + device.ports, 0)}</strong></div>
         </div>
 
-        {selectedDevice && (
-          <section className="documentation-panel device-details-panel">
-            <div className="device-details-header">
-              <div className="device-details-title">
-                <span>{deviceLabels[selectedDevice.type] || "URZĄDZENIE"}</span>
-                <h2>{selectedDevice.name}</h2>
-                <p>{selectedDevice.manufacturer || "—"} · {selectedDevice.model || "Model nie podany"}</p>
-              </div>
-              <button type="button" className="device-details-close" onClick={() => setSelectedDeviceId(null)} aria-label="Zamknij">×</button>
+        <div className="devices-workspace">
+          <aside className="documentation-panel device-selector">
+            <div className="device-selector-heading">
+              <span>INWENTARZ</span>
+              <strong>Urządzenia</strong>
             </div>
-            <div className="device-details-content">
-              <div className="device-details-metrics">
-                <div><span>POZYCJA</span><strong>{mounted(selectedDevice.positionU) ? `U${selectedDevice.positionU}` : "POZA RACKIEM"}</strong></div>
-                <div><span>WYSOKOŚĆ</span><strong>{selectedDevice.heightU}U</strong></div>
-                <div><span>PORTY</span><strong>{selectedDevice.ports}</strong></div>
-                <div><span>MODEL</span><strong>{selectedDevice.model || "—"}</strong></div>
-              </div>
-              <div className="device-details-ports">
-                <div className="device-details-section-label">UKŁAD PORTÓW · NUMERACJA FIZYCZNA</div>
-                {(() => {
-                  const ports = selectedDevice.portLayout?.length
-                    ? selectedDevice.portLayout
-                    : Array.from({ length: selectedDevice.ports }, (_, index) => ({ number: index + 1, type: "rj45" as const }));
-                  const rj45Ports = ports.filter((port) => port.type === "rj45");
-                  const sfpPorts = ports.filter((port) => port.type !== "rj45");
-                  const rj45PerRow = rj45Ports.length >= 48 ? 24 : rj45Ports.length >= 24 ? 12 : Math.max(rj45Ports.length, 1);
-                  const rows = Array.from({ length: Math.ceil(rj45Ports.length / rj45PerRow) }, (_, index) =>
-                    rj45Ports.slice(index * rj45PerRow, (index + 1) * rj45PerRow)
-                  );
+            <div className="device-selector-list">
+              {project.devices.length ? project.devices.map((device) => {
+                const selected = activeDeviceId === device.id;
+                const layout = device.portLayout ?? [];
+                const rj45 = layout.filter((port) => port.type === "rj45").length || device.ports;
+                const sfp = layout.filter((port) => port.type === "sfp").length;
+                const sfpPlus = layout.filter((port) => port.type === "sfp+").length;
 
-                  return (
-                    <div className="device-port-map">
-                      {rows.map((row, rowIndex) => (
-                        <div className="device-port-row" key={`rj45-${rowIndex}`}>
-                          {row.map((port) => (
-                            <span className="device-port-box rj45" key={`rj45-${port.number}`}>
-                              {port.number}
-                            </span>
-                          ))}
-                        </div>
-                      ))}
-                      {sfpPorts.length > 0 && (
-                        <div className="device-port-sfp-section">
-                          <span className="device-port-group-label">SFP / SFP+</span>
-                          <div className="device-port-row device-port-sfp-row">
-                            {sfpPorts.map((port) => (
-                              <span className={`device-port-box ${port.type}`} key={`${port.type}-${port.number}`}>
-                                {port.number}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
+                return (
+                  <button
+                    type="button"
+                    key={device.id}
+                    className={`device-selector-item ${selected ? "is-selected" : ""}`}
+                    onClick={() => setSelectedDeviceId(device.id)}
+                  >
+                    <span className="device-selector-index">{device.type === "switch" ? "SW" : "DEV"}</span>
+                    <span className="device-selector-copy">
+                      <strong>{device.name}</strong>
+                      <small>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</small>
+                    </span>
+                    <span className="device-selector-state">{rj45 + sfp + sfpPlus}</span>
+                  </button>
+                );
+              }) : <Empty text="Nie dodano jeszcze żadnych urządzeń." />}
             </div>
-          </section>
-        )}
+          </aside>
 
-        <section className="devices-list">
-          {project.devices.length ? project.devices.map((device) => {
-            const selected = activeDeviceId === device.id;
-            const isMounted = mounted(device.positionU);
-            const layout = device.portLayout ?? [];
-            const rj45 = layout.filter((port) => port.type === "rj45").length || device.ports;
-            const sfp = layout.filter((port) => port.type === "sfp").length;
-            const sfpPlus = layout.filter((port) => port.type === "sfp+").length;
-
-            return (
-              <button
-                type="button"
-                key={device.id}
-                id={`device-${device.id}`}
-                className={`device-card ${selected ? "is-selected" : ""} ${focusedDeviceId === device.id ? "is-focused" : ""}`}
-                onClick={() => setSelectedDeviceId(device.id)}
-              >
-                <div className="device-card-type">{deviceLabels[device.type] || "Urządzenie"}</div>
-                <div className="device-card-main">
-                  <div>
-                    <strong>{device.name}</strong>
-                    <span>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</span>
+          <section className="device-detail-workspace">
+            {selectedDevice ? (
+              <section className="documentation-panel device-details-panel">
+                <div className="device-detail-hero">
+                  <div className="device-detail-eyebrow">{deviceLabels[selectedDevice.type] || "URZĄDZENIE"}</div>
+                  <h2>{selectedDevice.name}</h2>
+                  <p>{selectedDevice.manufacturer || "—"} · {selectedDevice.model || "Model nie podany"}</p>
+                  <div className="device-detail-badges">
+                    <span><small>LOKALIZACJA</small><strong>{mounted(selectedDevice.positionU) ? `RACK · U${selectedDevice.positionU}` : "POZA RACKIEM"}</strong></span>
+                    <span><small>WYSOKOŚĆ</small><strong>{selectedDevice.heightU}U</strong></span>
+                    <span><small>PORTY</small><strong>{selectedDevice.ports}</strong></span>
                   </div>
-                  <i>→</i>
                 </div>
-                <div className="device-card-footer">
-                  <span className={isMounted ? "is-mounted" : ""}>{isMounted ? `RACK · U${device.positionU}` : "POZA RACKIEM"}</span>
-                  <span>{device.heightU}U</span>
-                  <span>{rj45} RJ45</span>
-                  {sfp > 0 && <span>{sfp} SFP</span>}
-                  {sfpPlus > 0 && <span>{sfpPlus} SFP+</span>}
+
+                <div className="device-detail-stats">
+                  <div><span>RJ45</span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "rj45").length || selectedDevice.ports}</strong></div>
+                  <div><span>SFP</span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp").length}</strong></div>
+                  <div><span>SFP+</span><strong>{(selectedDevice.portLayout ?? []).filter((port) => port.type === "sfp+").length}</strong></div>
+                  <div><span>MODEL</span><strong>{selectedDevice.model || "—"}</strong></div>
                 </div>
-              </button>
-            );
-          }) : <Empty text="Nie dodano jeszcze żadnych urządzeń." />}
-        </section>
+
+                <div className="device-port-list">
+                  <div className="device-port-list-heading">
+                    <span>PORTY URZĄDZENIA</span>
+                    <span>NUMERACJA FIZYCZNA</span>
+                  </div>
+                  {(() => {
+                    const ports = selectedDevice.portLayout?.length
+                      ? selectedDevice.portLayout
+                      : Array.from({ length: selectedDevice.ports }, (_, index) => ({ number: index + 1, type: "rj45" as const }));
+                    const rj45Ports = ports.filter((port) => port.type === "rj45");
+                    const sfpPorts = ports.filter((port) => port.type !== "rj45");
+                    const perRow = rj45Ports.length >= 48 ? 24 : rj45Ports.length >= 24 ? 12 : Math.max(rj45Ports.length, 1);
+                    const rows = Array.from({ length: Math.ceil(rj45Ports.length / perRow) }, (_, index) =>
+                      rj45Ports.slice(index * perRow, (index + 1) * perRow)
+                    );
+
+                    return (
+                      <div className="device-port-map">
+                        {rows.map((row, rowIndex) => (
+                          <div className="device-port-row" key={`rj45-${rowIndex}`}>
+                            {row.map((port) => <span className="device-port-box rj45" key={`rj45-${port.number}`}>{port.number}</span>)}
+                          </div>
+                        ))}
+                        {sfpPorts.length > 0 && (
+                          <div className="device-port-sfp-section">
+                            <span className="device-port-group-label">SFP / SFP+</span>
+                            <div className="device-port-row device-port-sfp-row">
+                              {sfpPorts.map((port) => <span className={`device-port-box ${port.type}`} key={`${port.type}-${port.number}`}>{port.number}</span>)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </section>
+            ) : (
+              <section className="documentation-panel device-empty-state">
+                <span>URZĄDZENIA</span>
+                <h2>Wybierz urządzenie</h2>
+                <p>Lista po lewej stronie służy do szybkiego przełączania między urządzeniami. Po wyborze tutaj pojawią się jego parametry i fizyczny układ portów.</p>
+              </section>
+            )}
+          </section>
+        </div>
       </div>
     );
   }

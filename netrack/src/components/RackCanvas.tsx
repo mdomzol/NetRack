@@ -113,7 +113,10 @@ export default function RackCanvas({
       <div className="rack-canvas-body">
         <div
           className="rack-canvas-scale"
-          style={{ gridTemplateRows: "repeat(" + rack.heightU + ", 1fr)" }}
+          style={{
+            "--rack-height": rack.heightU,
+            gridTemplateRows: "repeat(" + rack.heightU + ", minmax(0, 1fr))",
+          } as React.CSSProperties}
         >
           {rackRows.map((positionU) => (
             <span key={positionU}>{positionU}</span>

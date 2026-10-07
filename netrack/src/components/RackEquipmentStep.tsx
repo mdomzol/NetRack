@@ -1,4 +1,4 @@
-import { Device, PatchPanel, Rack } from "../types";
+import { Device, PatchPanel, Rack, RackAccessory, RackAccessoryType } from "../types";
 import RackCanvas from "./RackCanvas";
 import Icon from "./Icon";
 
@@ -6,21 +6,26 @@ type Props = {
   rack: Rack;
   devices: Device[];
   patchPanels: PatchPanel[];
+  accessories: RackAccessory[];
   editingDeviceId: string | null;
   editingPatchPanelId: string | null;
+  editingAccessoryId: string | null;
   onAddDevice: () => void;
   onEditDevice: (id: string) => void;
   onRemoveDevice: (id: string) => void;
   onAddPatchPanel: () => void;
   onEditPatchPanel: (id: string) => void;
   onRemovePatchPanel: (id: string) => void;
+  onAddAccessory: (type: RackAccessoryType) => void;
+  onEditAccessory: (id: string) => void;
+  onRemoveAccessory: (id: string) => void;
   onMoveItem: (id: string, type: "device" | "patch-panel", positionU: number) => boolean | void;
 };
 
 export default function RackEquipmentStep({
-  rack, devices, patchPanels, editingDeviceId, editingPatchPanelId,
+  rack, devices, patchPanels, accessories, editingDeviceId, editingPatchPanelId, editingAccessoryId,
   onAddDevice, onEditDevice, onRemoveDevice,
-  onAddPatchPanel, onEditPatchPanel, onRemovePatchPanel, onMoveItem,
+  onAddPatchPanel, onEditPatchPanel, onRemovePatchPanel, onAddAccessory, onEditAccessory, onRemoveAccessory, onMoveItem,
 }: Props) {
   const drag = (event: React.DragEvent, id: string, type: "device" | "patch-panel") => {
     event.dataTransfer.effectAllowed = "move";
@@ -37,6 +42,7 @@ export default function RackEquipmentStep({
         <div className="equipment-actions">
           <button className="secondary-button" onClick={onAddPatchPanel}><Icon name="patch-panel" /> Patchpanel</button>
           <button className="primary-button" onClick={onAddDevice}><Icon name="switch" /> Urządzenie</button>
+          <div className="equipment-accessory-actions"><button className="secondary-button" onClick={()=>onAddAccessory("organizer")}>Organizer</button><button className="secondary-button" onClick={()=>onAddAccessory("spacer")}>Spacer</button><button className="secondary-button" onClick={()=>onAddAccessory("ups")}>UPS</button></div>
         </div>
       </div>
 
@@ -54,6 +60,8 @@ export default function RackEquipmentStep({
             <span>ELEMENTY SZAFY</span>
             <strong>{devices.length + patchPanels.length}</strong>
           </div>
+
+          <div className="equipment-group"><div className="equipment-group-title"><span>AKCESORIA RACKA</span><em>{accessories.length}</em></div>{accessories.length ? accessories.map((item)=><button type="button" key={item.id} draggable onDragStart={(e)=>drag(e,item.id,"accessory")} onClick={()=>onEditAccessory(item.id)} className={`equipment-row accessory ${editingAccessoryId===item.id?"editing":""}`}><span className="equipment-row-icon accessory">R</span><span className="equipment-row-main"><strong>{item.name}</strong><small>{item.type==="organizer"?"Organizer kablowy":item.type==="spacer"?"Panel zaślepiający":"UPS"} · {item.manufacturer||"Brak producenta"}{item.model?" · "+item.model:""}</small></span><span className={`equipment-row-position ${item.positionU===null?"unmounted":""}`}>{item.positionU?`U${item.positionU}`:"NIEZAMONTOWANE"}<small>{item.positionU?`${item.heightU}U`:"przeciągnij do racka"}</small></span><span className="equipment-row-remove" onClick={(e)=>{e.stopPropagation();onRemoveAccessory(item.id)}}>×</span></button>):<div className="equipment-empty">Brak organizerów, spacerów i UPS-ów.</div>}</div>
 
           <div className="equipment-group">
             <div className="equipment-group-title"><span>URZĄDZENIA</span><em>{devices.length}</em></div>

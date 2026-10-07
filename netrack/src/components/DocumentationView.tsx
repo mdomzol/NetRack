@@ -613,10 +613,14 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
             })}
           </div>
 
-          <div
-            className="connection-rack-grid"
-            style={{ gridAutoRows: "minmax(18px, auto)" }}
-          >
+          <div className="connection-rack-chassis">
+            <div className="connection-rack-rail connection-rack-rail-left" />
+            <div className="connection-rack-rail connection-rack-rail-right" />
+
+            <div
+              className="connection-rack-grid"
+              style={{ gridAutoRows: "minmax(18px, auto)" }}
+            >
             {Array.from({ length: project.rack.heightU }, (_, index) => {
               const u = project.rack.heightU - index;
               return <div key={u} className="connection-rack-row" />;
@@ -828,6 +832,7 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
 

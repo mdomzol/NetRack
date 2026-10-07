@@ -7,6 +7,10 @@ type RackItem = {
   type: "device" | "patch-panel";
   positionU: number | null;
   heightU: number;
+  manufacturer: string;
+  model: string;
+  ports: number;
+  detail: string;
 };
 
 type RackCanvasProps = {
@@ -34,11 +38,23 @@ export default function RackCanvas({
   const items: RackItem[] = [
     ...devices.map((item) => ({
       id: item.id, name: item.name, type: "device" as const,
-      positionU: item.positionU, heightU: item.heightU,
+      positionU: item.positionU,
+      heightU: item.heightU,
+      manufacturer: item.manufacturer,
+      model: item.model,
+      ports: item.ports,
+      detail: item.type,
     })),
     ...patchPanels.map((item) => ({
-      id: item.id, name: item.name, type: "patch-panel" as const,
-      positionU: item.positionU, heightU: item.heightU,
+      id: item.id,
+      name: item.name,
+      type: "patch-panel" as const,
+      positionU: item.positionU,
+      heightU: item.heightU,
+      manufacturer: item.manufacturer,
+      model: item.model,
+      ports: item.ports,
+      detail: item.type,
     })),
   ];
 
@@ -201,7 +217,12 @@ export default function RackCanvas({
                   >
                     <span className="rack-canvas-item-grip">⋮⋮</span>
                     <strong>{item.name}</strong>
-                    <small>U{item.positionU} · {item.heightU}U</small>
+                    <small>
+                      {item.manufacturer || "—"} · {item.model || "—"}
+                    </small>
+                    <span className="rack-canvas-item-meta">
+                      {item.ports}P · {item.detail} · U{item.positionU} · {item.heightU}U
+                    </span>
                   </button>
                 ))}
             </div>

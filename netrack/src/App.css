@@ -4353,3 +4353,101 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     height: 440px;
   }
 }
+
+
+/* Rack tiles — equipment identification */
+.rack-canvas-item {
+  gap: 1px;
+  padding: 3px 8px 3px 22px;
+}
+
+.rack-canvas-item strong,
+.rack-canvas-item small,
+.rack-canvas-item-meta {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rack-canvas-item strong {
+  color: #eef0f2;
+  font-size: 9px;
+  line-height: 1.05;
+}
+
+.rack-canvas-item small {
+  color: #89939e;
+  font-size: 7px;
+  line-height: 1.05;
+}
+
+.rack-canvas-item-meta {
+  color: #68727d;
+  font: 7px/1.05 "JetBrains Mono", monospace;
+}
+
+.rack-canvas-item.rack-item-1u {
+  gap: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.rack-canvas-item.rack-item-1u strong {
+  font-size: 7.5px;
+}
+
+.rack-canvas-item.rack-item-1u small,
+.rack-canvas-item.rack-item-1u .rack-canvas-item-meta {
+  font-size: 6px;
+}
+
+.rack-canvas-item.rack-item-1u .rack-canvas-item-meta {
+  display: none;
+}
+
+.rack-canvas-item.rack-item-2u {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.rack-canvas-item.rack-item-2u .rack-canvas-item-meta {
+  font-size: 6.5px;
+}
+
+.rack-canvas-item.rack-item-3u strong,
+.rack-canvas-item.rack-item-4u strong {
+  font-size: 9.5px;
+}
+
+.rack-canvas-item.patch-panel .rack-canvas-item-meta {
+  color: #737e89;
+}
+
+@media (max-width: 900px) {
+  .rack-canvas-item {
+    padding-left: 19px;
+  }
+
+  .rack-canvas-item strong {
+    font-size: 8px;
+  }
+
+  .rack-canvas-item small {
+    font-size: 6.5px;
+  }
+
+  .rack-canvas-item-meta {
+    font-size: 6.5px;
+  }
+
+  .rack-canvas-item.rack-item-1u strong {
+    font-size: 7px;
+  }
+
+  .rack-canvas-item.rack-item-1u small {
+    font-size: 5.5px;
+  }
+}

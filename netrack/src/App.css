@@ -6058,3 +6058,50 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     border-bottom: 0;
   }
 }
+
+/* Rack equipment readability */
+.rack-documentation .rack-mini-row > div {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.rack-documentation .rack-mini-row strong {
+  font-size: 7.5px;
+}
+.rack-documentation .rack-mini-row > div > span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: #697480;
+  font: 6.5px/1.1 "JetBrains Mono", monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rack-documentation .rack-mini-row.occupied > div > span {
+  color: #9a6b50;
+}
+.rack-documentation .documentation-equipment .documentation-row {
+  min-height: 72px;
+}
+.rack-documentation .documentation-main span {
+  font-size: 8px;
+  color: #9aa3ad;
+}
+.rack-documentation .documentation-main em {
+  display: block;
+  margin-top: 4px;
+  color: #596571;
+  font: 6.5px/1 "JetBrains Mono", monospace;
+  font-style: normal;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.rack-documentation .documentation-meta {
+  min-width: 78px;
+}
+@media (max-width: 700px) {
+  .rack-documentation .documentation-equipment .documentation-row {
+    min-height: 68px;
+  }
+}

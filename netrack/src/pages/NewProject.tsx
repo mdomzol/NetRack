@@ -432,6 +432,7 @@ function NewProject({
             rack={project.rack}
             devices={project.devices}
             patchPanels={project.patchPanels}
+            accessories={project.accessories}
             updateRackField={updateRackField}
           />
         );

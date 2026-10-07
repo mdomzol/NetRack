@@ -1,6 +1,6 @@
 import Icon from "./Icon";
 
-type NavigationView = "dashboard" | "rack" | "devices" | "patch-panels" | "connections";
+type NavigationView = "dashboard" | "rack" | "devices" | "patch-panels" | "connections" | "connection-map";
 
 type SidebarProps = {
   hasProject: boolean;
@@ -14,6 +14,7 @@ function Sidebar({ hasProject, activeView, onNavigate }: SidebarProps) {
     { view: "devices", icon: "switch", label: "Urządzenia" },
     { view: "patch-panels", icon: "patch-panel", label: "Patchpanele" },
     { view: "connections", icon: "link", label: "Połączenia" },
+    { view: "connection-map", icon: "link", label: "Mapa połączeń" },
   ];
 
   return (

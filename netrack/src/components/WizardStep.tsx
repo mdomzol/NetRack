@@ -3,6 +3,7 @@ type WizardStepProps = {
   label: string;
   active?: boolean;
   completed?: boolean;
+  onClick?: () => void;
 };
 
 function WizardStep({
@@ -10,6 +11,7 @@ function WizardStep({
   label,
   active = false,
   completed = false,
+  onClick,
 }: WizardStepProps) {
   const className = [
     "wizard-step",
@@ -20,7 +22,7 @@ function WizardStep({
     .join(" ");
 
   return (
-    <div className={className}>
+    <button type="button" className={className} onClick={onClick} disabled={!onClick}>
       <div className="wizard-step-number">
         {completed ? "✓" : number}
       </div>

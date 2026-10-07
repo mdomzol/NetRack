@@ -8200,15 +8200,36 @@ DEDICATED CONNECTION MAP
 
 .connection-rack-stage {
   position: relative;
-  overflow: auto;
   min-height: 0;
+  height: 100%;
   max-height: calc(100vh - 235px);
+  overflow-y: auto;
+  overflow-x: auto;
   padding: 18px 20px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #343c46 transparent;
+  scrollbar-gutter: stable;
   background:
     linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
     linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px),
     #080c10;
   background-size: 32px 32px;
+}
+
+.connection-rack-stage::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.connection-rack-stage::-webkit-scrollbar-track {
+  background: transparent;
+}
+.connection-rack-stage::-webkit-scrollbar-thumb {
+  border: 1px solid #10151c;
+  border-radius: 999px;
+  background: #343c46;
+}
+.connection-rack-stage::-webkit-scrollbar-thumb:hover {
+  background: #4a5562;
 }
 
 .connection-rack-frame {

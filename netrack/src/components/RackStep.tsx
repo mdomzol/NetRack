@@ -1,9 +1,10 @@
-import { Device, PatchPanel, Rack } from "../types";
+import { Device, PatchPanel, Rack, RackAccessory } from "../types";
 
 type RackStepProps = {
 rack: Rack;
 devices: Device[];
 patchPanels: PatchPanel[];
+accessories: RackAccessory[];
 updateRackField: <K extends keyof Rack>(
 field: K,
 value: Rack[K]
@@ -14,9 +15,11 @@ function RackStep({
 rack,
 devices,
 patchPanels,
+accessories,
 updateRackField,
 }: RackStepProps) {
 const rackItems = [
+...accessories.map((accessory) => ({id:accessory.id,name:accessory.name,type:"accessory" as const,positionU:accessory.positionU,heightU:accessory.heightU})),
 ...devices.map((device) => ({
 id: device.id,
 name: device.name,
@@ -288,10 +291,7 @@ return (
                       {isItemStart && (
                         <div
                           className={`rack-preview-item ${
-                            item.type ===
-                            "patch-panel"
-                              ? "patch-panel"
-                              : "device"
+                            item.type === "patch-panel" ? "patch-panel" : item.type === "accessory" ? "accessory" : "device"
                           }`}
                           style={{
                             height: `calc(${item.heightU} * 100%)`,

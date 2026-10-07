@@ -99,7 +99,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
             {selectedRackItem ? (
               <>
                 <div className="rack-item-details-header">
-                  <div><span>{project.devices.some((device) => device.id === selectedRackItem.id) ? "URZĄDZENIE" : "PATCHPANEL"}</span><h2>{selectedRackItem.name}</h2></div>
+                  <div><span>{project.devices.some((device) => device.id === selectedRackItem.id) ? "URZĄDZENIE" : project.patchPanels.some((panel) => panel.id === selectedRackItem.id) ? "PATCHPANEL" : "AKCESORIUM RACKA"}</span><h2>{selectedRackItem.name}</h2></div>
                   <button type="button" className="rack-item-details-close" onClick={() => setSelectedRackItemId(null)} aria-label="Zamknij">×</button>
                 </div>
                 <div className="rack-item-details-body">
@@ -110,7 +110,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
                   <div className="rack-item-details-list">
                     <div><span>Pozycja</span><strong>U{selectedRackItem.positionU ?? "—"}</strong></div>
                     <div><span>Wysokość</span><strong>{selectedRackItem.heightU}U</strong></div>
-                    <div><span>Porty</span><strong>{selectedRackItem.ports}</strong></div>
+                    {project.devices.some((device) => device.id === selectedRackItem.id) && <div><span>Porty</span><strong>{(selectedRackItem as typeof project.devices[number]).ports}</strong></div>}
                     {project.devices.some((device) => device.id === selectedRackItem.id) && (
                       <div><span>Typ</span><strong>{deviceLabels[(selectedRackItem as typeof project.devices[number]).type] || "Urządzenie"}</strong></div>
                     )}
@@ -127,7 +127,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
             ) : (
               <div className="rack-item-details-empty">
                 <span>WYBIERZ ELEMENT</span>
-                <strong>Kliknij urządzenie lub patchpanel w widoku szafy.</strong>
+                <strong>Kliknij urządzenie, patchpanel lub akcesorium w widoku szafy.</strong>
                 <p>Wyświetlimy jego podstawowe dane oraz przejście do dokumentacji.</p>
               </div>
             )}

@@ -6105,3 +6105,157 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     min-height: 68px;
   }
 }
+
+
+/* =========================================================
+   RACK DOCUMENTATION / SPECIFICATION REWORK
+   ========================================================= */
+
+.rack-documentation .rack-specification-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.018), transparent 58%),
+    #0e1319;
+}
+
+.rack-documentation .rack-specification-panel .documentation-panel-title {
+  min-height: 58px;
+  flex: 0 0 auto;
+}
+
+.rack-documentation .rack-specification-grid {
+  display: grid;
+  grid-template-columns: 1.35fr .85fr .85fr;
+  grid-template-rows: repeat(2, minmax(76px, 1fr));
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.rack-documentation .rack-specification-grid > div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  padding: 13px 15px;
+  border-right: 1px solid #202832;
+  border-bottom: 1px solid #202832;
+  background: #0e1319;
+  transition: background .16s ease;
+}
+
+.rack-documentation .rack-specification-grid > div:nth-child(3n) {
+  border-right: 0;
+}
+
+.rack-documentation .rack-specification-grid > div:nth-last-child(-n+3) {
+  border-bottom: 0;
+}
+
+.rack-documentation .rack-specification-grid > div:hover {
+  background: #121920;
+}
+
+.rack-documentation .rack-specification-grid > div:first-child {
+  grid-column: 1 / -1;
+  min-height: 66px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  border-right: 0;
+  background:
+    linear-gradient(90deg, rgba(243,107,33,.055), transparent 70%),
+    #0e1319;
+}
+
+.rack-documentation .rack-specification-grid span {
+  display: block;
+  margin-bottom: 7px;
+  color: #596572;
+  font: 700 6.5px/1 "JetBrains Mono", monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.rack-documentation .rack-specification-grid strong {
+  display: block;
+  overflow: hidden;
+  color: #e1e5e8;
+  font: 600 11px/1.15 "JetBrains Mono", monospace;
+  letter-spacing: -.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rack-documentation .rack-specification-grid > div:first-child strong {
+  color: #f0a16f;
+  font-size: 12px;
+}
+
+.rack-documentation .rack-specification-grid > div:nth-child(4) strong,
+.rack-documentation .rack-specification-grid > div:nth-child(5) strong,
+.rack-documentation .rack-specification-grid > div:nth-child(6) strong {
+  color: #f36b21;
+  font-size: 15px;
+  letter-spacing: -.04em;
+}
+
+.rack-documentation .rack-specification-grid > div:nth-child(4)::after,
+.rack-documentation .rack-specification-grid > div:nth-child(5)::after,
+.rack-documentation .rack-specification-grid > div:nth-child(6)::after {
+  content: "";
+  position: absolute;
+  right: 13px;
+  bottom: 13px;
+  width: 22px;
+  height: 2px;
+  background: rgba(243,107,33,.45);
+}
+
+@media (max-width: 900px) {
+  .rack-documentation .rack-specification-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    grid-template-rows: none;
+  }
+
+  .rack-documentation .rack-specification-grid > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .rack-documentation .rack-specification-grid > div:nth-child(3n) {
+    border-right: 1px solid #202832;
+  }
+
+  .rack-documentation .rack-specification-grid > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .rack-documentation .rack-specification-grid > div:nth-last-child(-n+3) {
+    border-bottom: 1px solid #202832;
+  }
+
+  .rack-documentation .rack-specification-grid > div:last-child,
+  .rack-documentation .rack-specification-grid > div:nth-last-child(2) {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .rack-documentation .rack-specification-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-documentation .rack-specification-grid > div,
+  .rack-documentation .rack-specification-grid > div:first-child {
+    grid-column: auto;
+    min-height: 62px;
+    border-right: 0;
+    border-bottom: 1px solid #202832;
+  }
+
+  .rack-documentation .rack-specification-grid > div:last-child {
+    border-bottom: 0;
+  }
+}

@@ -53,6 +53,7 @@ function loadProject(): ProjectDraft {
       const parsed = JSON.parse(stored) as ProjectDraft;
       return {
         ...parsed,
+        accessories: Array.isArray(parsed.accessories) ? parsed.accessories : [],
         connections: Array.isArray(parsed.connections)
           ? parsed.connections
               .map(migrateConnection)
@@ -211,6 +212,7 @@ function App() {
               <span><b>{project.devices.length}</b> URZĄDZENIA</span>
               <span><b>{project.patchPanels.length}</b> PATCHPANELE</span>
               <span><b>{project.connections.length}</b> POŁĄCZENIA</span>
+              <span><b>{project.accessories.length}</b> AKCESORIA</span>
             </div>
           </header>
 

@@ -18,7 +18,7 @@ type Props = {
   onAddAccessory: (type: RackAccessoryType) => void;
   onEditAccessory: (id: string) => void;
   onRemoveAccessory: (id: string) => void;
-  onMoveItem: (id: string, type: "device" | "patch-panel", positionU: number) => boolean | void;
+  onMoveItem: (id: string, type: "device" | "patch-panel" | "accessory", positionU: number) => boolean | void;
 };
 
 export default function RackEquipmentStep({
@@ -26,7 +26,7 @@ export default function RackEquipmentStep({
   onAddDevice, onEditDevice, onRemoveDevice,
   onAddPatchPanel, onEditPatchPanel, onRemovePatchPanel, onAddAccessory, onEditAccessory, onRemoveAccessory, onMoveItem,
 }: Props) {
-  const drag = (event: React.DragEvent, id: string, type: "device" | "patch-panel") => {
+  const drag = (event: React.DragEvent, id: string, type: "device" | "patch-panel" | "accessory") => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/netrack-item", JSON.stringify({ id, type }));
   };

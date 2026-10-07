@@ -5806,3 +5806,255 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 
 
 
+
+
+/* =========================================================
+   RACK DOCUMENTATION / REWORK
+   Scoped to rack documentation only.
+   ========================================================= */
+
+.rack-documentation {
+  grid-template-columns: minmax(280px, .78fr) minmax(420px, 1.22fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.rack-documentation .documentation-panel {
+  border-radius: 5px;
+  background: #0e1319;
+  border-color: #222a33;
+}
+
+.rack-documentation .rack-overview-panel {
+  position: relative;
+  padding-bottom: 0;
+  background:
+    linear-gradient(135deg, rgba(243,107,33,.045), transparent 45%),
+    #0e1319;
+}
+
+.rack-documentation .documentation-panel-heading,
+.rack-documentation .documentation-panel-title {
+  min-height: 58px;
+  padding: 11px 14px;
+  background: #11171e;
+  border-bottom-color: #222a33;
+}
+
+.rack-documentation .documentation-panel-heading span,
+.rack-documentation .documentation-panel-title span {
+  font-size: 7px;
+  letter-spacing: .18em;
+}
+
+.rack-documentation .documentation-panel-heading h2,
+.rack-documentation .documentation-panel-title h2 {
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: -.01em;
+}
+
+.rack-documentation .documentation-panel-heading > strong {
+  font-size: 22px;
+  letter-spacing: -.06em;
+}
+
+.rack-documentation .rack-visual-mini {
+  margin: 12px;
+  border: 1px solid #29323c;
+  background: #0a0e13;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.012);
+}
+
+.rack-documentation .rack-mini-row {
+  min-height: 19px;
+  grid-template-columns: 32px minmax(0,1fr);
+  border-bottom-color: #1b232c;
+}
+
+.rack-documentation .rack-mini-row:last-child {
+  border-bottom: 0;
+}
+
+.rack-documentation .rack-mini-row > span {
+  color: #4e5965;
+  background: #0d1217;
+  border-right-color: #202933;
+  font-size: 7px;
+}
+
+.rack-documentation .rack-mini-row > div {
+  position: relative;
+  justify-content: flex-start;
+  padding: 2px 9px;
+}
+
+.rack-documentation .rack-mini-row.occupied > div {
+  border-left: 2px solid #f36b21;
+  background: linear-gradient(90deg, rgba(243,107,33,.10), transparent 75%);
+}
+
+.rack-documentation .rack-mini-row strong {
+  color: #89939e;
+  font: 600 7px/1 "JetBrains Mono", monospace;
+  letter-spacing: .04em;
+}
+
+.rack-documentation .rack-mini-row.occupied > span,
+.rack-documentation .rack-mini-row.occupied strong {
+  color: #f36b21;
+}
+
+.rack-documentation .documentation-details {
+  grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.rack-documentation .documentation-details > div {
+  min-height: 69px;
+  padding: 12px;
+  background: #0e1319;
+  border-right-color: #202832;
+  border-bottom-color: #202832;
+}
+
+.rack-documentation .documentation-details > div:nth-child(2n) {
+  border-right: 1px solid #202832;
+}
+
+.rack-documentation .documentation-details > div:nth-child(3n) {
+  border-right: 0;
+}
+
+.rack-documentation .documentation-details > div:nth-last-child(-n+2) {
+  border-bottom: 1px solid #202832;
+}
+
+.rack-documentation .documentation-details > div:nth-last-child(-n+3) {
+  border-bottom: 0;
+}
+
+.rack-documentation .documentation-details span {
+  color: #56616d;
+  font-size: 6.5px;
+  letter-spacing: .12em;
+}
+
+.rack-documentation .documentation-details strong {
+  color: #d9dde1;
+  font: 600 9px/1.2 "JetBrains Mono", monospace;
+}
+
+.rack-documentation .documentation-panel-wide {
+  grid-column: 1 / -1;
+}
+
+.rack-documentation .documentation-panel-wide .documentation-panel-title {
+  min-height: 58px;
+}
+
+.rack-documentation .documentation-equipment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+
+.rack-documentation .documentation-equipment .documentation-row {
+  min-height: 60px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #202832;
+  border-right: 1px solid #202832;
+  background: #0e1319;
+  transition: background .16s ease;
+}
+
+.rack-documentation .documentation-equipment .documentation-row:nth-child(2n) {
+  border-right: 0;
+}
+
+.rack-documentation .documentation-equipment .documentation-row:nth-last-child(-n+2) {
+  border-bottom: 0;
+}
+
+.rack-documentation .documentation-equipment .documentation-row:hover {
+  background: #121920;
+}
+
+.rack-documentation .documentation-type {
+  width: 31px;
+  height: 27px;
+  border-radius: 4px;
+  background: rgba(243,107,33,.055);
+  border-color: rgba(243,107,33,.24);
+  font-size: 6.5px;
+}
+
+.rack-documentation .documentation-type.patch-type {
+  background: #141a20;
+  border-color: #303944;
+}
+
+.rack-documentation .documentation-main strong {
+  font-size: 9px;
+}
+
+.rack-documentation .documentation-main span {
+  margin-top: 3px;
+  font-size: 7px;
+}
+
+.rack-documentation .documentation-meta {
+  gap: 4px;
+  max-width: 105px;
+}
+
+.rack-documentation .documentation-meta span {
+  padding: 4px 5px;
+  font-size: 6.5px;
+}
+
+@media (max-width: 900px) {
+  .rack-documentation {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-documentation .documentation-panel-wide {
+    grid-column: auto;
+  }
+
+  .rack-documentation .documentation-equipment {
+    grid-template-columns: 1fr;
+  }
+
+  .rack-documentation .documentation-equipment .documentation-row {
+    border-right: 0;
+  }
+
+  .rack-documentation .documentation-equipment .documentation-row:nth-last-child(-n+2) {
+    border-bottom: 1px solid #202832;
+  }
+
+  .rack-documentation .documentation-equipment .documentation-row:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .rack-documentation .documentation-details {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .rack-documentation .documentation-details > div:nth-child(3n) {
+    border-right: 1px solid #202832;
+  }
+
+  .rack-documentation .documentation-details > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .rack-documentation .documentation-details > div:nth-last-child(-n+3) {
+    border-bottom: 1px solid #202832;
+  }
+
+  .rack-documentation .documentation-details > div:nth-last-child(-n+2) {
+    border-bottom: 0;
+  }
+}

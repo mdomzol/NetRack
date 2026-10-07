@@ -69,7 +69,7 @@ export default function RackEquipmentStep({
               >
                 <span className="equipment-row-icon">SW</span>
                 <span className="equipment-row-main"><strong>{device.name}</strong><small>{device.manufacturer || "Brak producenta"} · {device.model || "Brak modelu"}</small></span>
-                <span className="equipment-row-position">{device.positionU ? `U${device.positionU}` : "—"}<small>{device.heightU}U</small></span>
+                <span className={`equipment-row-position ${device.positionU === null ? "unmounted" : ""}`}>{device.positionU ? `U${device.positionU}` : "NIEZAMONTOWANE"}<small>{device.positionU ? `${device.heightU}U` : "przeciągnij do racka"}</small></span>
                 <span className="equipment-row-remove" onClick={(event) => { event.stopPropagation(); onRemoveDevice(device.id); }}>×</span>
               </button>
             ))}
@@ -90,7 +90,7 @@ export default function RackEquipmentStep({
               >
                 <span className="equipment-row-icon pp">PP</span>
                 <span className="equipment-row-main"><strong>{panel.name}</strong><small>{panel.type} · {panel.ports} portów</small></span>
-                <span className="equipment-row-position">{panel.positionU ? `U${panel.positionU}` : "—"}<small>{panel.heightU}U</small></span>
+                <span className={`equipment-row-position ${panel.positionU === null ? "unmounted" : ""}`}>{panel.positionU ? `U${panel.positionU}` : "NIEZAMONTOWANE"}<small>{panel.positionU ? `${panel.heightU}U` : "przeciągnij do racka"}</small></span>
                 <span className="equipment-row-remove" onClick={(event) => { event.stopPropagation(); onRemovePatchPanel(panel.id); }}>×</span>
               </button>
             ))}

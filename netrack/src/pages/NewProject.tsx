@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import DeviceEditorModal from "../components/DeviceEditorModal";
 import PatchPanelEditorModal from "../components/PatchPanelEditorModal";
+import RackAccessoryEditorModal from "../components/RackAccessoryEditorModal";
 import WizardStep from "../components/WizardStep";
 
 import { DEVICE_MODELS } from "../constants";
@@ -15,6 +16,8 @@ import {
   Device,
   PatchPanel,
   PatchPanelPort,
+  RackAccessory,
+  RackAccessoryType,
   ProjectDraft,
   Rack,
 } from "../types";
@@ -43,14 +46,14 @@ function NewProject({
 
   const [editingPatchPanelId, setEditingPatchPanelId] =
     useState<string | null>(null);
+  const [editingAccessoryId, setEditingAccessoryId] = useState<string | null>(null);
 
   const editingDevice = project.devices.find(
     (device) => device.id === editingDeviceId
   );
 
-  const editingPatchPanel = project.patchPanels.find(
-    (patchPanel) => patchPanel.id === editingPatchPanelId
-  );
+  const editingPatchPanel = project.patchPanels.find((patchPanel) => patchPanel.id === editingPatchPanelId);
+  const editingAccessory = project.accessories.find((accessory) => accessory.id === editingAccessoryId);
 
   /* =========================================================
      PROJECT UPDATE
@@ -93,17 +96,15 @@ function NewProject({
   const findAvailablePosition = (
     heightU: number,
     devices: Device[],
-    patchPanels: PatchPanel[]
+    patchPanels: PatchPanel[], accessories: RackAccessory[] = project.accessories
   ): number | null => {
     const items = [
       ...devices.map((device) => ({
         positionU: device.positionU,
         heightU: device.heightU,
       })),
-      ...patchPanels.map((patchPanel) => ({
-        positionU: patchPanel.positionU,
-        heightU: patchPanel.heightU,
-      })),
+      ...patchPanels.map((patchPanel) => ({ positionU: patchPanel.positionU, heightU: patchPanel.heightU })),
+      ...accessories.map((accessory) => ({ positionU: accessory.positionU, heightU: accessory.heightU })),
     ];
 
     for (let position = project.rack.heightU - heightU + 1; position >= 1; position--) {
@@ -144,21 +145,16 @@ function NewProject({
     setEditingDeviceId(newDevice.id);
   };
 
-  const moveItem = (id: string, type: "device" | "patch-panel", positionU: number) => {
-    const item = type === "device"
-      ? project.devices.find((candidate) => candidate.id === id)
-      : project.patchPanels.find((candidate) => candidate.id === id);
+  const moveItem = (id: string, type: "device" | "patch-panel" | "accessory", positionU: number) => {
+    const item = type === "device" ? project.devices.find((candidate) => candidate.id === id) : type === "patch-panel" ? project.patchPanels.find((candidate) => candidate.id === id) : project.accessories.find((candidate) => candidate.id === id);
     if (!item || positionU < 1 || positionU + item.heightU - 1 > project.rack.heightU) return false;
-    const overlaps = [...project.devices, ...project.patchPanels].some((candidate) => {
+    const overlaps = [...project.devices, ...project.patchPanels, ...project.accessories].some((candidate) => {
       if (candidate.id === id || candidate.positionU === null) return false;
       return positionU <= candidate.positionU + candidate.heightU - 1 &&
         candidate.positionU <= positionU + item.heightU - 1;
     });
     if (overlaps) return false;
-    setProject((current) => type === "device"
-      ? { ...current, devices: current.devices.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) }
-      : { ...current, patchPanels: current.patchPanels.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) }
-    );
+    setProject((current) => type === "device" ? { ...current, devices: current.devices.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) } : type === "patch-panel" ? { ...current, patchPanels: current.patchPanels.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) } : { ...current, accessories: current.accessories.map((candidate) => candidate.id === id ? { ...candidate, positionU } : candidate) });
     return true;
   };
 
@@ -250,6 +246,16 @@ function NewProject({
       setEditingPatchPanelId(null);
     }
   };
+
+
+  const addAccessory = (type: RackAccessoryType) => {
+    const labels: Record<RackAccessoryType,string> = { organizer:"ORGANIZER", spacer:"SPACER", ups:"UPS" };
+    const heights: Record<RackAccessoryType,number> = { organizer:1, spacer:1, ups:2 };
+    const item: RackAccessory = { id:crypto.randomUUID(), name:`${labels[type]}-${String(project.accessories.filter((x)=>x.type===type).length+1).padStart(2,"0")}`, type, manufacturer:"", model:"", heightU:heights[type], positionU:null };
+    setProject((current)=>({...current, accessories:[...current.accessories,item]})); setEditingAccessoryId(item.id);
+  };
+  const removeAccessory = (id:string) => { setProject((current)=>({...current, accessories:current.accessories.filter((x)=>x.id!==id)})); if(editingAccessoryId===id) setEditingAccessoryId(null); };
+  const updateAccessory = (id:string, changes:Partial<RackAccessory>) => setProject((current)=>({...current, accessories:current.accessories.map((x)=>x.id===id?{...x,...changes}:x)}));
 
   /* =========================================================
      PROJECT VALIDATION
@@ -348,6 +354,8 @@ function NewProject({
       });
     });
 
+    project.accessories.forEach((item) => { if (item.positionU === null) { errors.push({ message: `Element racka "${item.name}" nie ma ustalonej pozycji w szafie.` }); return; } const from=item.positionU,to=from+item.heightU-1; if(from<1||to>rackHeight){errors.push({message:`Element racka "${item.name}" wychodzi poza wysokość szafy.`});return;} occupiedUnits.push({from,to,name:item.name}); });
+
     /* ---------- POSITION CONFLICTS ---------- */
 
     for (let i = 0; i < occupiedUnits.length; i++) {
@@ -438,14 +446,19 @@ function NewProject({
             rack={project.rack}
             devices={project.devices}
             patchPanels={project.patchPanels}
+            accessories={project.accessories}
             editingDeviceId={editingDeviceId}
             editingPatchPanelId={editingPatchPanelId}
+            editingAccessoryId={editingAccessoryId}
             onAddDevice={addDevice}
             onEditDevice={setEditingDeviceId}
             onRemoveDevice={removeDevice}
             onAddPatchPanel={addPatchPanel}
             onEditPatchPanel={setEditingPatchPanelId}
             onRemovePatchPanel={removePatchPanel}
+            onAddAccessory={addAccessory}
+            onEditAccessory={setEditingAccessoryId}
+            onRemoveAccessory={removeAccessory}
             onMoveItem={moveItem}
           />
         );
@@ -634,6 +647,8 @@ function NewProject({
       {/* =====================================================
           PATCH PANEL EDITOR
           ===================================================== */}
+
+      {editingAccessory && (<RackAccessoryEditorModal accessory={editingAccessory} rackHeight={project.rack.heightU} onSave={(changes)=>{updateAccessory(editingAccessory.id,changes);setEditingAccessoryId(null)}} onCancel={()=>setEditingAccessoryId(null)} />)}
 
       {editingPatchPanel && (
         <PatchPanelEditorModal

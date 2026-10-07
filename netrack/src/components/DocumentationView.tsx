@@ -236,7 +236,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
     return (
       <div className="documentation-page patch-panels-page">
-        <PageHeader eyebrow="DOKUMENTACJA / PATCHPANELE" title="Patchpanele" description="Katalog paneli krosowych i stan ich portów. Kliknij patchpanel, aby zobaczyć szczegóły." />
+        <PageHeader eyebrow="DOKUMENTACJA / PATCHPANELE" title="Patchpanele" description="Wybierz patchpanel z listy, aby wyświetlić jego szczegóły." />
 
         <div className="devices-toolbar patch-panels-toolbar">
           <div className="devices-toolbar-stat"><span>PATCHPANELE</span><strong>{project.patchPanels.length}</strong></div>
@@ -245,66 +245,83 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
           <div className="devices-toolbar-stat"><span>WOLNE PORTY</span><strong>{freePorts}</strong></div>
         </div>
 
-        {selectedPanel && (
-          <section className="documentation-panel device-details-panel patch-panel-details-panel">
-            <div className="device-details-header">
-              <div className="device-details-title">
-                <span>PATCHPANEL · PASYWNE</span>
-                <h2>{selectedPanel.name}</h2>
-                <p>{selectedPanel.manufacturer || "—"} · {selectedPanel.model || "Model nie podany"}</p>
-              </div>
-              <button type="button" className="device-details-close" onClick={() => setSelectedPatchPanelId(null)} aria-label="Zamknij">×</button>
+        <div className="patch-panels-workspace">
+          <aside className="documentation-panel patch-panel-selector">
+            <div className="patch-panel-selector-heading">
+              <span>INWENTARZ</span>
+              <strong>Patchpanele</strong>
             </div>
-            <div className="device-details-content">
-              <div className="device-details-metrics">
-                <div><span>POZYCJA</span><strong>{mounted(selectedPanel.positionU) ? `U${selectedPanel.positionU}` : "POZA RACKIEM"}</strong></div>
-                <div><span>WYSOKOŚĆ</span><strong>{selectedPanel.heightU}U</strong></div>
-                <div><span>PORTY</span><strong>{selectedPanel.ports}</strong></div>
-                <div><span>ZAJĘTE</span><strong>{selectedPanel.ports - selectedPanel.portList.filter((port) => port.status === "free").length}</strong></div>
-              </div>
-              <div className="device-details-ports">
-                <div className="device-details-section-label">STAN PORTÓW</div>
-                <div className="device-port-summary">
-                  <span><strong>{selectedPanel.ports - selectedPanel.portList.filter((port) => port.status === "free").length}</strong> ZAJĘTE</span>
-                  <span><strong>{selectedPanel.portList.filter((port) => port.status === "free").length}</strong> WOLNE</span>
-                </div>
-              </div>
+            <div className="patch-panel-selector-list">
+              {project.patchPanels.length ? project.patchPanels.map((panel) => {
+                const selected = selectedPatchPanelId === panel.id;
+                const connected = panel.portList.filter((port) => port.status === "connected").length;
+                const free = panel.portList.filter((port) => port.status === "free").length;
+
+                return (
+                  <button
+                    type="button"
+                    key={panel.id}
+                    className={`patch-panel-selector-item ${selected ? "is-selected" : ""}`}
+                    onClick={() => setSelectedPatchPanelId(panel.id)}
+                  >
+                    <span className="patch-panel-selector-index">PP</span>
+                    <span className="patch-panel-selector-copy">
+                      <strong>{panel.name}</strong>
+                      <small>{panel.manufacturer || "—"} · {panel.model || "Model nie podany"}</small>
+                    </span>
+                    <span className="patch-panel-selector-state">{free}/{panel.ports}</span>
+                  </button>
+                );
+              }) : <Empty text="Nie dodano jeszcze żadnych patchpaneli." />}
             </div>
-          </section>
-        )}
+          </aside>
 
-        <section className="devices-list patch-panels-list">
-          {project.patchPanels.length ? project.patchPanels.map((panel) => {
-            const connected = panel.portList.filter((port) => port.status === "connected").length;
-            const free = panel.portList.filter((port) => port.status === "free").length;
-            const selected = selectedPatchPanelId === panel.id;
-
-            return (
-              <button
-                type="button"
-                key={panel.id}
-                className={`device-card patch-panel-card ${selected ? "is-selected" : ""}`}
-                onClick={() => setSelectedPatchPanelId(panel.id)}
-              >
-                <div className="device-card-type patch-panel-card-type">PATCHPANEL · {panel.type || "RJ45"}</div>
-                <div className="device-card-main">
-                  <div>
-                    <strong>{panel.name}</strong>
-                    <span>{panel.manufacturer || "—"} · {panel.model || "Model nie podany"}</span>
+          <section className="patch-panel-detail-workspace">
+            {selectedPanel ? (
+              <section className="documentation-panel patch-panel-details-panel">
+                <div className="patch-panel-detail-hero">
+                  <div className="patch-panel-detail-eyebrow">PATCHPANEL · PASYWNE</div>
+                  <h2>{selectedPanel.name}</h2>
+                  <p>{selectedPanel.manufacturer || "—"} · {selectedPanel.model || "Model nie podany"} · {selectedPanel.type || "RJ45"}</p>
+                  <div className="patch-panel-detail-badges">
+                    <span>{mounted(selectedPanel.positionU) ? `RACK · U${selectedPanel.positionU}` : "POZA RACKIEM"}</span>
+                    <span>{selectedPanel.heightU}U</span>
+                    <span>{selectedPanel.ports} PORTÓW</span>
                   </div>
-                  <i>→</i>
                 </div>
-                <div className="device-card-footer">
-                  <span className={mounted(panel.positionU) ? "is-mounted" : ""}>{mounted(panel.positionU) ? `RACK · U${panel.positionU}` : "POZA RACKIEM"}</span>
-                  <span>{panel.heightU}U</span>
-                  <span>{panel.ports} PORTÓW</span>
-                  <span>{connected} ZAJĘTYCH</span>
-                  <span>{free} WOLNYCH</span>
+
+                <div className="patch-panel-detail-stats">
+                  <div><span>PORTY</span><strong>{selectedPanel.ports}</strong></div>
+                  <div><span>ZAJĘTE</span><strong>{selectedPanel.ports - selectedPanel.portList.filter((port) => port.status === "free").length}</strong></div>
+                  <div><span>WOLNE</span><strong>{selectedPanel.portList.filter((port) => port.status === "free").length}</strong></div>
+                  <div><span>POZYCJA</span><strong>{mounted(selectedPanel.positionU) ? `U${selectedPanel.positionU}` : "—"}</strong></div>
                 </div>
-              </button>
-            );
-          }) : <Empty text="Nie dodano jeszcze żadnych patchpaneli." />}
-        </section>
+
+                <div className="patch-panel-port-list">
+                  <div className="patch-panel-port-list-heading">
+                    <span>PORTY PATCHPANELU</span>
+                    <span>{selectedPanel.portList.length} PORTÓW</span>
+                  </div>
+                  <div className="patch-panel-port-grid">
+                    {selectedPanel.portList.map((port) => (
+                      <div key={port.id} className={`patch-panel-port ${port.status === "connected" ? "is-connected" : "is-free"}`}>
+                        <strong>{port.number}</strong>
+                        <span>{port.label || "—"}</span>
+                        <small>{port.status === "connected" ? "ZAJĘTY" : "WOLNY"}</small>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <section className="documentation-panel patch-panel-empty-state">
+                <span>PATCHPANELE</span>
+                <h2>Wybierz patchpanel</h2>
+                <p>Lista po lewej stronie służy do szybkiego przełączania między panelami. Po wyborze tutaj pojawią się jego parametry i stan portów.</p>
+              </section>
+            )}
+          </section>
+        </div>
       </div>
     );
   }

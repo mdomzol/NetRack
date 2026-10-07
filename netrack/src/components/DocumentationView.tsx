@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ConnectionEditorModal from "./ConnectionEditorModal";
-import { Connection, ProjectDraft } from "../types";
+import { Connection, ConnectionEndpoint, ProjectDraft } from "../types";
 
 export type DocumentationViewType =
   | "rack"
@@ -15,7 +15,7 @@ type Props = {
   onDeleteConnection: (id: string) => void;
 };
 
-const deviceLabels: Record<string, string> = {
+function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {\n  if (endpoint.kind === "device") {\n    const device = project.devices.find((item) => item.id === endpoint.deviceId);\n    return (device?.name || "Nieznane urządzenie") + "-" + String(endpoint.port).padStart(2, "0");\n  }\n  const panel = project.patchPanels.find((item) => item.id === endpoint.patchPanelId);\n  const port = panel?.portList.find((item) => item.id === endpoint.portId);\n  return (panel?.name || "Nieznany patchpanel") + "-" + (port?.label || "??");\n}\n\nfunction endpointKindLabel(endpoint: ConnectionEndpoint) {\n  return endpoint.kind === "device" ? "AKTYWNE" : "PASYWNE";\n}\nconst deviceLabels: Record<string, string> = {
   switch: "Switch",
   router: "Router",
   server: "Serwer",
@@ -109,7 +109,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
   return (
     <div className="documentation-page">
-      <PageHeader eyebrow="DOKUMENTACJA / POŁĄCZENIA" title="Połączenia" description="Powiąż konkretny port switcha z portem patchpanelu i utrzymuj aktualną mapę okablowania." />
+      <PageHeader eyebrow="DOKUMENTACJA / POŁĄCZENIA" title="Połączenia" description="Twórz połączenia pomiędzy dowolnymi portami urządzeń aktywnych i pasywnych, a następnie utrzymuj aktualną mapę okablowania." />
       <div className="connections-toolbar">
         <div className="connection-toolbar-copy"><span>MAPA OKABLOWANIA</span><strong>{project.connections.length} połączeń</strong></div>
         <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>+ Dodaj połączenie</button>
@@ -125,17 +125,10 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
         {project.connections.length ? (
           <div className="connection-list">
             {project.connections.map((connection) => {
-              const device = project.devices.find((item) => item.id === connection.deviceId);
-              const panel = project.patchPanels.find((item) => item.id === connection.patchPanelId);
-              const port = panel?.portList.find((item) => item.id === connection.patchPanelPortId);
-              return (
+                            return (
                 <div className="connection-row" key={connection.id}>
                   <div className="connection-route-label">
-                    <span>SW</span>
-                    <strong>{device?.name || "Nieznany SW"}-{String(connection.devicePort).padStart(2, "0")}</strong>
-                    <b>→</b>
-                    <span className="patch">PP</span>
-                    <strong>{panel?.name || "Nieznany PP"}-{port?.label || "??"}</strong>
+                    <span>{endpointKindLabel(connection.from)}</span>\n                    <strong>{endpointLabel(connection.from, project)}</strong>\n                    <b>↔</b>\n                    <span className="patch">{endpointKindLabel(connection.to)}</span>\n                    <strong>{endpointLabel(connection.to, project)}</strong>
                   </div>
                   <div className="connection-row-actions">
                     <button type="button" className="secondary-button" onClick={() => setEditingConnectionId(connection.id)}>Edytuj</button>

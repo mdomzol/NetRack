@@ -6465,3 +6465,49 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     font-size: 5px;
   }
 }
+
+/* EDU-FIX asset icon system */
+.ui-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.nav-item .ui-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+}
+
+.stat-card-icon .ui-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.equipment-row-icon .ui-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.equipment-actions .ui-icon,
+.primary-button .ui-icon,
+.secondary-button .ui-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.rack-canvas-item-grip .ui-icon {
+  width: 14px;
+  height: 14px;
+  opacity: .7;
+}
+
+.rack-canvas-hint .ui-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}

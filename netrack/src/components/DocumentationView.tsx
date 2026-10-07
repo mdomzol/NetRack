@@ -64,7 +64,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
     return (
       <div className="documentation-page">
-        <PageHeader eyebrow="DOKUMENTACJA / RACK" title={project.rack.name || "Szafa rack"} description="Kliknij element w szafie, aby wyświetlić jego informacje." />
         <div className="documentation-grid rack-documentation">
           <section className="documentation-panel rack-overview-panel">
             <div className="documentation-panel-heading">
@@ -146,21 +145,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   if (view === "connection-map") {
     return (
       <div className="documentation-page connection-map-page">
-        <PageHeader
-          eyebrow="DOKUMENTACJA / MAPA POŁĄCZEŃ"
-          title="Mapa połączeń"
-          description="Kompletny widok szafy rack. Najedź na port, aby zobaczyć drugi koniec połączenia."
-        />
-        <section className="documentation-panel connection-map-full-panel">
-          <div className="connection-map-full-heading">
-            <div>
-              <span>MAPA OKABLOWANIA</span>
-              <strong>{String(project.connections.length).padStart(2, "0")} <small>POŁĄCZENIA</small></strong>
-            </div>
-            <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>
-              + Dodaj połączenie
-            </button>
-          </div>
+        <section className="connection-map-full-panel">
           <ConnectionRackMap project={project} />
         </section>
 
@@ -187,7 +172,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
     return (
       <div className="documentation-page devices-page">
-        <PageHeader eyebrow="DOKUMENTACJA / URZĄDZENIA" title="Urządzenia" description="Wybierz urządzenie z listy, aby wyświetlić jego szczegóły." />
 
         <div className="devices-toolbar">
           <div className="devices-toolbar-stat"><span>URZĄDZENIA</span><strong>{project.devices.length}</strong></div>
@@ -309,7 +293,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
 
     return (
       <div className="documentation-page patch-panels-page">
-        <PageHeader eyebrow="DOKUMENTACJA / PATCHPANELE" title="Patchpanele" description="Wybierz patchpanel z listy, aby wyświetlić jego szczegóły." />
 
         <div className="devices-toolbar patch-panels-toolbar">
           <div className="devices-toolbar-stat"><span>PATCHPANELE</span><strong>{project.patchPanels.length}</strong></div>
@@ -765,10 +748,6 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
       </div>
     </section>
   );
-}
-
-function PageHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return <header className="documentation-header"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div></header>;
 }
 
 function PanelTitle({ eyebrow, title }: { eyebrow: string; title: string }) {

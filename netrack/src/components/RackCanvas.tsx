@@ -4,7 +4,7 @@ import { Device, PatchPanel, Rack, RackAccessory } from "../types";
 type RackItem = {
   id: string;
   name: string;
-  type: "device" | "patch-panel";
+  type: "device" | "patch-panel" | "accessory";
   positionU: number | null;
   heightU: number;
   manufacturer: string;
@@ -20,10 +20,10 @@ type RackCanvasProps = {
   accessories: RackAccessory[];
   onMoveItem?: (
     id: string,
-    type: "device" | "patch-panel",
+    type: "device" | "patch-panel" | "accessory",
     positionU: number
   ) => boolean | void;
-  onEditItem?: (id: string, type: "device" | "patch-panel") => void;
+  onEditItem?: (id: string, type: "device" | "patch-panel" | "accessory") => void;
 };
 
 export default function RackCanvas({

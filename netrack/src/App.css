@@ -6124,8 +6124,8 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 
 .connection-rack-equipment.is-dimmed,
 .connection-port-box.is-dimmed {
-  opacity: .16;
-  filter: saturate(.35);
+  opacity: 1;
+  filter: none;
 }
 
 .connection-rack-equipment-heading {

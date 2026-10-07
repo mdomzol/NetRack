@@ -1,4 +1,3 @@
-import Sidebar from "./Sidebar";
 import StatCard from "./StatCard";
 import { ProjectDraft } from "../types";
 
@@ -19,8 +18,6 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
 
   return (
     <div className="app">
-      <Sidebar hasProject={hasProject} />
-
       <main className="main">
         <header className="topbar">
           <div>

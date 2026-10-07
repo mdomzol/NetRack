@@ -13,6 +13,9 @@ type Props = {
   view: DocumentationViewType;
   onSaveConnection: (connection: Connection) => void;
   onDeleteConnection: (id: string) => void;
+  onOpenDevice: (deviceId: string) => void;
+  focusedDeviceId: string | null;
+  onClearFocusedDevice: () => void;
 };
 
 function endpointLabel(endpoint: ConnectionEndpoint, project: ProjectDraft) {
@@ -38,7 +41,7 @@ const deviceLabels: Record<string, string> = {
   other: "Inne",
 };
 
-function DocumentationView({ project, view, onSaveConnection, onDeleteConnection }: Props) {
+function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice }: Props) {
   const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
   const [creatingConnection, setCreatingConnection] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
@@ -51,32 +54,82 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   const editingConnection = project.connections.find((connection) => connection.id === editingConnectionId) ?? null;
 
   if (view === "rack") {
+    const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
+    const rackItems = [...project.devices, ...project.patchPanels];
+    const selectedRackItem = rackItems.find((item) => item.id === selectedRackItemId) ?? null;
+
     return (
       <div className="documentation-page">
-        <PageHeader eyebrow="DOKUMENTACJA / RACK" title={project.rack.name || "Szafa rack"} description="Parametry fizyczne szafy i aktualne rozmieszczenie wyposażenia." />
+        <PageHeader eyebrow="DOKUMENTACJA / RACK" title={project.rack.name || "Szafa rack"} description="Kliknij element w szafie, aby wyświetlić jego informacje." />
         <div className="documentation-grid rack-documentation">
           <section className="documentation-panel rack-overview-panel">
-            <div className="documentation-panel-heading"><div><span>RACK</span><h2>{project.rack.name || "SR-01"}</h2></div><strong>{project.rack.heightU}U</strong></div>
-            <div className="rack-visual-mini">
-              {Array.from({ length: project.rack.heightU }, (_, i) => {
-                const u = project.rack.heightU - i;
-                const item = [...project.devices, ...project.patchPanels].find((x) => x.positionU !== null && u >= x.positionU && u < x.positionU + x.heightU);
-                return <div key={u} className={`rack-mini-row ${item ? "occupied" : ""}`}><span>{u}</span><div>{item && <><strong>{item.name}</strong><span>{item.manufacturer || "—"} · {item.model || "Model nie podany"}</span></>}</div></div>;
-              })}
+            <div className="documentation-panel-heading">
+              <div><span>RACK</span><h2>{project.rack.name || "SR-01"}</h2></div>
+              <strong>{project.rack.heightU}U</strong>
+            </div>
+            <div className="rack-visual-scroll">
+              <div className="rack-visual-mini">
+                {Array.from({ length: project.rack.heightU }, (_, i) => {
+                  const u = project.rack.heightU - i;
+                  const item = rackItems.find((x) => x.positionU !== null && u >= x.positionU && u < x.positionU + x.heightU);
+                  const selected = item?.id === selectedRackItemId;
+                  return (
+                    <button
+                      key={u}
+                      type="button"
+                      className={`rack-mini-row ${item ? "occupied" : ""} ${selected ? "selected" : ""}`}
+                      onClick={() => item && setSelectedRackItemId(item.id)}
+                      disabled={!item}
+                    >
+                      <span>{u}</span>
+                      <div>
+                        {item && <><strong>{item.name}</strong><span>{item.manufacturer || "—"} · {item.model || "Model nie podany"}</span></>}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </section>
-          <section className="documentation-panel rack-specification-panel">
-            <PanelTitle eyebrow="PARAMETRY" title="Specyfikacja" />
-            <div className="rack-specification-list">
-              <div className="rack-specification-item rack-specification-location"><span>Lokalizacja</span><strong>{project.rack.location || "—"}</strong></div>
-              <div className="rack-specification-item"><span>Producent</span><strong>{project.rack.manufacturer || "—"}</strong></div>
-              <div className="rack-specification-item"><span>Model</span><strong>{project.rack.model || "—"}</strong></div>
-              <div className="rack-specification-item"><span>Wysokość</span><strong>{project.rack.heightU}U</strong></div>
-              <div className="rack-specification-item"><span>Szerokość</span><strong>{project.rack.width}"</strong></div>
-              <div className="rack-specification-item"><span>Głębokość</span><strong>{project.rack.depth} mm</strong></div>
-            </div>
-            <div className="rack-specification-footer"><span>PARAMETRY FIZYCZNE SZAFY</span><strong>{project.rack.heightU}U · {project.rack.width}" · {project.rack.depth} mm</strong></div>
+
+          <section className="documentation-panel rack-item-details-panel">
+            {selectedRackItem ? (
+              <>
+                <div className="rack-item-details-header">
+                  <div><span>{project.devices.some((device) => device.id === selectedRackItem.id) ? "URZĄDZENIE" : "PATCHPANEL"}</span><h2>{selectedRackItem.name}</h2></div>
+                  <button type="button" className="rack-item-details-close" onClick={() => setSelectedRackItemId(null)} aria-label="Zamknij">×</button>
+                </div>
+                <div className="rack-item-details-body">
+                  <div className="rack-item-details-model">
+                    <strong>{selectedRackItem.manufacturer || "—"}</strong>
+                    <span>{selectedRackItem.model || "Model nie podany"}</span>
+                  </div>
+                  <div className="rack-item-details-list">
+                    <div><span>Pozycja</span><strong>U{selectedRackItem.positionU ?? "—"}</strong></div>
+                    <div><span>Wysokość</span><strong>{selectedRackItem.heightU}U</strong></div>
+                    <div><span>Porty</span><strong>{selectedRackItem.ports}</strong></div>
+                    {project.devices.some((device) => device.id === selectedRackItem.id) && (
+                      <div><span>Typ</span><strong>{deviceLabels[(selectedRackItem as typeof project.devices[number]).type] || "Urządzenie"}</strong></div>
+                    )}
+                  </div>
+                  <div className="rack-item-details-action">
+                    {project.devices.some((device) => device.id === selectedRackItem.id) ? (
+                      <button type="button" className="primary-button" onClick={() => onOpenDevice(selectedRackItem.id)}>Otwórz urządzenie <span>→</span></button>
+                    ) : (
+                      <button type="button" className="primary-button" onClick={() => setSelectedRackItemId(null)}>Otwórz patchpanel <span>→</span></button>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="rack-item-details-empty">
+                <span>WYBIERZ ELEMENT</span>
+                <strong>Kliknij urządzenie lub patchpanel w widoku szafy.</strong>
+                <p>Wyświetlimy jego podstawowe dane oraz przejście do dokumentacji.</p>
+              </div>
+            )}
           </section>
+
           <section className="documentation-panel documentation-panel-wide">
             <PanelTitle eyebrow="OBSADA" title="Wyposażenie szafy" />
             <EquipmentRows project={project} />
@@ -93,7 +146,7 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
         <div className="documentation-toolbar"><span>{project.devices.length} urządzeń</span><span>{project.devices.filter((d) => mounted(d.positionU)).length} zamontowanych</span></div>
         <section className="documentation-panel documentation-list-panel">
           {project.devices.length ? project.devices.map((device) => (
-            <div className="documentation-row" key={device.id}>
+            <div className={`documentation-row ${focusedDeviceId === device.id ? "is-focused" : ""}`} key={device.id} id={`device-${device.id}`}>
               <div className="documentation-type device-type">{deviceLabels[device.type] || "Urządzenie"}</div>
               <div className="documentation-main"><strong>{device.name}</strong><span>{device.manufacturer || "—"} · {device.model || "Model nie podany"}</span></div>
               <div className="documentation-meta"><span>{device.ports} portów</span><span>{device.heightU}U</span><span className={mounted(device.positionU) ? "mounted" : ""}>{mounted(device.positionU) ? `U${device.positionU}` : "POZA RACKIEM"}</span></div>

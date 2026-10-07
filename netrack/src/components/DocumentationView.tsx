@@ -160,6 +160,141 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   );
 }
 
+
+function endpointKey(endpoint: ConnectionEndpoint) {
+  return endpoint.kind === "device"
+    ? "device:" + endpoint.deviceId + ":port:" + endpoint.port
+    : "patch-panel:" + endpoint.patchPanelId + ":port:" + endpoint.portId;
+}
+
+function ConnectionRackMap({ project }: { project: ProjectDraft }) {
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+  const mountedItems = [...project.devices, ...project.patchPanels]
+    .filter((item) => item.positionU !== null)
+    .sort((a, b) => (b.positionU ?? 0) - (a.positionU ?? 0));
+
+  const findConnection = (key: string) =>
+    project.connections.find(
+      (connection) =>
+        endpointKey(connection.from) === key || endpointKey(connection.to) === key
+    );
+
+  const counterpart = (connection: Connection, key: string) =>
+    endpointKey(connection.from) === key ? connection.to : connection.from;
+
+  const endpointTitle = (endpoint: ConnectionEndpoint) => endpointLabel(endpoint, project);
+
+  return (
+    <section className="documentation-panel connection-rack-panel">
+      <div className="connection-rack-header">
+        <div>
+          <span>RACK / PORTY</span>
+          <h2>{project.rack.name || "Szafa rack"}</h2>
+        </div>
+        <div className="connection-rack-stats">
+          <span>{project.rack.heightU}U</span>
+          <span>{project.connections.length} połączeń</span>
+        </div>
+      </div>
+
+      <div className="connection-rack-stage">
+        <div className="connection-rack-frame">
+          <div className="connection-rack-scale">
+            {Array.from({ length: project.rack.heightU }, (_, index) => {
+              const u = project.rack.heightU - index;
+              return <span key={u}>{u}</span>;
+            })}
+          </div>
+
+          <div
+            className="connection-rack-grid"
+            style={{ gridTemplateRows: "repeat(" + project.rack.heightU + ", minmax(22px, 1fr))" }}
+          >
+            {Array.from({ length: project.rack.heightU }, (_, index) => {
+              const u = project.rack.heightU - index;
+              return <div key={u} className="connection-rack-row" />;
+            })}
+
+            {mountedItems.map((item) => {
+              const row = project.rack.heightU - (item.positionU ?? 1) + 1;
+              const height = Math.max(1, item.heightU);
+              const isDevice = project.devices.some((device) => device.id === item.id);
+              const itemKeys = Array.from({ length: isDevice ? item.ports : item.ports }, (_, portIndex) =>
+                isDevice
+                  ? endpointKey({ kind: "device", deviceId: item.id, port: portIndex + 1 })
+                  : endpointKey({
+                      kind: "patch-panel",
+                      patchPanelId: item.id,
+                      portId: (item as typeof project.patchPanels[number]).portList[portIndex]?.id || item.id + "-port-" + (portIndex + 1),
+                    })
+              );
+
+              const itemDimmed = hoveredKey !== null && !itemKeys.includes(hoveredKey) && !itemKeys.some((key) => {
+                const connection = findConnection(key);
+                return connection ? endpointKey(counterpart(connection, hoveredKey)) === key : false;
+              });
+
+              return (
+                <div
+                  key={item.id}
+                  className={"connection-rack-equipment " + (itemDimmed ? "is-dimmed" : "")}
+                  style={{ gridRow: row + " / span " + height }}
+                >
+                  <div className="connection-rack-equipment-heading">
+                    <div>
+                      <strong>{item.name}</strong>
+                      <span>{isDevice ? "AKTYWNE" : "PASYWNE"} · {item.heightU}U</span>
+                    </div>
+                    <small>{item.manufacturer || "—"} · {item.model || "—"}</small>
+                  </div>
+
+                  <div className="connection-rack-ports">
+                    {itemKeys.map((key, index) => {
+                      const connection = findConnection(key);
+                      const target = connection ? counterpart(connection, key) : null;
+                      const connected = Boolean(connection);
+                      const selected = hoveredKey === key;
+                      const targetSelected = target ? hoveredKey === endpointKey(target) : false;
+                      const dimPort = hoveredKey !== null && !selected && !targetSelected;
+
+                      return (
+                        <div
+                          key={key}
+                          className={"connection-port-box " + (connected ? "is-connected " : "is-free ") + (selected || targetSelected ? "is-highlighted " : "") + (dimPort ? "is-dimmed" : "")}
+                          onMouseEnter={() => setHoveredKey(key)}
+                          onMouseLeave={() => setHoveredKey(null)}
+                          title={connected && target ? endpointTitle(target) : "Port wolny"}
+                        >
+                          <span>{String(index + 1).padStart(2, "0")}</span>
+                          {connected && <i />}
+                          {selected && (
+                            <div className="connection-port-tooltip">
+                              <b>{connected ? "POŁĄCZONY" : "WOLNY"}</b>
+                              <strong>{connected && target ? endpointTitle(target) : "Brak połączenia"}</strong>
+                              {connected && target && <span>{target.kind === "device" ? "URZĄDZENIE AKTYWNE" : "URZĄDZENIE PASYWNE"}</span>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {!mountedItems.length && (
+          <div className="connection-rack-empty">
+            <strong>Brak zamontowanego wyposażenia</strong>
+            <span>Zamontuj urządzenia lub patchpanele, aby zobaczyć mapę portów.</span>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function PageHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return <header className="documentation-header"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div></header>;
 }

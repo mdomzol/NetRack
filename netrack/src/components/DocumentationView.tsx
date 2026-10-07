@@ -219,28 +219,28 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
               const row = project.rack.heightU - (item.positionU ?? 1) + 1;
               const height = Math.max(1, item.heightU);
               const isDevice = project.devices.some((device) => device.id === item.id);
-              const itemKeys = Array.from({ length: isDevice ? item.ports : item.ports }, (_, portIndex) =>
+              const portLayout = isDevice
+                ? (item as typeof project.devices[number]).portLayout ?? Array.from({ length: item.ports }, (_, index) => ({ number: index + 1, type: "rj45" as const }))
+                : Array.from({ length: item.ports }, (_, index) => ({ number: index + 1, type: "rj45" as const }));
+              const portGroups = [
+                { type: "rj45" as const, label: "RJ45", ports: portLayout.filter((port) => port.type === "rj45") },
+                { type: "sfp" as const, label: "SFP", ports: portLayout.filter((port) => port.type === "sfp" || port.type === "sfp+") },
+              ].filter((group) => group.ports.length > 0);
+              const itemKeys = portLayout.map((port) =>
                 isDevice
-                  ? endpointKey({ kind: "device", deviceId: item.id, port: portIndex + 1 })
+                  ? endpointKey({ kind: "device", deviceId: item.id, port: port.number })
                   : endpointKey({
                       kind: "patch-panel",
                       patchPanelId: item.id,
-                      portId: (item as typeof project.patchPanels[number]).portList[portIndex]?.id || item.id + "-port-" + (portIndex + 1),
+                      portId: (item as typeof project.patchPanels[number]).portList[port.number - 1]?.id || item.id + "-port-" + port.number,
                     })
               );
-
               const hoveredConnection = hoveredKey ? findConnection(hoveredKey) : null;
-              const targetKey = hoveredConnection ? endpointKey(counterpart(hoveredConnection, hoveredKey!)) : null;
-              const itemHighlighted =
-                hoveredKey !== null &&
-                (itemKeys.includes(hoveredKey) || itemKeys.includes(targetKey || ""));
+              const targetKey = hoveredConnection ? endpointKey(counterpart(hoveredConnection, hoveredKey)) : null;
+              const itemHighlighted = hoveredKey !== null && (itemKeys.includes(hoveredKey) || itemKeys.includes(targetKey || ""));
 
               return (
-                <div
-                  key={item.id}
-                  className={"connection-rack-equipment " + (itemHighlighted ? "is-highlighted" : "")}
-                  style={{ gridRow: row + " / span " + height }}
-                >
+                <div key={item.id} className={"connection-rack-equipment " + (itemHighlighted ? "is-highlighted" : "")} style={{ gridRow: row + " / span " + height }}>
                   <div className="connection-rack-equipment-heading">
                     <div>
                       <strong>{item.name}</strong>
@@ -249,38 +249,39 @@ function ConnectionRackMap({ project }: { project: ProjectDraft }) {
                     <small>{item.manufacturer || "—"} · {item.model || "—"}</small>
                   </div>
 
-                  <div
-                    className="connection-rack-ports"
-                    style={{ "--port-columns": item.ports <= 12 ? 12 : 24 } as CSSProperties}
-                  >
-                    {itemKeys.map((key, index) => {
-                      const connection = findConnection(key);
-                      const target = connection ? counterpart(connection, key) : null;
-                      const connected = Boolean(connection);
-                      const selected = hoveredKey === key;
-                      const targetSelected = target ? hoveredKey === endpointKey(target) : false;
-                      const dimPort = hoveredKey !== null && !selected && !targetSelected;
-
-                      return (
-                        <div
-                          key={key}
-                          className={"connection-port-box " + (connected ? "is-connected " : "is-free ") + (selected || targetSelected ? "is-highlighted " : "") + (dimPort ? "is-dimmed" : "")}
-                          onMouseEnter={() => setHoveredKey(key)}
-                          onMouseLeave={() => setHoveredKey(null)}
-                          title={connected && target ? endpointTitle(target) : "Port wolny"}
-                        >
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          {connected && <i />}
-                          {selected && (
-                            <div className="connection-port-tooltip">
-                              <b>{connected ? "POŁĄCZONY" : "WOLNY"}</b>
-                              <strong>{connected && target ? endpointTitle(target) : "Brak połączenia"}</strong>
-                              {connected && target && <span>{target.kind === "device" ? "URZĄDZENIE AKTYWNE" : "URZĄDZENIE PASYWNE"}</span>}
-                            </div>
-                          )}
+                  <div className="connection-rack-port-groups">
+                    {portGroups.map((group) => (
+                      <div key={group.type} className={"connection-rack-port-group " + (group.type === "sfp" ? "is-sfp" : "")}>
+                        <span className="connection-rack-port-group-label">{group.label}</span>
+                        <div className="connection-rack-ports" style={{ "--port-columns": group.ports.length <= 12 ? 12 : 24 } as CSSProperties}>
+                          {group.ports.map((port) => {
+                            const key = isDevice
+                              ? endpointKey({ kind: "device", deviceId: item.id, port: port.number })
+                              : endpointKey({
+                                  kind: "patch-panel",
+                                  patchPanelId: item.id,
+                                  portId: (item as typeof project.patchPanels[number]).portList[port.number - 1]?.id || item.id + "-port-" + port.number,
+                                });
+                            const connection = findConnection(key);
+                            const target = connection ? counterpart(connection, key) : null;
+                            const connected = Boolean(connection);
+                            const selected = hoveredKey === key;
+                            const targetSelected = target ? hoveredKey === endpointKey(target) : false;
+                            return (
+                              <div key={key} className={"connection-port-box " + (port.type !== "rj45" ? "is-sfp " : "") + (connected ? "is-connected " : "is-free ") + (selected || targetSelected ? "is-highlighted" : "")} onMouseEnter={() => setHoveredKey(key)} onMouseLeave={() => setHoveredKey(null)} title={connected && target ? endpointTitle(target) : "Port wolny"}>
+                                <span>{String(port.number).padStart(2, "0")}</span>
+                                {connected && <i />}
+                                {selected && <div className="connection-port-tooltip"><b>{connected ? "POŁĄCZONY" : "WOLNY"}</b><strong>{connected && target ? endpointTitle(target) : "Brak połączenia"}</strong>{connected && target && <span>{target.kind === "device" ? "URZĄDZENIE AKTYWNE" : "URZĄDZENIE PASYWNE"}</span>}</div>}
+                              </div>
+                            );
+                          })}
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
                   </div>
                 </div>
               );

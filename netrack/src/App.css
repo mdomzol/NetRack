@@ -6316,3 +6316,84 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     min-width: 130px;
   }
 }
+
+
+/* =========================================================
+   MODEL-SPECIFIC PORT GROUPS
+   ========================================================= */
+
+.connection-rack-port-groups {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.connection-rack-port-group {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 5px;
+}
+
+.connection-rack-port-group.is-sfp {
+  flex: 0 0 auto;
+  padding-left: 7px;
+  border-left: 1px solid #39434f;
+}
+
+.connection-rack-port-group-label {
+  flex: 0 0 auto;
+  color: #687384;
+  font: 700 6px/1 "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.connection-rack-port-group.is-sfp .connection-rack-port-group-label {
+  color: #f36b21;
+}
+
+.connection-rack-port-group .connection-rack-ports {
+  width: 100%;
+}
+
+.connection-port-box.is-sfp {
+  border-color: #6b4b2d;
+  background: #17120e;
+  color: #c9874c;
+}
+
+.connection-port-box.is-sfp:hover {
+  border-color: #f36b21;
+}
+
+.connection-port-box.is-sfp.is-connected {
+  border-color: rgba(243,107,33,.65);
+  background: rgba(243,107,33,.13);
+  color: #f36b21;
+}
+
+.connection-port-box.is-sfp.is-highlighted {
+  border-color: #ff9a5b;
+  background: #2d190e;
+  color: #ffb783;
+}
+
+@media (max-width: 760px) {
+  .connection-rack-port-groups {
+    gap: 5px;
+  }
+
+  .connection-rack-port-group.is-sfp {
+    padding-left: 5px;
+  }
+
+  .connection-rack-port-group-label {
+    font-size: 5px;
+  }
+}

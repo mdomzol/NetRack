@@ -433,9 +433,6 @@ function NewProject({
             devices={project.devices}
             patchPanels={project.patchPanels}
             accessories={project.accessories}
-            onAddDevice={() => { setCurrentStep(3); addDevice(); }}
-            onAddPatchPanel={() => { setCurrentStep(3); addPatchPanel(); }}
-            onAddAccessory={(type) => { setCurrentStep(3); addAccessory(type); }}
             updateRackField={updateRackField}
           />
         );

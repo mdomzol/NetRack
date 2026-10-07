@@ -63,22 +63,6 @@ function Dashboard({ project, onNewProject, onNavigate }: DashboardProps) {
                 ＋ {hasProject ? "Nowy projekt" : "Utwórz pierwszy projekt"}
               </button>
             </div>
-
-            <div className="welcome-graphic" aria-hidden="true">
-              <div className="graphic-grid" />
-              <div className="graphic-rack">
-                {(hasProject
-                  ? occupiedItems.slice(0, 5)
-                  : [{ name: "PP-01" }, { name: "SW-01" }, { name: "SW-02" }, { name: "RTR-01" }]
-                ).map((item, index) => (
-                  <div className="rack-unit" key={item.name + "-" + index}>
-                    <span>{item.name}</span>
-                    <i />
-                  </div>
-                ))}
-              </div>
-              <div className="graphic-lines"><span /><span /><span /><span /></div>
-            </div>
           </div>
 
           <div className="section-header">

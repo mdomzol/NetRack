@@ -8933,15 +8933,19 @@ DEDICATED CONNECTION MAP
 CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
 ========================================================= */
 
-/* Empty U sections stay compact; mounted equipment determines its visual weight. */
+/* Every U has the same physical height. Mounted equipment spans its real U count,
+   so a 1U switch no longer visually stretches across two rack sections. */
 .connection-map-page .connection-rack-grid {
-  min-height: max(360px, calc(var(--rack-height, 12) * 18px));
-  grid-auto-rows: minmax(18px, auto);
+  min-height: max(432px, calc(var(--rack-height, 12) * 36px));
+  height: max(432px, calc(var(--rack-height, 12) * 36px));
+  grid-template-rows: repeat(var(--rack-height, 12), minmax(36px, 36px));
+  grid-auto-rows: 36px;
+  gap: 0;
 }
 
-.connection-map-page .connection-rack-row {
-  min-height: 18px;
-  height: 18px;
+ .connection-map-page .connection-rack-row {
+  min-height: 36px;
+  height: 36px;
   align-self: start;
 }
 
@@ -8949,7 +8953,7 @@ CONNECTION MAP — RESPONSIVE RACK ELEMENT SCALING
    Only empty U sections and rack fillers stay compact. */
 .connection-map-page .connection-rack-equipment.is-device,
 .connection-map-page .connection-rack-equipment.is-patch-panel {
-  min-height: 36px;
+  min-height: 0;
   height: auto;
   align-self: stretch;
 }

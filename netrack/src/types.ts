@@ -1,4 +1,4 @@
-export type RackAccessoryType = "organizer" | "spacer" | "ups";
+export type RackAccessoryType = "organizer" | "maskownica" | "ups";
 
 export type RackAccessory = { id: string; name: string; type: RackAccessoryType; manufacturer: string; model: string; heightU: number; positionU: number | null; };
 

@@ -4161,3 +4161,117 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 .rack-preview-row {
   min-height: 0;
 }
+
+
+/* =========================================================
+   EQUIPMENT WORKSPACE — FINAL FIT / U GRID
+   ========================================================= */
+.rack-equipment-workspace {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rack-canvas {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rack-canvas-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 0;
+  overflow: hidden;
+  align-items: flex-start;
+}
+
+.rack-canvas-scale {
+  height: 440px;
+  margin-top: 10px;
+}
+
+.rack-canvas-frame {
+  height: 460px;
+  flex: 0 0 340px;
+  box-sizing: border-box;
+}
+
+.rack-canvas-grid {
+  height: 440px;
+  min-height: 0;
+}
+
+.rack-canvas-slot {
+  min-height: 0;
+  height: auto;
+}
+
+.rack-canvas-item {
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.workspace-list {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.equipment-group {
+  padding: 9px 12px;
+}
+
+.equipment-row {
+  min-height: 48px;
+  height: 48px;
+  margin-top: 4px;
+  grid-template-columns: 30px minmax(0, 1fr) 86px 20px;
+  gap: 7px;
+  padding: 6px 7px;
+}
+
+.equipment-row-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.equipment-row-main small {
+  margin-top: 2px;
+}
+
+.equipment-row-position {
+  white-space: nowrap;
+}
+
+.equipment-row-position small {
+  white-space: nowrap;
+}
+
+.equipment-empty {
+  padding: 10px 4px 3px;
+}
+
+@media (max-width: 1200px) {
+  .rack-canvas-frame {
+    flex-basis: 300px;
+  }
+}
+
+@media (max-width: 900px) {
+  .rack-equipment-workspace {
+    height: auto;
+    overflow: visible;
+  }
+
+  .rack-canvas {
+    overflow: visible;
+  }
+
+  .rack-canvas-body {
+    height: auto;
+    overflow: visible;
+  }
+
+  .workspace-list {
+    overflow: visible;
+  }
+}

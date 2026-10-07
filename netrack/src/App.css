@@ -3885,3 +3885,119 @@ UNIFIED RACK EQUIPMENT WORKSPACE
 .rack-canvas-item small { font-size:8px; line-height:1.1; }
 .equipment-row-position.unmounted { color:#7c8792; font-size:7px; letter-spacing:.04em; }
 .equipment-row-position.unmounted small { color:#f36b21; }
+
+
+/* =========================================================
+   WIZARD VIEWPORT FIT + WIDER RACK
+   ========================================================= */
+.wizard-shell {
+  height: calc(100vh - 64px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wizard-main {
+  height: calc(100vh - 64px);
+  min-height: 0;
+  overflow: hidden;
+  padding: 24px 34px 18px;
+}
+
+.wizard-main-header {
+  flex: 0 0 auto;
+  margin-bottom: 14px;
+}
+
+.wizard-main > .wizard-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.wizard-main > .wizard-footer {
+  flex: 0 0 auto;
+  margin-top: 10px;
+  min-height: 48px;
+  padding: 8px 0 0;
+  position: relative;
+  z-index: 10;
+}
+
+.wizard-footer .primary-button,
+.wizard-footer .secondary-button {
+  min-height: 38px;
+}
+
+/* Give the physical rack more visual width without sacrificing the list. */
+.layout-workspace {
+  grid-template-columns: minmax(500px, 1.55fr) minmax(300px, .75fr);
+  min-height: 500px;
+}
+
+.rack-canvas-body {
+  min-height: 500px;
+  padding: 24px 30px;
+  gap: 10px;
+}
+
+.rack-canvas-scale {
+  width: 34px;
+  margin-right: 12px;
+  flex: 0 0 34px;
+}
+
+.rack-canvas-frame {
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+  padding: 9px 30px;
+}
+
+.rack-canvas-grid {
+  min-height: 460px;
+}
+
+.rack-canvas-item {
+  padding-left: 24px;
+}
+
+@media (max-width: 1200px) {
+  .wizard-main { padding-left: 24px; padding-right: 24px; }
+  .layout-workspace {
+    grid-template-columns: minmax(440px, 1.4fr) minmax(280px, .8fr);
+  }
+  .rack-canvas-frame {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 900px) {
+  .wizard-shell,
+  .wizard-main {
+    height: auto;
+    min-height: calc(100vh - 64px);
+    overflow: visible;
+  }
+  .wizard-main { padding: 20px 18px 16px; }
+  .wizard-main > .wizard-card { overflow: visible; }
+  .wizard-main > .wizard-footer { position: sticky; bottom: 0; background: #0b0d10; }
+  .layout-workspace { grid-template-columns: 1fr; }
+  .rack-canvas-frame {
+    width: min(340px, 62vw);
+    min-width: 240px;
+    max-width: 340px;
+  }
+}
+
+@media (max-width: 720px) {
+  .wizard-main { padding: 16px 12px 12px; }
+  .wizard-main-header { margin-bottom: 10px; }
+  .wizard-main > .wizard-footer { margin-top: 8px; }
+  .rack-canvas-body { padding: 20px 14px; }
+  .rack-canvas-frame {
+    width: min(300px, 68vw);
+    min-width: 220px;
+  }
+}

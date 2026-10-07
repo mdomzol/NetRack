@@ -167,7 +167,7 @@ export default function RackCanvas({
                     <button
                       type="button"
                       className={"rack-canvas-item " + item.type}
-                      style={{ gridRow: "span " + item.heightU }}
+                      style={{ height: (440 / rack.heightU) * item.heightU + "px", minHeight: "0" }}
                       draggable
                       onDragStart={(event) => handleDragStart(event, item)}
                       onDragEnd={() => {

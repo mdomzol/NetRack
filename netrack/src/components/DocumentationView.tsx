@@ -372,7 +372,10 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
       <div className="connections-toolbar">
         <div className="connection-toolbar-copy">
           <span>MAPA OKABLOWANIA</span>
-          <strong>{project.connections.length} połączeń</strong>
+          <div>
+            <strong>{String(project.connections.length).padStart(2, "0")}</strong>
+            <small>POŁĄCZENIA</small>
+          </div>
         </div>
         <button type="button" className="primary-button" onClick={() => setCreatingConnection(true)}>+ Dodaj połączenie</button>
       </div>

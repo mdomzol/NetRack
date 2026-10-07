@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import Dashboard from "./components/Dashboard";
@@ -8,25 +8,38 @@ import { createEmptyProject } from "./constants";
 import { ProjectDraft } from "./types";
 
 type View = "dashboard" | "new-project";
+const STORAGE_KEY = "netrack:project";
+
+function loadProject(): ProjectDraft {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored) as ProjectDraft;
+  } catch {
+    // Ignore invalid local data and start clean.
+  }
+  return createEmptyProject();
+}
 
 function App() {
   const [view, setView] = useState<View>("dashboard");
+  const [project, setProject] = useState<ProjectDraft>(loadProject);
 
-  const [project, setProject] =
-    useState<ProjectDraft>(createEmptyProject());
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
+    } catch {
+      // Storage is optional; the application remains usable without it.
+    }
+  }, [project]);
 
   const openNewProject = () => {
     setProject(createEmptyProject());
     setView("new-project");
   };
 
-  const cancelNewProject = () => {
-    setView("dashboard");
-  };
+  const cancelNewProject = () => setView("dashboard");
 
-  const createProject = (
-    createdProject: ProjectDraft
-  ) => {
+  const createProject = (createdProject: ProjectDraft) => {
     setProject(createdProject);
     setView("dashboard");
   };
@@ -42,11 +55,7 @@ function App() {
     );
   }
 
-  return (
-    <Dashboard
-      onNewProject={openNewProject}
-    />
-  );
+  return <Dashboard project={project} onNewProject={openNewProject} />;
 }
 
 export default App;

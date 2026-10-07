@@ -201,23 +201,16 @@ function App() {
       ) : (
         <main className="main">
           <header className="topbar">
-            <div>
-              <div className="breadcrumb">NETRACK / DOKUMENTACJA</div>
-              <h1>
-                {view === "rack"
-                  ? "Szafa"
-                  : view === "devices"
-                    ? "Urządzenia"
-                    : view === "patch-panels"
-                      ? "Patchpanele"
-                      : view === "connections"
-                        ? "Połączenia"
-                        : "Mapa połączeń"}
-              </h1>
+            <div className="topbar-project">
+              <span className="topbar-label">PROJEKT</span>
+              <strong>{project.name || "Brak projektu"}</strong>
+              <span className="topbar-location">{project.location || "Lokalizacja nie podana"}</span>
             </div>
-            <div className="project-info">
-              <span className="project-status online" />
-              {project.name || "Brak projektu"}
+            <div className="topbar-meta">
+              <span><b>{project.rack.heightU}U</b> RACK</span>
+              <span><b>{project.devices.length}</b> URZĄDZENIA</span>
+              <span><b>{project.patchPanels.length}</b> PATCHPANELE</span>
+              <span><b>{project.connections.length}</b> POŁĄCZENIA</span>
             </div>
           </header>
 

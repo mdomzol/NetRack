@@ -43,6 +43,7 @@ const deviceLabels: Record<string, string> = {
 
 function DocumentationView({ project, view, onSaveConnection, onDeleteConnection, onOpenDevice, focusedDeviceId, onClearFocusedDevice }: Props) {
   const [editingConnectionId, setEditingConnectionId] = useState<string | null>(null);
+  const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
   const [creatingConnection, setCreatingConnection] = useState(false);
   const connectedPorts = project.patchPanels.reduce(
     (total, panel) =>
@@ -54,7 +55,6 @@ function DocumentationView({ project, view, onSaveConnection, onDeleteConnection
   const editingConnection = project.connections.find((connection) => connection.id === editingConnectionId) ?? null;
 
   if (view === "rack") {
-    const [selectedRackItemId, setSelectedRackItemId] = useState<string | null>(null);
     const rackItems = [...project.devices, ...project.patchPanels];
     const selectedRackItem = rackItems.find((item) => item.id === selectedRackItemId) ?? null;
 

@@ -7199,3 +7199,31 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     grid-template-columns: repeat(2, minmax(0,1fr));
   }
 }
+
+/* Patch panel port grid: physical 12-port rows */
+.patch-panel-port-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.patch-panel-port {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .patch-panel-port-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .patch-panel-port-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .patch-panel-port-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

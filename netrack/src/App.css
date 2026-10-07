@@ -6822,3 +6822,45 @@ UNIFIED RACK EQUIPMENT WORKSPACE
     font-size: 16px;
   }
 }
+
+/* Patch panels documentation */
+.patch-panels-page .page-header {
+  margin-bottom: 12px;
+}
+
+.patch-panel-card-type {
+  color: #9aa3ad;
+  background: #141a20;
+  border-color: #303944;
+}
+
+.patch-panel-card .device-card-main strong {
+  font-size: 17px;
+}
+
+.patch-panel-card .device-card-footer span.is-mounted {
+  color: #bfc5ca;
+  border-color: #303944;
+}
+
+.patch-panel-details-panel {
+  border-color: #303944;
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.018), transparent 42%),
+    #0e1319;
+}
+
+.patch-panel-details-panel .device-details-title span {
+  color: #8b96a1;
+}
+
+.patch-panel-details-panel .device-port-summary span:first-child {
+  border-color: rgba(243,107,33,.24);
+  color: #c7ced3;
+}
+
+@media (max-width: 650px) {
+  .patch-panel-card .device-card-main strong {
+    font-size: 15px;
+  }
+}

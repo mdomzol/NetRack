@@ -28,7 +28,7 @@ function WizardStep({
       </div>
 
       <span>{label}</span>
-    </div>
+    </button>
   );
 }
 

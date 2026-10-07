@@ -266,11 +266,24 @@ export default function ConnectionEditorModal({
             }
             onChange={(event) => changePort(side, event.target.value)}
           >
-            {ports.map((port) => (
-              <option key={port.value} value={port.value}>
-                {port.label}
-              </option>
-            ))}
+            {ports.map((port) => {
+              const portEndpoint: ConnectionEndpoint =
+                endpoint.kind === "device"
+                  ? { kind: "device", deviceId: endpoint.deviceId, port: Number(port.value) }
+                  : { kind: "patch-panel", patchPanelId: endpoint.patchPanelId, portId: port.value };
+              const occupiedBy = existingConnectionFor(portEndpoint);
+              const isCurrentPort = endpointKey(portEndpoint) === endpointKey(endpoint);
+              return (
+                <option
+                  key={port.value}
+                  value={port.value}
+                  disabled={Boolean(occupiedBy) && !isCurrentPort}
+                >
+                  {port.label}
+                  {occupiedBy && !isCurrentPort ? " · ZAJĘTY" : ""}
+                </option>
+              );
+            })}
           </select>
         </label>
       </div>

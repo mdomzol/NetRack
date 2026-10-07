@@ -156,8 +156,8 @@ function App() {
   };
 
   const addAccessory = (type: RackAccessoryType) => {
-    const labels: Record<RackAccessoryType, string> = { organizer: "ORGANIZER", maskownica: "MASKOWNICA", ups: "UPS" };
-    const heights: Record<RackAccessoryType, number> = { organizer: 1, maskownica: 1, ups: 2 };
+    const labels: Record<RackAccessoryType, string> = { organizer: "ORGANIZER", maskownica: "MASKOWNICA", ups: "UPS", listwa: "LISTWA" };
+    const heights: Record<RackAccessoryType, number> = { organizer: 1, maskownica: 1, ups: 2, listwa: 1 };
     const item: RackAccessory = { id: crypto.randomUUID(), name: labels[type] + "-" + String(project.accessories.filter((x) => x.type === type).length + 1).padStart(2, "0"), type, manufacturer: "", model: "", heightU: heights[type], positionU: null };
     setProject((current) => ({ ...current, accessories: [...current.accessories, item] }));
     setEditingAccessory(item);

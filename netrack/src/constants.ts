@@ -25,6 +25,63 @@ export const DEVICE_MODELS: DeviceModel[] = [
     ports: 18,
     heightU: 1,
   },
+  {
+    id: "zyxel-gs1900-10hp",
+    manufacturer: "ZyXEL",
+    model: "GS1900-10HP",
+    type: "switch",
+    ports: 10,
+    heightU: 1,
+  },
+  {
+    id: "zyxel-gs1900-24",
+    manufacturer: "ZyXEL",
+    model: "GS1900-24",
+    type: "switch",
+    ports: 24,
+    heightU: 1,
+  },
+  {
+    id: "zyxel-gs1900-24hp",
+    manufacturer: "ZyXEL",
+    model: "GS1900-24HP",
+    type: "switch",
+    ports: 24,
+    heightU: 1,
+  },
+  {
+    id: "tp-link-sg3428",
+    manufacturer: "TP-Link",
+    model: "SG3428",
+    type: "switch",
+    ports: 28,
+    heightU: 1,
+  },
+  {
+    id: "tp-link-sg3428mp",
+    manufacturer: "TP-Link",
+    model: "SG3428MP",
+    type: "switch",
+    ports: 28,
+    heightU: 1,
+  },
+  {
+    id: "tp-link-sg3452",
+    manufacturer: "TP-Link",
+    model: "SG3452",
+    type: "switch",
+    ports: 52,
+    heightU: 1,
+  },
+  {
+    id: "tp-link-sg3452p",
+    manufacturer: "TP-Link",
+    model: "SG3452P",
+    type: "switch",
+    ports: 52,
+    heightU: 1,
+  },
+
 ];
 
 import { ProjectDraft } from "./types";
